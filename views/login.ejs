@@ -5,24 +5,48 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/login.css" />
     <%- include('./templates/header.ejs') %>
 </head>
 
-<body>
-    <h1>Hello World!</h1>
-    <div>
-        <form method="post" action="/auth/login" autocomplete="off">
-            <div>
-                <input type="text" name="email" />
+<body class="bg-dark">
+    <div class="form-container w-50 text-center bg-dark text-light border border-info border-5 rounded-pill">
+        <form class="login-form bg-none" autocomplete="off">
+            <h1>LOGIN</h1>
+            <div class="form-group w-50 mx-auto">
+                <label for="exampleInputEmail1">Email</label>
+                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                    placeholder="Enter email">
             </div>
-            <div>
-                <input type="password" name="password" />
+            <div class="form-group w-50 mx-auto">
+                <label for="exampleInputPassword1">Password</label>
+                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
             </div>
-            <div>
-                <input type="submit" id="login-btn" value="Login" />
+            <button type="submit" class="btn btn-info w-50 h-50 mx-auto">LOGIN</button>
+            <a class="link pe-auto" id="to-reg-btn">REGISTER<i class="bi bi-caret-right-fill"></i></a>
+        </form>
+
+        <form class="reg-form" autocomplete="off">
+            <h1>REGISTER</h1>
+            <div class="form-group w-50 mx-auto">
+                <label for="exampleInputEmail1">Email</label>
+                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                    placeholder="Enter email">
             </div>
+            <div class="form-group w-50 mx-auto">
+                <label for="exampleInputPassword1">Password</label>
+                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+            </div>
+            <div class="form-group w-50 mx-auto">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password">
+            </div>
+            <button type="submit" class="btn btn-info w-50 h-50 mx-auto">REGISTER</button>
+            <a class="link pe-auto" id="to-login-btn"><i class="bi bi-caret-left-fill"></i>LOGIN</a>
         </form>
     </div>
+
+    <script type="application/javascript" src="/js/login.js"></script>
 </body>
 
 </html>
