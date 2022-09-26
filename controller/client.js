@@ -1,12 +1,12 @@
 const express = require('express'),
     router = express.Router(),
     db = require('../db/db'),
-    { protected, auth } = require('../middlewares/checkAuth');
+    { protected, login } = require('../middlewares/checkAuth');
 
 //VIEWS
 
 //LOGIN PAGE
-router.get('/login', auth, (req, res) => {
+router.get('/login', login, (req, res) => {
     res.render('login.ejs')
 })
 
@@ -22,10 +22,10 @@ router.post('/login', (req, res) => {
         (err, results) => {
             if (err) throw err;
 
-            if(results.length == 0) return res.redirect('/auth/login?msg=invalid')
+            if(results.length == 0) return res.redirect('/client/login?msg=invalid')
 
             req.session.user = results[0].id;
-            res.redirect('/home')
+            res.redirect('/user')
         })
 })
 

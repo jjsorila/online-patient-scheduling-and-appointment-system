@@ -20,8 +20,9 @@ app.use(cookieSession({
 
 //ROUTES
 
+//CLIENT
 //LOGIN/LOGOUT
-app.use('/auth', require('./controller/auth'))
+app.use('/client', require('./controller/client'))
 
 //HOME
 app.get('/home', (req, res) => {
@@ -32,6 +33,9 @@ app.get('/home', (req, res) => {
 app.get('/user', protected, (req, res) => {
     res.render('user.ejs')
 })
+
+
+//ADMIN
 
 
 //PORT & DATABASE

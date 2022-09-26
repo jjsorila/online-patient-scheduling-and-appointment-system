@@ -1,9 +1,9 @@
 exports.protected = (req, res, next) => {
-    if (!req.session.user) return res.redirect('/auth/login')
+    if (!req.session.user) return res.redirect('/client/login')
     return next()
 }
 
-exports.auth = (req, res, next) => {
+exports.login = (req, res, next) => {
     if (req.session.user) return res.redirect('/home')
     return next()
 }
