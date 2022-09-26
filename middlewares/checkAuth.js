@@ -4,7 +4,7 @@ exports.protected = (req, res, next) => {
 }
 
 exports.login = (req, res, next) => {
-    if (req.session.user) return res.redirect('/home')
+    if (req.session.user) return res.redirect('/user')
     return next()
 }
 

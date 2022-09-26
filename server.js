@@ -18,7 +18,7 @@ app.use(cookieSession({
 }))
 
 
-//ROUTES
+//ROUTES =============================================================
 
 //CLIENT
 //LOGIN/LOGOUT
@@ -29,7 +29,7 @@ app.get('/home', (req, res) => {
     res.render('home.ejs')
 })
 
-//user
+//USER
 app.get('/user', protected, (req, res) => {
     res.render('user.ejs')
 })
@@ -37,6 +37,7 @@ app.get('/user', protected, (req, res) => {
 
 //ADMIN
 
+//ROUTES =============================================================
 
 //PORT & DATABASE
 const PORT = process.env.PORT || 5000;
