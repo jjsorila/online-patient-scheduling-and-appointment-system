@@ -1,7 +1,8 @@
+require("dotenv").config({ path: "./.env" })
 const express = require('express');
 const app = express();
 const cookieSession = require('cookie-session');
-const { protected, auth } = require('./middlewares/checkAuth');
+const { protected } = require('./middlewares/checkAuth');
 const db = require('./db/db');
 
 //VIEW ENGINE
@@ -13,7 +14,7 @@ app.use(express.static("assets"));
 //GLOBAL MIDDLEWARES
 app.use(express.urlencoded({ extended: true }), express.json())
 app.use(cookieSession({
-    secret: 'asdasdas',
+    secret: process.env.SECRET,
     maxAge: 86400000
 }))
 
@@ -40,7 +41,7 @@ app.get('/user', protected, (req, res) => {
 //ROUTES =============================================================
 
 //PORT & DATABASE
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT;
 
 db.connect((error) => {
     if (error) throw error;

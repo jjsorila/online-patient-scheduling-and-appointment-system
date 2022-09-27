@@ -1,3 +1,4 @@
+require("dotenv").config({ path: "./.env" })
 const express = require('express'),
     router = express.Router(),
     db = require('../db/db'),
@@ -30,7 +31,7 @@ router.post('/login', (req, res) => {
             const user = { ...result[0] }
 
             //DECRYPT & COMPARE PASSWORD
-            const isMatch = password == CryptoJS.AES.decrypt(user.password, '123').toString(CryptoJS.enc.Utf8);
+            const isMatch = password == CryptoJS.AES.decrypt(user.password, process.env.SECRET).toString(CryptoJS.enc.Utf8);
 
             if (!isMatch) return res.redirect('/client/login?msg=invalidPassword')
 
@@ -56,42 +57,38 @@ router.post('/register', (req, res) => {
         if (results.length > 0) return res.json({ operation: false })
 
         //ENCRYPT PASSWORD
-        password = CryptoJS.AES.encrypt(password, '123').toString();
+        password = CryptoJS.AES.encrypt(password, process.env.SECRET).toString();
 
+        //ADD TO DATABASE
         db.query(`INSERT INTO client_accounts(email,password) VALUES(${db.escape(email)},${db.escape(password)})`, (err, result) => {
             if (err) throw err;
         })
 
-        return res.status(200).json({ operation: true })
-
         //SEND EMAIL VERIFICATION
-        // const transporter = nodemailer.createTransport({
-        //     host: "mail.gmx.com",
-        //     port: 587,
-        //     tls: {
-        //         ciphers:'SSLv3',
-        //         rejectUnauthorized: false
-        //     },
-        //     debug:true,
-        //     auth: {
-        //         user: "opass0101@gmx.com",
-        //         pass: "Opass1234567"
-        //     }
-        // });
+        const transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 465,
+            secure: true,
+            auth: {
+                user: process.env.EMAIL,
+                pass: process.env.PWD
+            }
+        });
 
-        // try {
-        //     transporter.sendMail({
-        //         from: `"OPASS" <plogic9@gmail.com>`,
-        //         to: email,
-        //         subject: `Online Patient Appointment and Scheduling System`,
-        //         html: `<b>Click this <a href="http://${req.header('host')}/client/verify?token=${jwt.sign({ email }, '12345', { expiresIn: '365d' })}" >link</a> to verify your account.</b>`
-        //     }).then((result) => {
-        //         return res.json({ operation: true, msg: result.response })
-        //     })
-        // } catch (err) {
-        //     console.log(err)
-        //     res.status(500).json({ msg: "Server Error" })
-        // }
+        try {
+            const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: '365d' })
+            transporter.sendMail({
+                from: `"OPASS" <plogic9@gmail.com>`,
+                to: email,
+                subject: `Online Patient Appointment and Scheduling System`,
+                html: `<b>Click this <a href="http://${req.header('host')}/client/verify?token=${token}" >link</a> to verify your account.</b>`
+            }).then((result) => {
+                return res.json({ operation: true, msg: result.response })
+            })
+        } catch (err) {
+            console.log(err)
+            res.status(500).json({ msg: "Server Error" })
+        }
     })
 })
 
@@ -101,7 +98,7 @@ router.get('/verify', async (req, res) => {
     if (!token) return res.status(401).send("Token is required");
 
     try {
-        const decoded = jwt.verify(token, '12345');
+        const decoded = jwt.verify(token, process.env.SECRET);
         db.query(`UPDATE client_accounts SET verified=1 WHERE email=${db.escape(decoded.email)}`, (err, result) => {
             if (err) throw err;
             return res.redirect("/client/login");
