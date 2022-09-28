@@ -1,7 +1,57 @@
 body {
     display: grid;
     background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("/bg-login-register.jpg") no-repeat;
-    background-size: cover;
+    background-size: 100% 100%;
+}
+
+a {
+    width: max-content;
+    cursor: pointer;
+}
+
+.forgot-password {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 60%;
+    transform: translate(-50%, -50%);
+    border-radius: 50px;
+}
+
+.forgot-password button {
+    height: 50px;
+    width: 30%;
+}
+
+.forgot-password i {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    font-size: 3.5vw !important;
+    cursor: pointer;
+}
+
+.forgot-password h1 {
+    font-size: 3vw !important;
+}
+
+.loading {
+    position: absolute;
+    width: 50%;
+    height: 90%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50px;
+    overflow: hidden;
+    display: none;
+}
+
+.loading img {
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6));
+    height: 100%;
+    width: 100%;
 }
 
 .form-container {
@@ -21,10 +71,6 @@ body {
     align-items: center;
     grid-auto-rows: auto;
     transition: all .5s ease-in-out;
-}
-
-a {
-    cursor: pointer;
 }
 
 .reg-form {

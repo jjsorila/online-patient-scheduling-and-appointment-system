@@ -23,7 +23,10 @@
                 <input type="password" class="form-control" name="password" id="exampleInputPassword1"/>
             </div>
             <button type="submit" class="btn btn-info w-50 h-50 mx-auto">LOGIN</button>
-            <a class="link pe-auto" id="to-reg-btn">REGISTER<i class="bi bi-caret-right-fill"></i></a>
+            <div class="h-100 w-100 d-flex justify-content-around align-items-center flex-column flex-md-row">
+                <a class="link pe-auto" id="reset-pwd">RESET PASSWORD</a>
+                <a class="link pe-auto" id="slide">REGISTER<i class="bi bi-caret-right-fill"></i></a>
+            </div>
         </form>
 
         <form class="reg-form" autocomplete="off">
@@ -42,9 +45,26 @@
                 <input type="password" class="form-control" id="confirmPassword" />
             </div>
             <button type="submit" class="btn btn-info w-50 h-50 mx-auto">REGISTER</button>
-            <a class="link pe-auto" id="to-login-btn"><i class="bi bi-caret-left-fill"></i>LOGIN</a>
+            <a class="link pe-auto mx-auto" id="slide"><i class="bi bi-caret-left-fill"></i>LOGIN</a>
         </form>
     </div>
+
+    <!-- FALLBACK LOADING -->
+    <div class="loading">
+        <img src="/bg-spinner.svg"/>
+    </div>
+
+    <!-- RESET PASSWORD FORM -->
+    <div class="forgot-password w-50 bg-light flex-column justify-content-center align-items-center gap-4 py-3">
+        <i class="bi bi-x-square-fill" id="close"></i>
+        <h1>Send Reset Link</h1>
+        <label for="reset-email-input">Email</label>
+        <input type="email" class="form-control w-50 border border-dark border-4" id="reset-email-input" />
+        <button class="btn btn-dark">SEND</button>
+    </div>
+
+    <!-- TOAST -->
+    <%- include("./templates/toast.ejs") %>
 
     <script type="application/javascript" src="/js/login.js"></script>
 </body>

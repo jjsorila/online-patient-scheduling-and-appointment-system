@@ -26,17 +26,17 @@ router.post('/login', (req, res) => {
         (err, result) => {
             if (err) throw err;
 
-            if (result.length == 0) return res.redirect('/client/login?msg=invalidEmail')
+            if (result.length == 0) return res.json({ operation: false })
 
             const user = { ...result[0] }
 
             //DECRYPT & COMPARE PASSWORD
             const isMatch = password == CryptoJS.AES.decrypt(user.password, process.env.SECRET).toString(CryptoJS.enc.Utf8);
 
-            if (!isMatch) return res.redirect('/client/login?msg=invalidPassword')
+            if (!isMatch) return res.json({ operation: false })
 
             req.session.user = user.id;
-            res.redirect('/user')
+            res.json({ operation: true })
         })
 })
 
