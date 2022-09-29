@@ -6,18 +6,11 @@ $(document).ready(function (e) {
         $(".toast").toast("show")
     }
 
-    //GET QUERY STRINGS
-    const params = new Proxy(new URLSearchParams(window.location.search), {
-        get: (searchParams, prop) => searchParams.get(prop),
-    });
-    if (params.auth) {
-        showToast("✖ Invalid Credentials")
-    }
-
-    //CLEAR INPUT REGISTER
+    //CLEAR INPUT
     function clearInput() {
         $("form.reg-form input").val("")
         $("form.login-form input").val("")
+        $(".forgot-password input").val("")
     }
 
     //GET INPUT REGISTER
@@ -43,10 +36,12 @@ $(document).ready(function (e) {
     })
 
     //LOGIN ACCOUNT
-    $("form.login-form").submit(function(e) {
+    $("form.login-form").submit(function (e) {
         e.preventDefault()
 
         const { email, password } = getInputLogin()
+
+        if (!email || !password) return showToast("✖ Complete all fields")
 
         $.ajax({
             url: "/client/login",
@@ -59,8 +54,8 @@ $(document).ready(function (e) {
                 password
             }),
             success: (res) => {
-                if(!res.operation) return showToast("✖ Invalid Credentials")
-                location.href = "/user"
+                if (!res.operation) return showToast("✖ Invalid Credentials")
+                location.href = "/client/user"
             },
             error: (err) => {
                 alert(err)
@@ -73,6 +68,8 @@ $(document).ready(function (e) {
         e.preventDefault();
 
         const { email, password, cPassword } = getInputRegister()
+
+        if (!email || !password || !cPassword) return showToast("✖ Complete all fields")
 
         if (password != cPassword) return showToast("✖ Password not matched")
 
@@ -113,5 +110,34 @@ $(document).ready(function (e) {
     $("#close").click(function (e) {
         $(".forgot-password").undim()
         $(".forgot-password").css("display", "none")
+    })
+
+    //SEND RESET PASSWORD LINK
+    $(".forgot-password #btn-send-reset").click(function (e) {
+        const email = $(".forgot-password input")
+        if (!email.val()) return showToast("✖ Email Required")
+
+        $.ajax({
+            url: "/client/reset",
+            type: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            data: JSON.stringify({
+                email: email.val()
+            }),
+            success: (res) => {
+                if (!res.verified) return showToast("✖ Email not yet verified")
+                if (!res.found) return showToast("✖ Email not found")
+
+                showToast("✔ Link sent to your Email")
+                email.val("")
+                $(".forgot-password").undim()
+                $(".forgot-password").css("display", "none")
+            },
+            error: (err) => {
+                console.log(err)
+            }
+        })
     })
 })

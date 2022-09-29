@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('./templates/header.ejs') %>
+    <link rel="stylesheet" href="/css/reset.css"/>
+</head>
+<body class="bg-dark">
+    <div class="reset-pwd-container text-center">
+        <h1>New Password</h1>
+        <input type="hidden" value="<%= email %>">
+        <input type="password" id="password" class="form-control w-50" placeholder="New Password"/>
+        <input type="password" id="cPassword" class="form-control w-50" placeholder="Confirm Password"/>
+        <input type="submit" class="btn btn-info w-25" value="CHANGE"/>
+    </div>
+
+    <!-- FALLBACK LOADING -->
+    <div class="loading">
+        <img src="/bg-spinner.svg"/>
+    </div>
+    <%- include('./templates/toast.ejs') %>
+    <script type="application/javascript" src="/js/reset.js"></script>
+</body>
+</html>

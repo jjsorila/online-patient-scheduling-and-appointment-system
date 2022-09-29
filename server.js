@@ -2,7 +2,6 @@ require("dotenv").config({ path: "./.env" })
 const express = require('express');
 const app = express();
 const cookieSession = require('cookie-session');
-const { protected } = require('./middlewares/checkAuth');
 const db = require('./db/db');
 
 //VIEW ENGINE
@@ -21,20 +20,13 @@ app.use(cookieSession({
 
 //ROUTES =============================================================
 
-//CLIENT
-//LOGIN/LOGOUT
-app.use('/client', require('./controller/client'))
-
 //HOME
 app.get('/home', (req, res) => {
     res.render('home.ejs')
 })
 
-//USER
-app.get('/user', protected, (req, res) => {
-    res.render('user.ejs')
-})
-
+//CLIENT
+app.use('/client', require('./controller/client'))
 
 //ADMIN
 
