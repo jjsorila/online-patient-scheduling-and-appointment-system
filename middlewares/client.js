@@ -21,6 +21,6 @@ exports.getResetPasswordToken = (req, res, next) => {
         req.email = decoded.email
         next()
     } catch (error) {
-        res.send(`<h1 style="text-align: center;">Token Expired</h1>`)
+        res.send(`<h1 style="text-align: center;">Invalid Token</h1>`)
     }
 }
