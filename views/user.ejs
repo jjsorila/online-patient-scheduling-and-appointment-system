@@ -6,14 +6,76 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%- include('./templates/header.ejs'); %>
+        <link rel="stylesheet" href="/css/user.css" />
+        <link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+        <script type="application/javascript" src="//cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 </head>
 
-<body>
+<body class="bg-dark">
     <%- include('./templates/navbar.ejs'); %>
-        <h1>User Information</h1>
-        <form method="post" action="/client/logout">
-            <input type="submit" value="LOGOUT" />
+        <h1 class="text-center text-light my-4">User Information</h1>
+
+        <!-- USER INFO -->
+        <form
+            class="container border border-dark border-5 bg-light user-info p-5 d-flex flex-column gap-5 align-items-center">
+            <div class="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-5">
+                <div class="form-group text-center">
+                    <label for="fullname">Full Name</label>
+                    <input type="text" class="form-control border border-dark border-4" id="fullname" name="fullname" />
+                </div>
+                <div class="form-group text-center">
+                    <label for="email">Email</label>
+                    <input type="text" class="form-control border border-dark border-4" id="email" name="email" disabled value="<%= user.email %>"/>
+                </div>
+                <div class="form-group text-center">
+                    <label for="contact">Contact</label>
+                    <input type="text" class="form-control border border-dark border-4" id="contact" name="contact" />
+                </div>
+            </div>
+            <div class="d-flex flex-column flex-lg-row justify-content-space-evenly align-items-center gap-5">
+                <div class="form-group text-center">
+                    <label for="gender">Gender</label>
+                    <select type="text" class="custom-select border border-dark border-4 d-block" name="gender">
+                        <option>Male</option>
+                        <option>Female</option>
+                    </select>
+                </div>
+                <div class="form-group text-center">
+                    <label for="birthdate">Birthdate</label>
+                    <input type="date" class="form-control border border-dark border-4" name="birthdate" value="">
+                </div>
+            </div>
+            <div class="form-group text-center">
+                <label for="fullname">Address</label>
+                <textarea class="form-control border border-dark border-4" name="address" rows="3"></textarea>
+            </div>
+            <div class="d-flex flex-column flex-lg-row justify-content-space-around align-items-center gap-5">
+                <button id="save" class="btn btn-light border border-dark border-4 rounded">SAVE</button>
+                <button id="sched" class="btn btn-light border border-dark border-4 rounded">MAKE AN APPOINTMENT</button>
+            </div>
         </form>
+
+        <!-- TABLE -->
+        <h1 class="text-center text-light mb-4 mt-5">Appointments</h1>
+        <section class="container bg-light appointments-table p-2 p-md-4">
+            <table class="table text-center table-striped table-hover" id="appointments">
+                <thead>
+                    <th>AILMENT</th>
+                    <th>DATE</th>
+                    <th>STATUS</th>
+                </thead>
+                <tbody>
+                    <% for(let i=0; i < 100; i++) { %>
+                        <tr>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                        </tr>
+                        <% } %>
+                </tbody>
+            </table>
+        </section>
+        <script type="application/javascript" src="/js/user.js"></script>
 </body>
 
 </html>

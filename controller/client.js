@@ -32,7 +32,7 @@ router.get('/login', login, (req, res) => {
 
 //CLIENT USER PAGE
 router.get('/user', protected, (req, res) => {
-    res.render('user.ejs')
+    res.render('user.ejs', { user: req.session.user })
 })
 
 //CLIENT RESET PASSWORD PAGE
@@ -59,15 +59,23 @@ router.post('/login', (req, res) => {
 
             if (!isMatch) return res.json({ operation: false })
 
-            req.session.user = user.id;
+            req.session.user = {
+                id: user.id,
+                email: user.email
+            };
             res.json({ operation: true })
         })
 })
 
 //LOGOUT ACCOUNT
 router.post('/logout', (req, res) => {
-    req.session = null
-    res.redirect('/client/login')
+    try {
+        req.session = null
+        res.json({ operation: true })
+    } catch (error) {
+        console.log(error)
+        res.json({ operation: false })
+    }
 })
 
 //REGISTER CLIENT ACCOUNT

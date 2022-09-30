@@ -22,7 +22,7 @@ app.use(cookieSession({
 
 //HOME
 app.get('/home', (req, res) => {
-    res.render('home.ejs')
+    res.render('home.ejs', { user: null })
 })
 
 //CLIENT

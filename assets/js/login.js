@@ -43,6 +43,8 @@ $(document).ready(function (e) {
 
         if (!email || !password) return showToast("✖ Complete all fields")
 
+        $(".loading").css("display", "block")
+
         $.ajax({
             url: "/client/login",
             type: "POST",
@@ -59,6 +61,9 @@ $(document).ready(function (e) {
             },
             error: (err) => {
                 alert(err)
+            },
+            complete: () => {
+                $(".loading").css("display", "none")
             }
         })
     })
@@ -117,6 +122,8 @@ $(document).ready(function (e) {
         const email = $(".forgot-password input")
         if (!email.val()) return showToast("✖ Email Required")
 
+        $('.loading').css("display", "block")
+
         $.ajax({
             url: "/client/reset",
             type: "POST",
@@ -137,6 +144,9 @@ $(document).ready(function (e) {
             },
             error: (err) => {
                 console.log(err)
+            },
+            complete: () => {
+                $('.loading').css("display", "none")
             }
         })
     })

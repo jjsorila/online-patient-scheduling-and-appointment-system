@@ -1,0 +1,13 @@
+.logout {
+    cursor: pointer;
+}
+
+.user-info {
+    border-radius: 50px;
+    width: max-content;
+}
+
+.appointments-table {
+    border-radius: 50px;
+    width: max-content;
+}

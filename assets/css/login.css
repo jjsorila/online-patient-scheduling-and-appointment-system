@@ -10,6 +10,7 @@ a {
 }
 
 .forgot-password {
+    position: relative;
     display: none;
     position: absolute;
     top: 50%;
@@ -34,24 +35,6 @@ a {
 
 .forgot-password h1 {
     font-size: 3vw !important;
-}
-
-.loading {
-    position: absolute;
-    width: 50%;
-    height: 90%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: 50px;
-    overflow: hidden;
-    display: none;
-}
-
-.loading img {
-    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6));
-    height: 100%;
-    width: 100%;
 }
 
 .form-container {
