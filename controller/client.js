@@ -5,6 +5,7 @@ const express = require('express'),
     { protected, login, getResetPasswordToken } = require('../middlewares/client'),
     jwt = require("jsonwebtoken"),
     nodemailer = require('nodemailer'),
+    dayjs = require('dayjs'),
     CryptoJS = require("crypto-js"),
     transporter = (email, body) => {
         return nodemailer.createTransport({
@@ -32,7 +33,26 @@ router.get('/login', login, (req, res) => {
 
 //CLIENT USER PAGE
 router.get('/user', protected, (req, res) => {
-    res.render('user.ejs', { user: req.session.user })
+
+    db.query(`
+        SELECT fullname,contact,gender,address,birthdate FROM client_accounts WHERE id=${db.escape(req.session.user.id)};
+        SELECT apt.schedule AS schedule,apt.status AS status,apt.ailment AS ailment FROM appointments AS apt INNER JOIN client_accounts AS ca ON ca.id=apt.id WHERE apt.id=${db.escape(req.session.user.id)};`,
+        (err, result) => {
+            if (err) throw err;
+
+            const userAppointments = result[1].map((val) => ({ ...val, schedule: dayjs(val.schedule).format("hh:mm A MMM DD, YYYY") }));
+
+            res.render('user.ejs', {
+                user: {
+                    ...req.session.user,
+                    ...result[0][0],
+                    birthdate: dayjs(result[0][0].birthdate).format("YYYY-MM-DD")
+                },
+                appointments: userAppointments
+            })
+        })
+
+
 })
 
 //CLIENT RESET PASSWORD PAGE
@@ -172,6 +192,36 @@ router.put("/reset", (req, res) => {
                     return res.json({ operation: true })
                 })
         })
+})
+
+//SAVE/UPDATE USER INFORMATION
+router.put('/update/user/:id', (req, res) => {
+    let { id } = req.params;
+    let { fullname, contact, address, gender, birthdate } = req.body
+
+    //UPDATE USER INFORMATION
+    db.query(`UPDATE client_accounts SET fullname=${db.escape(fullname)},contact=${db.escape(contact)},address=${db.escape(address)},gender=${db.escape(gender)},birthdate=${db.escape(birthdate)} WHERE id=${db.escape(id)}`,
+        (err, result) => {
+            if (err) {
+                console.log(err)
+                return res.json({ operation: false })
+            }
+            return res.json({ operation: true })
+        })
+})
+
+//MAKE AN APPOINTMENT
+router.post('/appointments/:id', (req, res) => {
+    const { id } = req.params;
+        db.query(`
+        INSERT INTO appointments(id,schedule) VALUES(${db.escape(id)},${db.escape(req.body.schedule)});
+        SELECT apt.schedule AS schedule,apt.status AS status,apt.ailment AS ailment FROM appointments AS apt INNER JOIN client_accounts AS ca ON ca.id=apt.id WHERE apt.id=${db.escape(id)};
+        `,
+            (err, result) => {
+                if(err) throw err;
+                const userAppointments = result[1].map((val) => ({ ...val, schedule: dayjs(val.schedule).format("hh:mm A MMM DD, YYYY") }));
+                res.json({ operation: true, userAppointments })
+            })
 })
 
 //EXPORT

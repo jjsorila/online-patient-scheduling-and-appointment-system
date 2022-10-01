@@ -41,7 +41,7 @@ $(document).ready(function (e) {
 
         const { email, password } = getInputLogin()
 
-        if (!email || !password) return showToast("✖ Complete all fields")
+        if (!email || !password) return showToast("❌ Complete all fields")
 
         $(".loading").css("display", "block")
 
@@ -56,7 +56,7 @@ $(document).ready(function (e) {
                 password
             }),
             success: (res) => {
-                if (!res.operation) return showToast("✖ Invalid Credentials")
+                if (!res.operation) return showToast("❌ Invalid Credentials")
                 location.href = "/client/user"
             },
             error: (err) => {
@@ -74,9 +74,9 @@ $(document).ready(function (e) {
 
         const { email, password, cPassword } = getInputRegister()
 
-        if (!email || !password || !cPassword) return showToast("✖ Complete all fields")
+        if (!email || !password || !cPassword) return showToast("❌ Complete all fields")
 
-        if (password != cPassword) return showToast("✖ Password not matched")
+        if (password != cPassword) return showToast("❌ Password not matched")
 
         $(".loading").css("display", "block")
 
@@ -91,9 +91,9 @@ $(document).ready(function (e) {
                 password
             }),
             success: (res) => {
-                if (!res.operation) return showToast("✖ Email already exist")
+                if (!res.operation) return showToast("❌ Email already exist")
                 $("form").toggleClass("slide")
-                showToast("✔ Registered Successfully. Check your Mail or Spam to verify your Email Address")
+                showToast("✅ Registered Successfully. Check your Mail or Spam to verify your Email Address")
                 clearInput()
             },
             error: (err) => {
@@ -120,7 +120,7 @@ $(document).ready(function (e) {
     //SEND RESET PASSWORD LINK
     $(".forgot-password #btn-send-reset").click(function (e) {
         const email = $(".forgot-password input")
-        if (!email.val()) return showToast("✖ Email Required")
+        if (!email.val()) return showToast("❌ Email Required")
 
         $('.loading').css("display", "block")
 
@@ -134,10 +134,10 @@ $(document).ready(function (e) {
                 email: email.val()
             }),
             success: (res) => {
-                if (!res.verified) return showToast("✖ Email not yet verified")
-                if (!res.found) return showToast("✖ Email not found")
+                if (!res.verified) return showToast("❌ Email not yet verified")
+                if (!res.found) return showToast("❌ Email not found")
 
-                showToast("✔ Link sent to your Email")
+                showToast("✅ Link sent to your Email")
                 email.val("")
                 $(".forgot-password").undim()
                 $(".forgot-password").css("display", "none")

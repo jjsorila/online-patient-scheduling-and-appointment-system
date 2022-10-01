@@ -5,7 +5,8 @@ const db = mysql.createConnection({
     port: '3306',
     user: 'root',
     password: '',
-    database: 'my_scheduler'
+    database: 'my_scheduler',
+    multipleStatements: true
 })
 
 module.exports = db;

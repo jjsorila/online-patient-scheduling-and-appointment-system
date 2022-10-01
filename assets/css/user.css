@@ -2,12 +2,56 @@
     cursor: pointer;
 }
 
+body {
+    height: max-content;
+}
+
 .user-info {
     border-radius: 50px;
     width: max-content;
+    position: relative;
+    overflow: hidden;
 }
 
 .appointments-table {
     border-radius: 50px;
-    width: max-content;
+}
+
+#save:hover {
+    background: #292b2c;
+    color: white;
+}
+
+#sched:hover {
+    background: #292b2c;
+    color: white;
+}
+
+#submit-sched:hover {
+    background: #292b2c;
+    color: white;
+}
+
+h5.text-center {
+    display: none;
+    position: absolute;
+    top: 20px;
+}
+
+.bg-shadow-dim {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+#close {
+    position: absolute;
+    top: 0;
+    right: 10px;
+    font-size: 2rem;
+    cursor: pointer;
+    z-index: 10;
 }

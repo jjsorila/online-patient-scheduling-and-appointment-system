@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="id" content="<%= user.id %>">
     <%- include('./templates/header.ejs'); %>
         <link rel="stylesheet" href="/css/user.css" />
         <link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
@@ -18,64 +19,102 @@
         <!-- USER INFO -->
         <form
             class="container border border-dark border-5 bg-light user-info p-5 d-flex flex-column gap-5 align-items-center">
+            <h5 class="text-center text-danger">You have unsaved changes</h5>
             <div class="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-5">
                 <div class="form-group text-center">
                     <label for="fullname">Full Name</label>
-                    <input type="text" class="form-control border border-dark border-4" id="fullname" name="fullname" />
+                    <input value="<%= user.fullname %>" type="text" class="form-control border border-dark border-4" id="fullname" name="fullname" />
                 </div>
                 <div class="form-group text-center">
                     <label for="email">Email</label>
-                    <input type="text" class="form-control border border-dark border-4" id="email" name="email" disabled value="<%= user.email %>"/>
+                    <input type="text" class="form-control border border-dark border-4" id="email" name="email" disabled
+                        value="<%= user.email %>" />
                 </div>
                 <div class="form-group text-center">
                     <label for="contact">Contact</label>
-                    <input type="text" class="form-control border border-dark border-4" id="contact" name="contact" />
+                    <input value="<%= user.contact %>" type="text" class="form-control border border-dark border-4" id="contact" name="contact" />
                 </div>
             </div>
             <div class="d-flex flex-column flex-lg-row justify-content-space-evenly align-items-center gap-5">
                 <div class="form-group text-center">
                     <label for="gender">Gender</label>
-                    <select type="text" class="custom-select border border-dark border-4 d-block" name="gender">
+                    <select type="text" class="custom-select border border-dark border-4 d-block" id="gender"
+                        name="gender">
+                        <% if(user.gender) { %>
+                        <option><%= user.gender %></option>
+                        <% }else{ %>
+                        <option selected disabled hidden>Choose</option>
                         <option>Male</option>
                         <option>Female</option>
+                        <% } %>
                     </select>
                 </div>
                 <div class="form-group text-center">
                     <label for="birthdate">Birthdate</label>
-                    <input type="date" class="form-control border border-dark border-4" name="birthdate" value="">
+                    <input value="<%= user.birthdate %>" type="date" class="form-control border border-dark border-4" id="birthdate" name="birthdate"/>
                 </div>
             </div>
-            <div class="form-group text-center">
-                <label for="fullname">Address</label>
-                <textarea class="form-control border border-dark border-4" name="address" rows="3"></textarea>
+            <div class="form-group text-center w-50">
+                <label for="address">Address</label>
+                <textarea class="form-control border border-dark border-4" name="address" id="address"
+                    rows="3"><%= user.address %></textarea>
             </div>
             <div class="d-flex flex-column flex-lg-row justify-content-space-around align-items-center gap-5">
                 <button id="save" class="btn btn-light border border-dark border-4 rounded">SAVE</button>
-                <button id="sched" class="btn btn-light border border-dark border-4 rounded">MAKE AN APPOINTMENT</button>
+                <button id="sched" class="btn btn-light border border-dark border-4 rounded">MAKE AN
+                    APPOINTMENT</button>
             </div>
+
+            <!-- FALLBACK LOADING -->
+            <%- include('./templates/loading.ejs') %>
         </form>
 
-        <!-- TABLE -->
+        <!-- APOINTMENTS TABLE -->
         <h1 class="text-center text-light mb-4 mt-5">Appointments</h1>
-        <section class="container bg-light appointments-table p-2 p-md-4">
+        <section class="container bg-light appointments-table p-4 w-75 mb-4">
             <table class="table text-center table-striped table-hover" id="appointments">
                 <thead>
                     <th>AILMENT</th>
-                    <th>DATE</th>
+                    <th>SCHEDULE</th>
                     <th>STATUS</th>
                 </thead>
                 <tbody>
-                    <% for(let i=0; i < 100; i++) { %>
+                    <% appointments.forEach((val) => { %>
                         <tr>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>3</td>
+                            <td><%= val.ailment %></td>
+                            <td><%= val.schedule %></td>
+                            <td><%= val.status %></td>
                         </tr>
-                        <% } %>
+                    <% }) %>
                 </tbody>
             </table>
         </section>
-        <script type="application/javascript" src="/js/user.js"></script>
+
+        <!-- APPOINTMENT SCHEDULE FORM -->
+        <div class="bg-shadow-dim d-flex align-items-center justify-content-center d-none">
+            <div class="bg-light w-75 h-50 position-relative d-flex gap-5 flex-column">
+                <label id="close"><i class="bi bi-x-square-fill"></i></label>
+                <h5
+                    class="text-center border-bottom border-dark border-3 w-100 text-dark d-block pb-4 mt-2 position-relative">
+                    Appointment Date</h5>
+                <div class="w-100 d-flex flex-column gap-3 position-relative align-items-center">
+                    <div class="form-group text-center w-50 mb-3">
+                        <label for="date-sched" class="control-label">Date</label>
+                        <input type="datetime-local" class="form-control border border-dark border-4" id="date-sched">
+                    </div>
+                    <div class="form-group text-center">
+                        <button id="submit-sched"
+                            class="btn btn-light border border-dark border-4 rounded">SUBMIT</button>
+                    </div>
+                </div>
+                <!-- FALLBACK LOADING -->
+                <%- include('./templates/loading.ejs') %>
+            </div>
+        </div>
+
+        <!-- TOAST -->
+        <%- include('./templates/toast.ejs') %>
+            <script type="application/javascript" src="/js/user.js"></script>
 </body>
 
 </html>

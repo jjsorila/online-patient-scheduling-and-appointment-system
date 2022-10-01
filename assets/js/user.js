@@ -1,9 +1,34 @@
 $(document).ready(function (e) {
+    const birthdate = $("#birthdate"),
+        fullname = $("#fullname"),
+        email = $("#email"),
+        contact = $("#contact"),
+        gender = $("#gender"),
+        address = $("#address"),
+        dateSched = $("#date-sched"),
+        id = $("meta[name=id]").attr("content");
+
+    //DETECT INPUT UNSAVED CHANGES
+    $("form input, form textarea").on("change keyup paste", function (e) {
+        $("#sched").attr("disabled", true)
+        $("h5.text-center").css("display", "block")
+    })
+
+    //SHOW TOAST
+    function showToast(text) {
+        $(".toast-body").text(text)
+        $(".toast").toast("show")
+    }
 
     //DATA TABLE OPTIONS
     $('#appointments').DataTable({
         lengthMenu: [[10, 20, 30, 50, -1], [10, 20, 30, 50, "All"]]
     });
+
+    //DISABLE DEFAULT SUBMIT ACTION FOR USER INFORMATION
+    $("form").submit(function (e) {
+        e.preventDefault()
+    })
 
     //LOGOUT ACCOUNT
     $(".logout").click(function (e) {
@@ -16,6 +41,85 @@ $(document).ready(function (e) {
             },
             error: (err) => {
                 alert(err)
+            }
+        })
+    })
+
+    //SAVE/UPDATE INFORMATION
+    $("#save").click(function (e) {
+
+        if (!fullname.val() || !contact.val() || !address.val() || !gender.val() || !birthdate.val()) return showToast("❌ Complete all user information")
+
+        $(".user-info .loading").css("display", "block")
+
+        $.ajax({
+            url: `/client/update/user/${id}`,
+            type: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: JSON.stringify({
+                fullname: fullname.val(),
+                contact: contact.val(),
+                address: address.val(),
+                gender: gender.val(),
+                birthdate: birthdate.val()
+            }),
+            success: (res) => {
+                if (!res.operation) return showToast("❌ Something was wrong")
+                showToast("✅ User updated!")
+            },
+            error: (err) => {
+                console.log(err)
+            },
+            complete: () => {
+                $("h5.text-center").css("display", "none")
+                $("#sched").attr("disabled", false)
+                $(".user-info .loading").css("display", "none")
+            }
+        })
+    })
+
+    //OPEN APPOINTMENT FORM
+    $("#sched").click(function (e) {
+        if (!fullname.val() || !contact.val() || !address.val() || !gender.val() || !birthdate.val()) return showToast("❌ Complete all user information")
+        $(".bg-shadow-dim").toggleClass("d-none")
+    })
+
+    //CLOSE APPOINTMENT FORM
+    $(".bg-shadow-dim #close").click(function (e) {
+        e.stopPropagation()
+        $(".bg-shadow-dim").toggleClass("d-none")
+    })
+
+    //SCHEDULE APPOINTMENT
+    $("#submit-sched").click(function (e) {
+
+        if (!dateSched.val()) return showToast("❌ Set a date for appointment")
+
+        $(".bg-shadow-dim .loading").css("display", "block")
+
+        $.ajax({
+            url: `/client/appointments/${id}`,
+            type: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: JSON.stringify({
+                schedule: dateSched.val()
+            }),
+            success: (res) => {
+                if (!res.operation) return showToast("❌ Something was wrong")
+                showToast("✅ Appointment successfully submitted")
+            },
+            error: (err) => {
+                console.log(err)
+            },
+            complete: () => {
+                $(".bg-shadow-dim .loading").css("display", "none")
+                $(".bg-shadow-dim").toggleClass("d-none")
+                dateSched.val("")
+                location.reload()
             }
         })
     })
