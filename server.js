@@ -21,7 +21,7 @@ app.use(cookieSession({
 //ROUTES =============================================================
 
 //HOME
-app.get('/home', (req, res) => {
+app.get('/', (req, res) => {
     res.render('home.ejs', { user: null })
 })
 

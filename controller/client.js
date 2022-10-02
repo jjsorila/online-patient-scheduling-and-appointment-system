@@ -1,4 +1,4 @@
-require("dotenv").config({ path: "./.env" })
+require("dotenv").config({ path: `${process.cwd()}/.env` })
 const express = require('express'),
     router = express.Router(),
     db = require('../db/db'),
@@ -14,7 +14,7 @@ const express = require('express'),
             secure: true,
             auth: {
                 user: process.env.EMAIL,
-                pass: process.env.PWD
+                pass: process.env.PASSWORD
             }
         }).sendMail({
             from: `"OPASS" <${process.env.EMAIL}>`,
@@ -36,7 +36,7 @@ router.get('/user', protected, (req, res) => {
 
     db.query(`
         SELECT fullname,contact,gender,address,birthdate FROM client_accounts WHERE id=${db.escape(req.session.user.id)};
-        SELECT apt.schedule AS schedule,apt.status AS status,apt.ailment AS ailment FROM appointments AS apt INNER JOIN client_accounts AS ca ON ca.id=apt.id WHERE apt.id=${db.escape(req.session.user.id)};`,
+        SELECT apt.schedule AS schedule,apt.status AS status,apt.ailment AS ailment FROM appointments AS apt INNER JOIN client_accounts AS ca ON ca.id=apt.id WHERE apt.id=${db.escape(req.session.user.id)} ORDER BY apt.schedule DESC;`,
         (err, result) => {
             if (err) throw err;
 
