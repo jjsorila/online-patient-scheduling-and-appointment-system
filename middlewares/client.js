@@ -1,4 +1,4 @@
-require("dotenv").config({ path: "./.env" })
+require("dotenv").config({ path: `${process.cwd()}/.env` })
 const jwt = require("jsonwebtoken")
 
 exports.protected = (req, res, next) => {

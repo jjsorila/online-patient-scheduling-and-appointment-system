@@ -1,4 +1,4 @@
-require("dotenv").config({ path: "./.env" })
+require("dotenv").config({ path: `${process.cwd()}/.env` })
 const express = require('express');
 const app = express();
 const cookieSession = require('cookie-session');
