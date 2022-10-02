@@ -60,7 +60,7 @@ $(document).ready(function (e) {
                 location.href = "/client/user"
             },
             error: (err) => {
-                alert(err)
+                console.log(err)
             },
             complete: () => {
                 $(".loading").css("display", "none")
@@ -97,7 +97,7 @@ $(document).ready(function (e) {
                 clearInput()
             },
             error: (err) => {
-                alert(err)
+                console.log(err)
             },
             complete: () => {
                 $(".loading").css("display", "none")

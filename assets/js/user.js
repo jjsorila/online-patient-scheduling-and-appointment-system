@@ -66,7 +66,7 @@ $(document).ready(function (e) {
                 birthdate: birthdate.val()
             }),
             success: (res) => {
-                if (!res.operation) return showToast("❌ Something was wrong")
+                if (!res.operation) return showToast("❌ Something went wrong")
                 showToast("✅ User updated!")
             },
             error: (err) => {

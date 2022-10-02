@@ -10,8 +10,8 @@ $(document).ready(function (e) {
             cPassword = $("#cPassword").val(),
             email = $("input[type=hidden]").val();
 
-        if (!newPassword || !cPassword) return showToast("✖ Complete all fields")
-        if (cPassword != newPassword) return showToast("✖ Password not matched")
+        if (!newPassword || !cPassword) return showToast("❌ Complete all fields")
+        if (cPassword != newPassword) return showToast("❌ Password not matched")
 
         $(".loading").css("display", "block")
 
@@ -26,7 +26,7 @@ $(document).ready(function (e) {
                 newPassword
             }),
             success: (res) => {
-                if (!res.operation) return showToast("✖ Old password matched")
+                if (!res.operation) return showToast("❌ Old password matched")
                 location.href = "/client/login"
             },
             error: (err) => {
