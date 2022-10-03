@@ -25,6 +25,11 @@ const express = require('express'),
     },
     uuid = require('uuid');
 
+function getAge(dateString) {
+    var ageInMilliseconds = new Date() - new Date(dateString);
+    return Math.floor(ageInMilliseconds / 1000 / 60 / 60 / 24 / 365);
+}
+
 //==================================================================================================================================================================================================
 
 //CLIENT LOGIN PAGE
@@ -36,8 +41,8 @@ router.get('/login', login, (req, res) => {
 router.get('/user', protected, (req, res) => {
 
     db.query(`
-        SELECT fullname,contact,gender,address,birthdate,age,weight,height FROM patient_accounts WHERE id=${db.escape(req.session.user.id)};
-        SELECT apt.schedule AS schedule,apt.status AS status,apt.ailment AS ailment FROM appointments AS apt INNER JOIN patient_accounts AS ca ON ca.id=apt.id WHERE apt.id=${db.escape(req.session.user.id)} ORDER BY apt.schedule DESC;`,
+        SELECT fullname,contact,gender,address,birthdate,age FROM patient_accounts WHERE id=${db.escape(req.session.user.id)};
+        SELECT apt.schedule AS schedule,apt.status AS status FROM appointments AS apt INNER JOIN patient_accounts AS ca ON ca.id=apt.id WHERE apt.id=${db.escape(req.session.user.id)} ORDER BY apt.schedule DESC;`,
         (err, result) => {
             if (err) throw err;
 
@@ -47,7 +52,8 @@ router.get('/user', protected, (req, res) => {
                 user: {
                     ...req.session.user,
                     ...result[0][0],
-                    birthdate: dayjs(result[0][0].birthdate).format("YYYY-MM-DD")
+                    birthdate: dayjs(result[0][0].birthdate).format("YYYY-MM-DD"),
+                    age: result[0][0].birthdate ? getAge(result[0][0].birthdate) : null
                 },
                 appointments: userAppointments
             })
@@ -198,10 +204,10 @@ router.put("/reset", (req, res) => {
 //SAVE/UPDATE USER INFORMATION
 router.put('/update/user/:id', (req, res) => {
     let { id } = req.params;
-    let { fullname, contact, address, gender, birthdate, age, weight, height } = req.body
+    let { fullname, contact, address, gender, birthdate, age } = req.body
 
     //UPDATE USER INFORMATION
-    db.query(`UPDATE patient_accounts SET fullname=${db.escape(fullname)},contact=${db.escape(contact)},address=${db.escape(address)},gender=${db.escape(gender)},birthdate=${db.escape(birthdate)},age=${db.escape(age)},weight=${db.escape(weight)},height=${db.escape(height)} WHERE id=${db.escape(id)}`,
+    db.query(`UPDATE patient_accounts SET fullname=${db.escape(fullname)},contact=${db.escape(contact)},address=${db.escape(address)},gender=${db.escape(gender)},birthdate=${db.escape(birthdate)},age=${db.escape(age)} WHERE id=${db.escape(id)}`,
         (err, result) => {
             if (err) {
                 console.log(err)
@@ -215,25 +221,13 @@ router.put('/update/user/:id', (req, res) => {
 router.post('/appointments/:id', (req, res) => {
     const { id } = req.params;
 
-    const { bp, guardian, patient_history, patient_type, temperature } = req.body
-
     const apt_id = uuid.v4();
 
-    //PEDIA DEFAULT QUERY
-    let insertQuery = `INSERT INTO appointments(apt_id,id,schedule,patient_type,guardian,temperature) VALUES(${db.escape(apt_id)},${db.escape(id)},${db.escape(req.body.schedule)},${db.escape(patient_type)},${db.escape(guardian)},${db.escape(temperature)});`;
-
-    //CHANGE TO OB QUERY IF THERE'S A BLOOD PRESSURE DATA
-    if(bp) insertQuery = `INSERT INTO appointments(apt_id,id,schedule,patient_type,bp,patient_history) VALUES(${db.escape(apt_id)},${db.escape(id)},${db.escape(req.body.schedule)},${db.escape(patient_type)},${db.escape(bp)},${db.escape(patient_history)});`
-
-    db.query(`
-        ${insertQuery}
-        SELECT apt.schedule AS schedule,apt.status AS status,apt.ailment AS ailment FROM appointments AS apt INNER JOIN patient_accounts AS ca ON ca.id=apt.id WHERE apt.id=${db.escape(id)};
-        `,
-            (err, result) => {
-                if(err) throw err;
-                const userAppointments = result[1].map((val) => ({ ...val, schedule: dayjs(val.schedule).format("hh:mm A MMM DD, YYYY") }));
-                res.json({ operation: true, userAppointments })
-            })
+    db.query(`INSERT INTO appointments(apt_id,id,schedule) VALUES(${db.escape(apt_id)},${db.escape(id)},${db.escape(req.body.schedule)});`,
+        (err, result) => {
+            if (err) throw err;
+            res.json({ operation: true })
+        })
 })
 
 //EXPORT

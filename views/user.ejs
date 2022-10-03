@@ -31,14 +31,10 @@
                     <input type="text" class="form-control border border-dark border-4" id="email" name="email" disabled
                         value="<%= user.email %>" />
                 </div>
-
                 <div class="form-group text-center">
-                    <label for="height" class="control-label">Height</label>
-                    <input type="text" value="<%= user.height %>" class="form-control border border-dark border-4" id="height" />
-                </div>
-                <div class="form-group text-center">
-                    <label for="weight" class="control-label">Weight</label>
-                    <input type="text" value="<%= user.weight %>" class="form-control border border-dark border-4" id="weight" />
+                    <label for="contact">Contact</label>
+                    <input value="<%= user.contact %>" type="text" class="form-control border border-dark border-4"
+                        id="contact" name="contact" />
                 </div>
             </div>
             <div class="d-flex flex-column flex-lg-row justify-content-space-evenly align-items-center gap-5">
@@ -66,11 +62,6 @@
                     <label for="age" class="control-label">Age</label>
                     <input type="number" value="<%= user.age %>" class="form-control border border-dark border-4" id="age" disabled />
                 </div>
-                <div class="form-group text-center">
-                    <label for="contact">Contact</label>
-                    <input value="<%= user.contact %>" type="text" class="form-control border border-dark border-4"
-                        id="contact" name="contact" />
-                </div>
             </div>
             <div class="form-group text-center w-50">
                 <label for="address">Address</label>
@@ -92,16 +83,12 @@
         <section class="container bg-light appointments-table p-4 w-75 mb-4">
             <table class="table text-center table-striped table-hover" id="appointments">
                 <thead>
-                    <th>DIAGNOSIS</th>
                     <th>SCHEDULE</th>
                     <th>STATUS</th>
                 </thead>
                 <tbody>
                     <% appointments.forEach((val)=> { %>
                         <tr>
-                            <td>
-                                <%= val.ailment %>
-                            </td>
                             <td>
                                 <%= val.schedule %>
                             </td>
@@ -120,48 +107,12 @@
                 <label id="close"><i class="bi bi-x-square-fill"></i></label>
                 <h5
                     class="text-center border-bottom border-dark border-3 w-100 text-dark d-block pb-4 mt-2 position-relative">
-                    Appointment Form</h5>
+                    Appointment Date</h5>
                 <div class="w-100 d-flex flex-column gap-3 position-relative align-items-center">
                     <div class="form-group text-center w-50 mb-1">
                         <label for="date-sched" class="control-label">Date</label>
-                        <input type="datetime-local" class="form-control border border-dark border-4 w-50 mx-auto mb-3"
+                        <input type="datetime-local" class="form-control border border-dark border-4 w-100 mx-auto mb-3"
                             id="date-sched">
-                        <label for="patient_type">Patient Type</label>
-                        <select type="text" class="custom-select border border-dark border-4 d-block mx-auto"
-                            id="patient_type">
-                            <option selected disabled hidden>Choose</option>
-                            <option>OB</option>
-                            <option>Pedia</option>
-                        </select>
-                    </div>
-                    <div class="form-group pedia-ob d-flex text-center w-100 justify-content-center align-items-center">
-                        <!-- PEDIA -->
-                        <div
-                            class="pedia d-none w-100 d-flex flex-column flex-md-row gap-3 justify-content-center align-items-center">
-                            <div class="form-group">
-                                <label for="guardian" class="control-label">Guardian</label>
-                                <input type="text" class="form-control border border-dark border-4" id="guardian" />
-                            </div>
-
-                            <div class="form-group">
-                                <label for="temperature" class="control-label">Temperature</label>
-                                <input type="number" class="form-control border border-dark border-4"
-                                    id="temperature" />
-                            </div>
-                        </div>
-
-                        <!-- OB -->
-                        <div class="ob d-none w-100 d-flex flex-column flex-md-row gap-3 justify-content-center align-items-center">
-                            <div class="form-group align-self-md-start">
-                                <label for="bp" class="control-label">Blood Pressure</label>
-                                <input type="number" class="form-control border border-dark border-4" id="bp" />
-                            </div>
-                            <div class="form-group">
-                                <label for="patient_history" class="control-label">Patient's History</label>
-                                <textarea class="form-control border border-dark border-4" id="patient_history"
-                                    rows="3"></textarea>
-                            </div>
-                        </div>
                     </div>
                     <div class="form-group text-center my-4">
                         <button id="submit-sched"
