@@ -22,7 +22,8 @@ const express = require('express'),
             subject: `Online Patient Appointment and Scheduling System`,
             html: body
         })
-    };
+    },
+    uuid = require('uuid');
 
 //==================================================================================================================================================================================================
 
@@ -35,8 +36,8 @@ router.get('/login', login, (req, res) => {
 router.get('/user', protected, (req, res) => {
 
     db.query(`
-        SELECT fullname,contact,gender,address,birthdate FROM client_accounts WHERE id=${db.escape(req.session.user.id)};
-        SELECT apt.schedule AS schedule,apt.status AS status,apt.ailment AS ailment FROM appointments AS apt INNER JOIN client_accounts AS ca ON ca.id=apt.id WHERE apt.id=${db.escape(req.session.user.id)} ORDER BY apt.schedule DESC;`,
+        SELECT fullname,contact,gender,address,birthdate,age,weight,height FROM patient_accounts WHERE id=${db.escape(req.session.user.id)};
+        SELECT apt.schedule AS schedule,apt.status AS status,apt.ailment AS ailment FROM appointments AS apt INNER JOIN patient_accounts AS ca ON ca.id=apt.id WHERE apt.id=${db.escape(req.session.user.id)} ORDER BY apt.schedule DESC;`,
         (err, result) => {
             if (err) throw err;
 
@@ -66,7 +67,7 @@ router.get('/reset', getResetPasswordToken, (req, res) => {
 router.post('/login', (req, res) => {
     let { email, password } = req.body;
 
-    db.query(`SELECT id,email,password FROM client_accounts WHERE email=${db.escape(email)}`,
+    db.query(`SELECT id,email,password FROM patient_accounts WHERE email=${db.escape(email)}`,
         (err, result) => {
             if (err) throw err;
 
@@ -103,7 +104,7 @@ router.post('/register', (req, res) => {
 
     let { email, password } = req.body
 
-    db.query(`SELECT email FROM client_accounts WHERE email=${db.escape(email)}`, (err, results) => {
+    db.query(`SELECT email FROM patient_accounts WHERE email=${db.escape(email)}`, (err, results) => {
         if (err) throw err;
 
         if (results.length > 0) return res.json({ operation: false })
@@ -112,7 +113,7 @@ router.post('/register', (req, res) => {
         password = CryptoJS.AES.encrypt(password, process.env.SECRET).toString();
 
         //INSERT ACCOUNT TO DATABASE
-        db.query(`INSERT INTO client_accounts(email,password) VALUES(${db.escape(email)},${db.escape(password)})`, (err, result) => {
+        db.query(`INSERT INTO patient_accounts(email,password) VALUES(${db.escape(email)},${db.escape(password)})`, (err, result) => {
             if (err) throw err;
         })
 
@@ -137,7 +138,7 @@ router.get('/verify', (req, res) => {
 
     try {
         const decoded = jwt.verify(token, process.env.SECRET);
-        db.query(`UPDATE client_accounts SET verified=1 WHERE email=${db.escape(decoded.email)}`, (err, result) => {
+        db.query(`UPDATE patient_accounts SET verified=1 WHERE email=${db.escape(decoded.email)}`, (err, result) => {
             if (err) throw err;
             return res.redirect("/client/login");
         })
@@ -152,7 +153,7 @@ router.post("/reset", (req, res) => {
 
     let { email } = req.body
 
-    db.query(`SELECT email,verified FROM client_accounts WHERE email=${db.escape(email)}`, (err, result) => {
+    db.query(`SELECT email,verified FROM patient_accounts WHERE email=${db.escape(email)}`, (err, result) => {
         if (err) throw err;
         if (result.length <= 0) return res.json({ found: false, verified: true })
 
@@ -173,7 +174,7 @@ router.put("/reset", (req, res) => {
     let { email, newPassword } = req.body;
 
     //CHECK IF OLD PASSWORD IS MATCHED
-    db.query(`SELECT email,password FROM client_accounts WHERE email=${db.escape(email)}`,
+    db.query(`SELECT email,password FROM patient_accounts WHERE email=${db.escape(email)}`,
         (err, result) => {
             if (err) throw err;
 
@@ -185,7 +186,7 @@ router.put("/reset", (req, res) => {
             newPassword = CryptoJS.AES.encrypt(newPassword, process.env.SECRET).toString();
 
             //CHANGE PASSWORD
-            db.query(`UPDATE client_accounts SET password=${db.escape(newPassword)} WHERE email=${db.escape(email)}`,
+            db.query(`UPDATE patient_accounts SET password=${db.escape(newPassword)} WHERE email=${db.escape(email)}`,
                 (err1, result1) => {
                     if (err1) throw err1;
 
@@ -197,10 +198,10 @@ router.put("/reset", (req, res) => {
 //SAVE/UPDATE USER INFORMATION
 router.put('/update/user/:id', (req, res) => {
     let { id } = req.params;
-    let { fullname, contact, address, gender, birthdate } = req.body
+    let { fullname, contact, address, gender, birthdate, age, weight, height } = req.body
 
     //UPDATE USER INFORMATION
-    db.query(`UPDATE client_accounts SET fullname=${db.escape(fullname)},contact=${db.escape(contact)},address=${db.escape(address)},gender=${db.escape(gender)},birthdate=${db.escape(birthdate)} WHERE id=${db.escape(id)}`,
+    db.query(`UPDATE patient_accounts SET fullname=${db.escape(fullname)},contact=${db.escape(contact)},address=${db.escape(address)},gender=${db.escape(gender)},birthdate=${db.escape(birthdate)},age=${db.escape(age)},weight=${db.escape(weight)},height=${db.escape(height)} WHERE id=${db.escape(id)}`,
         (err, result) => {
             if (err) {
                 console.log(err)
@@ -213,9 +214,20 @@ router.put('/update/user/:id', (req, res) => {
 //MAKE AN APPOINTMENT
 router.post('/appointments/:id', (req, res) => {
     const { id } = req.params;
-        db.query(`
-        INSERT INTO appointments(id,schedule) VALUES(${db.escape(id)},${db.escape(req.body.schedule)});
-        SELECT apt.schedule AS schedule,apt.status AS status,apt.ailment AS ailment FROM appointments AS apt INNER JOIN client_accounts AS ca ON ca.id=apt.id WHERE apt.id=${db.escape(id)};
+
+    const { bp, guardian, patient_history, patient_type, temperature } = req.body
+
+    const apt_id = uuid.v4();
+
+    //PEDIA DEFAULT QUERY
+    let insertQuery = `INSERT INTO appointments(apt_id,id,schedule,patient_type,guardian,temperature) VALUES(${db.escape(apt_id)},${db.escape(id)},${db.escape(req.body.schedule)},${db.escape(patient_type)},${db.escape(guardian)},${db.escape(temperature)});`;
+
+    //CHANGE TO OB QUERY IF THERE'S A BLOOD PRESSURE DATA
+    if(bp) insertQuery = `INSERT INTO appointments(apt_id,id,schedule,patient_type,bp,patient_history) VALUES(${db.escape(apt_id)},${db.escape(id)},${db.escape(req.body.schedule)},${db.escape(patient_type)},${db.escape(bp)},${db.escape(patient_history)});`
+
+    db.query(`
+        ${insertQuery}
+        SELECT apt.schedule AS schedule,apt.status AS status,apt.ailment AS ailment FROM appointments AS apt INNER JOIN patient_accounts AS ca ON ca.id=apt.id WHERE apt.id=${db.escape(id)};
         `,
             (err, result) => {
                 if(err) throw err;

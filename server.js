@@ -21,14 +21,16 @@ app.use(cookieSession({
 //ROUTES =============================================================
 
 //HOME
-app.get('/', (req, res) => {
-    res.render('home.ejs', { user: null })
-})
+app.get('/', (req, res) => res.render('home.ejs', { user: null }))
 
 //CLIENT
 app.use('/client', require('./controller/client'))
 
 //ADMIN
+app.use('/admin', require('./controller/admin'))
+
+//404 NOT FOUND
+app.all("*", (req, res) => res.send("<h1>404 Not Found</h1>"))
 
 //ROUTES =============================================================
 

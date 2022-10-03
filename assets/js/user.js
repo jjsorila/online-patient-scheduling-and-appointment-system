@@ -6,7 +6,25 @@ $(document).ready(function (e) {
         gender = $("#gender"),
         address = $("#address"),
         dateSched = $("#date-sched"),
-        id = $("meta[name=id]").attr("content");
+        id = $("meta[name=id]").attr("content"),
+        patientType = $("#patient_type"),
+        age = $("#age"),
+        weight = $("#weight"),
+        height = $("#height"),
+        temperature = $("#temperature"),
+        guardian = $("#guardian"),
+        bloodPressure = $("#bp"),
+        patientHistory = $("#patient_history");
+
+    function getAge(dateString) {
+        var ageInMilliseconds = new Date() - new Date(dateString);
+        return Math.floor(ageInMilliseconds / 1000 / 60 / 60 / 24 / 365);
+    }
+
+    //CALCULATE AGE
+    birthdate.on("change", function (e) {
+        age.val(getAge(birthdate.val()))
+    })
 
     //DETECT INPUT UNSAVED CHANGES
     $("form input, form textarea").on("change keyup paste", function (e) {
@@ -48,7 +66,7 @@ $(document).ready(function (e) {
     //SAVE/UPDATE INFORMATION
     $("#save").click(function (e) {
 
-        if (!fullname.val() || !contact.val() || !address.val() || !gender.val() || !birthdate.val()) return showToast("❌ Complete all user information")
+        if (!fullname.val() || !contact.val() || !address.val() || !gender.val() || !birthdate.val() || !height.val() || !weight.val() || !age.val()) return showToast("❌ Complete all user information")
 
         $(".user-info .loading").css("display", "block")
 
@@ -63,7 +81,10 @@ $(document).ready(function (e) {
                 contact: contact.val(),
                 address: address.val(),
                 gender: gender.val(),
-                birthdate: birthdate.val()
+                birthdate: birthdate.val(),
+                height: height.val(),
+                weight: weight.val(),
+                age: age.val()
             }),
             success: (res) => {
                 if (!res.operation) return showToast("❌ Something went wrong")
@@ -92,13 +113,19 @@ $(document).ready(function (e) {
         $(".bg-shadow-dim").toggleClass("d-none")
     })
 
-    //SCHEDULE APPOINTMENT
-    $("#submit-sched").click(function (e) {
+    //TOGGLE PEDIA/OB
+    patientType.on("change", function (e) {
+        if (patientType.val() == "Pedia") {
+            $(".ob").addClass("d-none").removeClass("d-block")
+            $(".pedia").addClass("d-block").removeClass("d-none")
+        } else if (patientType.val() == "OB") {
+            $(".ob").addClass("d-block").removeClass("d-none")
+            $(".pedia").addClass("d-none").removeClass("d-block")
+        }
+    })
 
-        if (!dateSched.val()) return showToast("❌ Set a date for appointment")
-
-        $(".bg-shadow-dim .loading").css("display", "block")
-
+    //FUNCTION SEND APPOINT REQUEST
+    function sendAppointmentRequest(data) {
         $.ajax({
             url: `/client/appointments/${id}`,
             type: 'POST',
@@ -106,10 +133,12 @@ $(document).ready(function (e) {
                 'Content-Type': 'application/json'
             },
             data: JSON.stringify({
-                schedule: dateSched.val()
+                schedule: dateSched.val(),
+                "patient_type": patientType.val(),
+                ...data
             }),
             success: (res) => {
-                if (!res.operation) return showToast("❌ Something was wrong")
+                if (!res.operation) return showToast("❌ Something went wrong")
                 showToast("✅ Appointment successfully submitted")
             },
             error: (err) => {
@@ -122,5 +151,32 @@ $(document).ready(function (e) {
                 location.reload()
             }
         })
+    }
+
+    //SCHEDULE APPOINTMENT
+    $("#submit-sched").click(function (e) {
+
+        if (!dateSched.val() || !patientType.val()) return showToast("❌ Set all required fields!")
+
+        if (patientType.val() == "OB") {
+            if (!bloodPressure.val() || !patientHistory.val()) return showToast("❌ Set all required fields!")
+
+            $(".bg-shadow-dim .loading").css("display", "block")
+
+            sendAppointmentRequest({
+                bp: bloodPressure.val(),
+                "patient_history": patientHistory.val()
+            })
+
+        } else if (patientType.val() == "Pedia") {
+            if (!guardian.val() || !temperature.val()) return showToast("❌ Set all required fields!")
+
+            $(".bg-shadow-dim .loading").css("display", "block")
+
+            sendAppointmentRequest({
+                guardian: guardian.val(),
+                temperature: temperature.val()
+            })
+        }
     })
 })
