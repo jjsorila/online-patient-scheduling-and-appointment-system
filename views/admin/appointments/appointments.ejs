@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('../../templates/header.ejs') %>
+        <link rel="stylesheet" href="/css/admin/appointments.css" />
+        <link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+        <script type="application/javascript"
+            src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+        <script type="application/javascript"
+            src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+        <script type="application/javascript"
+            src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.print.min.js"></script>
+</head>
+
+<body>
+    <button id="logout">LOGOUT</button>
+    <select>
+        <option value="month">This Month</option>
+        <option value="week">This Week</option>
+        <option value="today">Today</option>
+        <option value="none">All</option>
+    </select>
+    <div class="container border border-dark border-5 rounded p-3 w-75">
+        <table class="table text-center table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>DATE</th>
+                    <th>STATUS</th>
+                    <th>ACTION</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+    <%- include('../../templates/toast.ejs') %>
+        <script type="application/javascript" src="/js/admin/appointments.js"></script>
+</body>
+
+</html>

@@ -223,7 +223,7 @@ router.post('/appointments/:id', (req, res) => {
 
     const apt_id = uuid.v4();
 
-    db.query(`INSERT INTO appointments(apt_id,id,schedule) VALUES(${db.escape(apt_id)},${db.escape(id)},${db.escape(req.body.schedule)});`,
+    db.query(`INSERT INTO appointments(apt_id,id,schedule,apt_type) VALUES(${db.escape(apt_id)},${db.escape(id)},${db.escape(req.body.schedule)},${db.escape('Online')});`,
         (err, result) => {
             if (err) throw err;
             res.json({ operation: true })
