@@ -42,7 +42,7 @@ router.get('/user', protected, (req, res) => {
 
     db.query(`
         SELECT fullname,contact,gender,address,birthdate,age FROM patient_accounts WHERE id=${db.escape(req.session.user.id)};
-        SELECT apt.schedule AS schedule,apt.status AS status FROM appointments AS apt INNER JOIN patient_accounts AS ca ON ca.id=apt.id WHERE apt.id=${db.escape(req.session.user.id)} ORDER BY apt.schedule DESC;`,
+        SELECT apt.schedule AS schedule,apt.status AS status FROM appointments AS apt INNER JOIN patient_accounts AS ca ON ca.id=apt.id WHERE apt.id=${db.escape(req.session.user.id)} ORDER BY DATE(apt.schedule), TIME(apt.schedule);`,
         (err, result) => {
             if (err) throw err;
 

@@ -33,7 +33,12 @@ $(document).ready(function (e) {
 
     //DATA TABLE OPTIONS
     $('#appointments').DataTable({
-        lengthMenu: [[10, 20, 30, 50, -1], [10, 20, 30, 50, "All"]]
+        lengthMenu: [[10, 20, 30, 50, -1], [10, 20, 30, 50, "All"]],
+        'columnDefs': [ {
+            'targets': [-1], // column index (start from 0, -1 means all)
+            'orderable': false, // set orderable false for selected columns
+         }],
+         ordering: false
     });
 
     //DISABLE DEFAULT SUBMIT ACTION FOR USER INFORMATION
@@ -108,6 +113,8 @@ $(document).ready(function (e) {
     $("#submit-sched").click(function (e) {
 
         if (!dateSched.val()) return showToast("❌ Set date field!")
+
+        $(".bg-shadow-dim .loading").css("display", "block")
 
         $.ajax({
             url: `/client/appointments/${id}`,
