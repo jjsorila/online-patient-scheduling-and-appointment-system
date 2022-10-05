@@ -7,12 +7,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%- include('../../templates/header.ejs') %>
         <link rel="stylesheet" href="/css/admin/patients.css" />
+        <link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+        <script type="application/javascript"
+            src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 </head>
 
 <body>
-    <h1>Hello Admin Patients Page</h1>
+    <h1>List of Patients Page</h1>
 
-    <button>LOGOUT</button>
+    <button id="logout">LOGOUT</button>
+    <button id="reload">Reload Table</button>
+
+    <div class="container border border-dark border-5 w-50 p-3">
+        <table class="table text-center table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>PATIENT NAME</th>
+                    <th>ACTION</th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <th>PATIENT NAME</th>
+                    <th>ACTION</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <button id="add-patient">Add Patient</button>
+
+    <div class="bg-shadow d-flex d-none justify-content-center align-items-center">
+        <div class="patient-form border text-light bg-dark border-dark border-4 w-75 h-75 rounded">
+            <!-- Basic Info Inputs-->
+        </div>
+    </div>
 
     <%- include('../../templates/toast.ejs') %>
     <script type="application/javascript" src="/js/admin/patients.js"></script>

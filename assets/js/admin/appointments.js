@@ -1,8 +1,5 @@
 $(document).ready(function (e) {
     const selectedSort = $("select")
-    const autoReload = setInterval(() => {
-        $("table").DataTable().ajax.reload()
-    }, 5000)
 
     //SHOW TOAST
     function showToast(text) {
@@ -27,6 +24,11 @@ $(document).ready(function (e) {
         ],
         ordering: false,
     });
+
+    //RELOAD DATATABLE
+    $("#reload").click(function (e) {
+        $("table").DataTable().ajax.reload()
+    })
 
     //LOGOUT ACCOUNT
     $("#logout").click(function (e) {
@@ -61,7 +63,7 @@ $(document).ready(function (e) {
                 }
             ],
             ordering: false,
-            "bDestroy": true
+            destroy: true
         });
     })
 
@@ -95,7 +97,7 @@ $(document).ready(function (e) {
                         }
                     ],
                     ordering: false,
-                    "bDestroy": true
+                    destroy: true
                 });
 
                 showToast("✅ Success")

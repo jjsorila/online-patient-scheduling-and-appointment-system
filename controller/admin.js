@@ -12,12 +12,24 @@ router.get('/login', login, (req, res) => {
     res.render('admin/login.ejs')
 })
 
-//PATIENTS LIST
+//PATIENT LIST
 router.get('/patients', protected, (req, res) => {
     res.render('admin/patients/patients.ejs')
 })
 
-//APPOINTMENTS LIST
+//PATIENT INFO PAGE
+router.get('/patients/:patient_id', protected, (req ,res) => {
+    const { patient_id } = req.params
+    res.render("admin/patients/patient-info.ejs")
+})
+
+//MEDICAL RECORD PAGE
+router.get('/patients/:patient_id/:mr_id', protected, (req ,res) => {
+    const { patient_id, mr_id } = req.params
+    res.render("admin/patients/med-record.ejs", { patient_id })
+})
+
+//APPOINTMENT LIST
 router.get('/appointments', protected, (req, res) => {
     res.render('admin/appointments/appointments.ejs')
 })
@@ -83,6 +95,16 @@ router.post('/action/appointments', (req, res) => {
         if(err) throw err;
 
         res.json({ operation: true })
+    })
+})
+
+//GET ALL PATIENTS
+router.get('/list/patients', (req ,res) => {
+    db.query(`SELECT fullname,id FROM patient_accounts ORDER BY fullname;`,
+    (err, result) => {
+        if(err) throw err;
+
+        res.json({ data: result })
     })
 })
 module.exports = router;

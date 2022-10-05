@@ -6,8 +6,27 @@ $(document).ready(function (e) {
         $(".toast").toast("show")
     }
 
+    //INITIALIZE DATATABLE
+    $("table").DataTable({
+        ajax: `/admin/list/patients`,
+        lengthMenu: [[10, 20, 30, 50, -1], [10, 20, 30, 50, "All"]],
+        columns: [
+            { data: "fullname" },
+            {
+                data: "id",
+                render: (data) => (`<input type="submit" data-id=${data} class='btn btn-success' value='Open'/>`)
+            }
+        ],
+        ordering: false,
+    });
+
+    //RELOAD DATATABLE
+    $("#reload").click(function(e) {
+        $("table").DataTable().ajax.reload()
+    })
+
     //LOGOUT ACCOUNT
-    $("button").click(function (e) {
+    $("#logout").click(function (e) {
         $.ajax({
             url: '/admin/logout',
             type: 'POST',
@@ -20,5 +39,16 @@ $(document).ready(function (e) {
                 showToast("❌ Something went wrong")
             }
         })
+    })
+
+    //OPEN PATIENT INFO
+    $("table").on("click", "input[type=submit]", function(e) {
+        let patient_id = $(this).attr("data-id")
+        location.href = `/admin/patients/${patient_id}`
+    })
+
+    //ADD PATIENT BUTTON
+    $("#add-patient").click(function(e) {
+        $(".bg-shadow").toggleClass("d-none")
     })
 })
