@@ -1,7 +1,8 @@
 $(document).ready(function (e) {
     const birthdate = $("#birthdate"),
-        fullname = $("#fullname"),
-        email = $("#email"),
+        fname = $("#fname"),
+        lname = $("#lname"),
+        mi = $("#mi"),
         contact = $("#contact"),
         gender = $("#gender"),
         address = $("#address"),
@@ -64,7 +65,7 @@ $(document).ready(function (e) {
     //SAVE/UPDATE INFORMATION
     $("#save").click(function (e) {
 
-        if (!fullname.val() || !contact.val() || !address.val() || !gender.val() || !birthdate.val() || !age.val()) return showToast("❌ Complete all user information")
+        if (!fname.val() || !mi.val() || !lname.val() || !contact.val() || !address.val() || !gender.val() || !birthdate.val() || !age.val()) return showToast("❌ Complete all user information")
 
         $(".user-info .loading").css("display", "block")
 
@@ -75,7 +76,11 @@ $(document).ready(function (e) {
                 'Content-Type': 'application/json'
             },
             data: JSON.stringify({
-                fullname: fullname.val(),
+                fullname: {
+                    fname: fname.val(),
+                    mi: mi.val(),
+                    lname: lname.val()
+                },
                 contact: contact.val(),
                 address: address.val(),
                 gender: gender.val(),

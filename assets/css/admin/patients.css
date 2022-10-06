@@ -12,5 +12,9 @@
 .patient-form {
     overflow-y: scroll;
     display: grid;
-    gap: 10px;
+    gap: 20px;
+}
+
+.patient-form input {
+    border-radius: 50px;
 }

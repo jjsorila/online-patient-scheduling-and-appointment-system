@@ -5,16 +5,87 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="patient_id" content="<%= patient_id %>">
     <%- include('../../templates/header.ejs') %>
+    <link rel="stylesheet" href="/css/admin/patient-info.css"/>
+    <link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+    <script type="application/javascript" src="//cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 </head>
 
-<body>
-    <h1>Patient Info Page</h1>
+<body class="bg-dark">
     <a href="/admin/patients">BACK</a>
 
-    <!-- BASIC INFO (LATEST)-->
+    <h1 class="text-center text-light">Patient Information</h1>
+    <div class="container border border-dark rounded border-5 text-dark bg-light text-center w-75 mb-5 position-relative p-4">
+        <h5 class="unsaved-changes text-danger text-center position-absolute">You have unsaved changes</h5>
+        <div class="form-group d-flex flex-column flex-md-row gap-5 justify-content-center p-4">
+            <div class="form-group">
+                <label class="form-label" for="fname">First Name</label>
+                <input value="<%= user.fullname.fname %>" type="text" class="form-control border border-dark rounded border-4" id="fname" />
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="mi">M.I.</label>
+                <input value="<%= user.fullname.mi %>" type="text" class="form-control border border-dark rounded border-4" id="mi" />
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="lname">Last Name</label>
+                <input value="<%= user.fullname.lname %>" type="text" class="form-control border border-dark rounded border-4" id="lname" />
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="contact">Contact</label>
+                <input value="<%= user.contact %>" type="number" class="form-control border border-dark rounded border-4" id="contact" />
+            </div>
+        </div>
+        <div class="form-group d-flex flex-column flex-md-row gap-5 justify-content-center p-4">
+            <div class="form-group">
+                <label class="form-label" for="gender">Gender</label>
+                <input value="<%= user.gender %>" class="form-control border border-dark rounded border-4" id="gender"
+                    disabled />
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="birthdate">Birthdate</label>
+                <input value="<%= user.birthdate %>" type="date" class="form-control border border-dark rounded border-4" id="birthdate" />
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="age">Age</label>
+                <input value="<%= user.age %>" type="number" class="form-control border border-dark rounded border-4" id="age" disabled />
+            </div>
+        </div>
+        <div class="form-group d-flex flex-column flex-md-row gap-5 justify-content-center p-4 w-100">
+            <div class="form-group w-100">
+                <label class="form-label" for="address">Address</label>
+                <textarea class="form-control border border-dark border-4" id="address"
+                    rows="3"><%= user.address %></textarea>
+            </div>
+            <div class="form-group w-100">
+                <label class="form-label" for="patient_history">Patient History</label>
+                <textarea class="form-control border border-dark border-4" id="patient_history"
+                    rows="3"><%= user.patient_history %></textarea>
+            </div>
+        </div>
+        <div class="form-group d-flex flex-column flex-md-row gap-5 justify-content-center p-4 w-100">
+            <button class="btn border border-dark bg-light border-5" id="save">SAVE</button>
+            <button class="btn border border-dark bg-light border-5" id="schedule">SCHEDULE</button>
+        </div>
+    </div>
 
-    <!-- MED RECORDS TABLE ['DATE_CREATED','AILMENT.DIAGNOSIS'] SORT BY LATEST DATE_CREATED -->
+    <h1 class="text-center text-light">Medical Records</h1>
+    <div class="container border border-dark rounded border-5 text-center p-3 w-75 bg-light text-dark">
+        <table>
+            <thead>
+                <tr>
+                    <th>DIAGNOSIS</th>
+                    <th>DATE CREATED</th>
+                    <th>ACTION</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+    <%- include('../../templates/loading.ejs') %>
+    <%- include('../../templates/toast.ejs') %>
+    <!-- MED RECORDS TABLE ['AILMENT.DIAGNOSIS','DATE_CREATED', 'DATE_LAST_UPDATED'] SORT BY LATEST DATE_CREATED -->
+    <script type="application/javascript" src="/js/admin/patient-info.js"></script>
 </body>
 
 </html>
