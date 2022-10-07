@@ -1,32 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%- include('../../templates/header.ejs') %>
-    <link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
-    <script type="application/javascript"
-        src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+        <link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+        <script type="application/javascript"
+            src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 </head>
-<body>
-    <h1>Scheduled Patients Page</h1>
-    <%- include('../../templates/sidebar.ejs') %>
-    <div class="container border border-dark border-5 rounded w-75 p-4">
-        <table class="table text-center table-striped table-hover">
-            <thead>
-                <tr>
-                    <th>PATIENT ID</th>
-                    <th>PATIENT NAME</th>
-                    <th>APPOINTMENT TYPE</th>
-                    <th>ACTION</th>
-                </tr>
-            </thead>
-        </table>
-    </div>
 
-    <%- include('../../templates/loading.ejs') %>
-    <%- include('../../templates/toast.ejs') %>
-    <script type="application/javascript" src="/js/admin/scheduled.js"></script>
+<body>
+    <h1>Today Scheduled Patients Page</h1>
+    <%- include('../../templates/sidebar.ejs') %>
+        <div class="container border border-dark border-5 rounded w-75 p-4">
+            <table class="table text-center table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th class="text-center">PATIENT ID</th>
+                        <th class="text-center">PATIENT NAME</th>
+                        <th class="text-center">APPOINTMENT TYPE</th>
+                        <th class="text-center">ACTION</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+
+        <%- include('../../templates/loading.ejs') %>
+            <%- include('../../templates/toast.ejs') %>
+                <script type="application/javascript" src="/js/admin/scheduled.js"></script>
 </body>
+
 </html>
