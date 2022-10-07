@@ -28,7 +28,7 @@ $(document).ready(function(e) {
             }),
             success: (res) => {
                 if(!res.operation) return showToast("❌ Invalid credentials")
-                location.href = '/admin/appointments'
+                location.href = '/admin/scheduled'
             },
             error: (err) => {
                 console.log(err)

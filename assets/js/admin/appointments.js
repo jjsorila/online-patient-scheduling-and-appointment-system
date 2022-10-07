@@ -1,12 +1,18 @@
 $(document).ready(function (e) {
     const selectedSort = $("select")
 
+
+    //AUTO RELOAD
+    setInterval(() => {
+        $("table").DataTable().ajax.reload()
+        console.log("Reloaded")
+    }, 5000)
+
     //SHOW TOAST
     function showToast(text) {
         $(".toast-body").text(text)
         $(".toast").toast("show")
     }
-
 
     //DATA TABLE OPTIONS (INITIALIZE)
     $("table").DataTable({
@@ -18,17 +24,12 @@ $(document).ready(function (e) {
             {
                 data: "apt_id",
                 render: (data) => {
-                    return `<input type="submit" data-id=${data} data-val='Cancelled' class='btn btn-success' value='Approve'/> <input type="submit" data-id=${data} data-val='Cancelled' class='btn btn-danger' value='Cancel'/>`
+                    return `<input type="submit" data-id=${data} data-val='Approved' class='btn btn-success' value='Approve'/> <input type="submit" data-id=${data} data-val='Cancelled' class='btn btn-danger' value='Cancel'/>`
                 }
             }
         ],
         ordering: false,
     });
-
-    //RELOAD DATATABLE
-    $("#reload").click(function (e) {
-        $("table").DataTable().ajax.reload()
-    })
 
     //LOGOUT ACCOUNT
     $("#logout").click(function (e) {

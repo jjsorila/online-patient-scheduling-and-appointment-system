@@ -10,6 +10,23 @@
         src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 </head>
 <body>
-    <h1>Scheduled Appointments Page</h1>
+    <h1>Scheduled Patients Page</h1>
+    <%- include('../../templates/sidebar.ejs') %>
+    <div class="container border border-dark border-5 rounded w-75 p-4">
+        <table class="table text-center table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>PATIENT ID</th>
+                    <th>PATIENT NAME</th>
+                    <th>APPOINTMENT TYPE</th>
+                    <th>ACTION</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+    <%- include('../../templates/loading.ejs') %>
+    <%- include('../../templates/toast.ejs') %>
+    <script type="application/javascript" src="/js/admin/scheduled.js"></script>
 </body>
 </html>

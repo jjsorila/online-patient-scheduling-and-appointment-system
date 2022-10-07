@@ -13,10 +13,10 @@
 </head>
 
 <body class="bg-dark">
-    <a href="/admin/patients">BACK</a>
+    <a class="btn btn-info" href="/admin/patients">BACK</a>
 
     <h1 class="text-center text-light">Patient Information</h1>
-    <div class="container border border-dark rounded border-5 text-dark bg-light text-center w-75 mb-5 position-relative p-4">
+    <div class="container border border-dark rounded border-5 text-dark bg-light text-center w-75 mb-5 position-relative d-flex flex-column gap-4 p-4">
         <h5 class="unsaved-changes text-danger text-center position-absolute">You have unsaved changes</h5>
         <div class="form-group d-flex flex-column flex-md-row gap-5 justify-content-center p-4">
             <div class="form-group">
@@ -51,17 +51,27 @@
                 <input value="<%= user.age %>" type="number" class="form-control border border-dark rounded border-4" id="age" disabled />
             </div>
         </div>
-        <div class="form-group d-flex flex-column flex-md-row gap-5 justify-content-center p-4 w-100">
-            <div class="form-group w-100">
-                <label class="form-label" for="address">Address</label>
-                <textarea class="form-control border border-dark border-4" id="address"
-                    rows="3"><%= user.address %></textarea>
-            </div>
-            <div class="form-group w-100">
-                <label class="form-label" for="patient_history">Patient History</label>
-                <textarea class="form-control border border-dark border-4" id="patient_history"
-                    rows="3"><%= user.patient_history %></textarea>
-            </div>
+        <div class="form-group w-100">
+            <label class="form-label" for="address">Address</label>
+            <textarea class="form-control border border-dark border-4" id="address"
+                rows="3"><%= user.address %></textarea>
+        </div>
+        <div class="form-group w-100">
+            <label class="form-label" for="patient_history">Patient History</label>
+            <textarea class="form-control border border-dark border-4" id="patient_history"
+                rows="3"><%= user.patient_history %></textarea>
+        </div>
+        <div class="form-group">
+            <label for="patient_type" class="form-label">Patient Type</label>
+            <select class="form-control border border-dark border-4 text-center" id="patient_type">
+                <% if(user.patient_type) { %>
+                    <option selected hidden value="<%= user.patient_type %>"><%= user.patient_type %></option>
+                <% } else { %>
+                    <option selected disabled>Choose</option>
+                <% } %>
+                <option value="Pedia">Pedia</option>
+                <option value="OB">OB</option>
+            </select>
         </div>
         <div class="form-group d-flex flex-column flex-md-row gap-5 justify-content-center p-4 w-100">
             <button class="btn border border-dark bg-light border-5" id="save">SAVE</button>

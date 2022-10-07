@@ -15,6 +15,9 @@ $(document).ready(function (e) {
         return Math.floor(ageInMilliseconds / 1000 / 60 / 60 / 24 / 365);
     }
 
+    //DISABLE SCHEDULING ON PREVIOUS DATES
+    document.getElementById("date-sched").min = new Date().toISOString().slice(0, 16);
+
     //CALCULATE AGE
     birthdate.on("change", function (e) {
         age.val(getAge(birthdate.val()))
@@ -35,11 +38,11 @@ $(document).ready(function (e) {
     //DATA TABLE OPTIONS
     $('#appointments').DataTable({
         lengthMenu: [[10, 20, 30, 50, -1], [10, 20, 30, 50, "All"]],
-        'columnDefs': [ {
+        'columnDefs': [{
             'targets': [-1], // column index (start from 0, -1 means all)
             'orderable': false, // set orderable false for selected columns
-         }],
-         ordering: false
+        }],
+        ordering: false
     });
 
     //DISABLE DEFAULT SUBMIT ACTION FOR USER INFORMATION
@@ -104,7 +107,7 @@ $(document).ready(function (e) {
 
     //OPEN APPOINTMENT FORM
     $("#sched").click(function (e) {
-        if (!fullname.val() || !contact.val() || !address.val() || !gender.val() || !birthdate.val()) return showToast("❌ Complete all user information")
+        if (!fname.val() || !mi.val() || !lname.val() || !contact.val() || !address.val() || !gender.val() || !birthdate.val()) return showToast("❌ Complete all user information")
         $(".bg-shadow-dim").toggleClass("d-none")
     })
 

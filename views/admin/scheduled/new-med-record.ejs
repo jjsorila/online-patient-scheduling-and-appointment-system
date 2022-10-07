@@ -4,15 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="mr_id" content="<%= mr_id %>">
-    <meta name="patient_id" content="<%= patient_id %>">
+    <meta name="apt_id" content="<%= apt_id %>">
+    <meta name="patient_id" content="<%= user.id %>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%- include('../../templates/header.ejs') %>
 </head>
 
 <body>
-    <h1>Medical Record #<%= mr_id %></h1>
-    <a class="btn btn-info" href="/admin/patients/<%= patient_id %>">BACK</a>
+    <h1>Schedule ID #<%= apt_id %></h1>
+    <a class="btn btn-info" href="/admin/scheduled">BACK</a>
 
     <div
         class="container border border-dark rounded border-5 text-dark bg-light text-center w-75 mb-5 position-relative p-4 d-flex flex-column gap-5">
@@ -75,44 +75,44 @@
         <!-- MEDICAL RECORD -->
         <div class="form-group">
             <label for="guardian" class="form-label">Guardian</label>
-            <input value="<%= user.guardian %>" type="text" class="form-control border border-dark border-4" id="guardian">
+            <input type="text" class="form-control border border-dark border-4" id="guardian">
         </div>
         <div class="form-group d-flex flex-column flex-md-row gap-5 justify-content-center">
             <div class="form-group">
                 <label class="form-label" for="temperature">Temperature</label>
-                <input value="<%= user.temperature %>" type="number" class="form-control border border-dark rounded border-4"
+                <input value="" type="number" class="form-control border border-dark rounded border-4"
                     id="temperature" />
             </div>
             <div class="form-group">
                 <label class="form-label" for="bp">Blood Pressure</label>
-                <input value="<%= user.bp %>" type="text" class="form-control border border-dark rounded border-4" id="bp" />
+                <input value="" type="text" class="form-control border border-dark rounded border-4" id="bp" />
             </div>
             <div class="form-group">
                 <label class="form-label" for="weight">Weight</label>
-                <input value="<%= user.weight %>" type="text" class="form-control border border-dark rounded border-4" id="weight" />
+                <input value="" type="text" class="form-control border border-dark rounded border-4" id="weight" />
             </div>
             <div class="form-group">
                 <label class="form-label" for="height">Height</label>
-                <input value="<%= user.height %>" type="text" class="form-control border border-dark rounded border-4" id="height" />
+                <input value="" type="text" class="form-control border border-dark rounded border-4" id="height" />
             </div>
         </div>
         <div class="form-group">
             <label class="form-label" for="diagnosis">Diagnosis</label>
-            <input value="<%= user.ailment.diagnosis %>" type="text" class="form-control border border-dark rounded border-4 text-center" id="diagnosis" />
+            <input value="" type="text" class="form-control border border-dark rounded border-4 text-center" id="diagnosis" />
         </div>
         <div class="form-group">
             <label class="form-label" for="description">Description</label>
-            <textarea class="form-control border border-dark border-4" id="description" rows="3"><%= user.ailment.description %></textarea>
+            <textarea class="form-control border border-dark border-4" id="description" rows="3"></textarea>
         </div>
 
         <div class="form-group">
-            <button class="btn btn-success" id="save">UPDATE RECORD</button>
+            <button class="btn btn-success" id="save">SAVE RECORD</button>
         </div>
     </div>
 
     <%- include('../../templates/loading.ejs') %>
-    <%- include('../../templates/toast.ejs') %>
-    <script type="application/javascript" src="/js/admin/med-record.js"></script>
+        <%- include('../../templates/toast.ejs') %>
+            <script type="application/javascript" src="/js/admin/new-med-record.js"></script>
 </body>
 
 </html>

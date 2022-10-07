@@ -15,8 +15,9 @@
 <body>
     <h1>List of Patients Page</h1>
 
-    <button id="logout">Logout</button>
-    <button id="reload">Reload Table</button>
+    <%- include('../../templates/sidebar.ejs') %>
+
+    <button id="add-patient">Add New Patient</button>
 
     <div class="container border border-dark border-5 w-50 p-3">
         <table class="table text-center table-striped table-hover">
@@ -34,8 +35,6 @@
             </tfoot>
         </table>
     </div>
-
-    <button id="add-patient">Add Patient</button>
 
     <div class="bg-shadow d-flex d-none justify-content-center align-items-center">
         <div class="patient-form border text-light text-center bg-dark border-dark border-4 w-75 h-75 rounded p-4">

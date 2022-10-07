@@ -8,6 +8,9 @@ $(document).ready(function (e) {
         contact = $("#contact"),
         address = $("#address");
 
+    setInterval(() => {
+        $("table").DataTable().ajax.reload()
+    }, 5000)
 
     //CLEAR INPUT FORM
     function clearInput() {
@@ -20,7 +23,7 @@ $(document).ready(function (e) {
         contact.val("")
         address.val("")
     }
-    
+
     //AUTO CALCULATE AGE
     function getAge(dateString) {
         var ageInMilliseconds = new Date() - new Date(dateString);
@@ -57,11 +60,6 @@ $(document).ready(function (e) {
             }
         ]
     });
-
-    //RELOAD DATATABLE
-    $("#reload").click(function (e) {
-        $("table").DataTable().ajax.reload()
-    })
 
     //LOGOUT ACCOUNT
     $("#logout").click(function (e) {

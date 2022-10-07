@@ -8,6 +8,7 @@ $(document).ready(function (e) {
     const birthdate = $("#birthdate")
     const age = $("#age")
     const patient_history = $("#patient_history")
+    const patient_type= $("#patient_type")
     function getAge(dateString) {
         var ageInMilliseconds = new Date() - new Date(dateString);
         return Math.floor(ageInMilliseconds / 1000 / 60 / 60 / 24 / 365);
@@ -56,17 +57,17 @@ $(document).ready(function (e) {
 
     //SAVE/UPDATE USER INFORMATION
     $("#save").click(function (e) {
-        if (!fname.val() || !mi.val() || !lname.val() || !contact.val() || !address.val() || !birthdate.val() || !age.val() || !patient_history.val()) return showToast("❌ Complete required fields")
+        // if (!fname.val() || !mi.val() || !lname.val() || !contact.val() || !address.val() || !birthdate.val() || !age.val() || !patient_history.val()) return showToast("❌ Complete required fields")
 
         $(".loading").css("display", "block")
 
         $.ajax({
             url: '/admin/patient/update',
             type: 'PUT',
-            header: {
+            headers: {
                 'Content-Type': 'application/json'
             },
-            data: {
+            data: JSON.stringify({
                 fullname: {
                     fname: fname.val(),
                     mi: mi.val(),
@@ -77,8 +78,9 @@ $(document).ready(function (e) {
                 birthdate: birthdate.val(),
                 age: age.val(),
                 patient_history: patient_history.val(),
-                id: patient_id
-            },
+                id: patient_id,
+                patient_type: patient_type.val()
+            }),
             success: (res) => {
                 if (!res.operation) return showToast("❌ Something went wrong")
                 showToast("✅ Updated Successfully")
@@ -96,8 +98,8 @@ $(document).ready(function (e) {
     })
 
     //SCHEDULE PATIENT
-    $("#schedule").click(function(e) {
-        if (!fname.val() || !mi.val() || !lname.val() || !contact.val() || !address.val() || !birthdate.val() || !age.val() || !patient_history.val()) return showToast("❌ Complete required fields")
+    $("#schedule").click(function (e) {
+        // if (!fname.val() || !mi.val() || !lname.val() || !contact.val() || !address.val() || !birthdate.val() || !age.val() || !patient_history.val()) return showToast("❌ Complete required fields")
 
         $(".loading").css("display", "block")
 
@@ -116,5 +118,11 @@ $(document).ready(function (e) {
                 $(".loading").css("display", "none")
             }
         })
+    })
+
+    //OPEN MEDICAL RECORD
+    $("table").on("click", "input[type=submit]", function (e) {
+        const mr_id = $(this).attr("data-id");
+        location.href = `/admin/patients/${patient_id}/${mr_id}`
     })
 })
