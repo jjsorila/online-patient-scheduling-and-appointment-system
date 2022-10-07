@@ -23,17 +23,17 @@
             <div class="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-5">
                 <div class="form-group text-center">
                     <label for="fname">First Name</label>
-                    <input value="<%= user.fullname.fname %>" type="text"
+                    <input value="<%= user.fullname?.fname %>" type="text"
                         class="form-control border border-dark border-4" id="fname" />
                 </div>
                 <div class="form-group text-center">
                     <label for="mi">M.I.</label>
-                    <input value="<%= user.fullname.mi %>" type="text" class="form-control border border-dark border-4"
+                    <input value="<%= user.fullname?.mi %>" type="text" class="form-control border border-dark border-4"
                         id="mi" />
                 </div>
                 <div class="form-group text-center">
                     <label for="lname">Last Name</label>
-                    <input value="<%= user.fullname.lname %>" type="text"
+                    <input value="<%= user.fullname?.lname %>" type="text"
                         class="form-control border border-dark border-4" id="lname" />
                 </div>
             </div>

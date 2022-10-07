@@ -21,15 +21,15 @@
         <div class="form-group d-flex flex-column flex-md-row gap-5 justify-content-center p-4">
             <div class="form-group">
                 <label class="form-label" for="fname">First Name</label>
-                <input value="<%= user.fullname.fname %>" type="text" class="form-control border border-dark rounded border-4" id="fname" />
+                <input value="<%= user.fullname?.fname %>" type="text" class="form-control border border-dark rounded border-4" id="fname" />
             </div>
             <div class="form-group">
                 <label class="form-label" for="mi">M.I.</label>
-                <input value="<%= user.fullname.mi %>" type="text" class="form-control border border-dark rounded border-4" id="mi" />
+                <input value="<%= user.fullname?.mi %>" type="text" class="form-control border border-dark rounded border-4" id="mi" />
             </div>
             <div class="form-group">
                 <label class="form-label" for="lname">Last Name</label>
-                <input value="<%= user.fullname.lname %>" type="text" class="form-control border border-dark rounded border-4" id="lname" />
+                <input value="<%= user.fullname?.lname %>" type="text" class="form-control border border-dark rounded border-4" id="lname" />
             </div>
             <div class="form-group">
                 <label class="form-label" for="contact">Contact</label>
@@ -94,7 +94,6 @@
 
     <%- include('../../templates/loading.ejs') %>
     <%- include('../../templates/toast.ejs') %>
-    <!-- MED RECORDS TABLE ['AILMENT.DIAGNOSIS','DATE_CREATED', 'DATE_LAST_UPDATED'] SORT BY LATEST DATE_CREATED -->
     <script type="application/javascript" src="/js/admin/patient-info.js"></script>
 </body>
 
