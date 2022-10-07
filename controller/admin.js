@@ -155,7 +155,7 @@ router.post('/action/appointments', (req, res) => {
 
 //GET ALL PATIENTS
 router.get('/list/patients', (req, res) => {
-    db.query(`SELECT fullname,id FROM patient_accounts;`,
+    db.query(`SELECT fullname,id FROM patient_accounts WHERE NOT fullname IS NULL;`,
         (err, result) => {
             if (err) throw err;
 
