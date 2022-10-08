@@ -21,26 +21,33 @@
         <div class="form-group d-flex flex-column flex-md-row gap-5 justify-content-center p-4">
             <div class="form-group">
                 <label class="form-label" for="fname">First Name</label>
-                <input value="<%= user.fullname?.fname %>" type="text" class="form-control border border-dark rounded border-4" id="fname" />
+                <input value="<%= user.fullname?.fname %>" type="text" class="form-control border border-dark rounded border-4 text-center" id="fname" />
             </div>
             <div class="form-group">
                 <label class="form-label" for="mi">M.I.</label>
-                <input value="<%= user.fullname?.mi %>" type="text" class="form-control border border-dark rounded border-4" id="mi" />
+                <input value="<%= user.fullname?.mi %>" type="text" class="form-control border border-dark rounded border-4 text-center" id="mi" />
             </div>
             <div class="form-group">
                 <label class="form-label" for="lname">Last Name</label>
-                <input value="<%= user.fullname?.lname %>" type="text" class="form-control border border-dark rounded border-4" id="lname" />
+                <input value="<%= user.fullname?.lname %>" type="text" class="form-control border border-dark rounded border-4 text-center" id="lname" />
             </div>
             <div class="form-group">
                 <label class="form-label" for="contact">Contact</label>
-                <input value="<%= user.contact %>" type="number" class="form-control border border-dark rounded border-4" id="contact" />
+                <input value="<%= user.contact %>" type="number" class="form-control border border-dark rounded border-4 text-center" id="contact" />
             </div>
         </div>
         <div class="form-group d-flex flex-column flex-md-row gap-5 justify-content-center p-4">
             <div class="form-group">
                 <label class="form-label" for="gender">Gender</label>
-                <input value="<%= user.gender %>" class="form-control border border-dark rounded border-4" id="gender"
-                    disabled />
+                <select class="form-select border border-dark rounded border-4" id="gender">
+                    <% if(user.gender) { %>
+                        <option value="<%= user.gender %>" hidden><%= user.gender %></option>
+                    <% } else { %>
+                        <option selected disabled hidden>Choose</option>
+                    <% } %>
+                    <option value="Female">Female</option>
+                    <option value="Male">Male</option>
+                </select>
             </div>
             <div class="form-group">
                 <label class="form-label" for="birthdate">Birthdate</label>
@@ -48,34 +55,37 @@
             </div>
             <div class="form-group">
                 <label class="form-label" for="age">Age</label>
-                <input value="<%= user.age %>" type="number" class="form-control border border-dark rounded border-4" id="age" disabled />
+                <input value="<%= user.age %>" type="number" class="form-control border border-dark rounded border-4 text-center" id="age" />
             </div>
         </div>
         <div class="form-group w-100">
-            <label class="form-label" for="address">Address</label>
-            <textarea class="form-control border border-dark border-4" id="address"
+            <label class="form-label" for="address">Patient's Address</label>
+            <textarea class="form-control border border-dark border-4 text-center" id="address"
                 rows="3"><%= user.address %></textarea>
         </div>
         <div class="form-group w-100">
             <label class="form-label" for="patient_history">Patient History</label>
-            <textarea class="form-control border border-dark border-4" id="patient_history"
+            <textarea class="form-control border border-dark border-4 text-center" id="patient_history"
                 rows="3"><%= user.patient_history %></textarea>
         </div>
-        <div class="form-group">
-            <label for="patient_type" class="form-label">Patient Type</label>
-            <select class="form-control border border-dark border-4 text-center" id="patient_type">
-                <% if(user.patient_type) { %>
-                    <option selected hidden value="<%= user.patient_type %>"><%= user.patient_type %></option>
-                <% } else { %>
-                    <option selected disabled>Choose</option>
-                <% } %>
-                <option value="Pedia">Pedia</option>
-                <option value="OB">OB</option>
-            </select>
+        <div class="form-group w-100">
+            <label class="form-label" for="g-name">Guardian's Name</label>
+            <input value="<%= user.guardian?.name %>" class="form-control w-100 border border-dark border-4 text-center" type="text" id="g-name" />
+        </div>
+        <div class="form-group w-100">
+            <label class="form-label" for="g-address">Guardian's Address</label>
+            <input value="<%= user.guardian?.address %>" class="form-control w-100 border border-dark border-4 text-center" type="text" id="g-address" />
+        </div>
+        <div class="form-group w-100">
+            <label class="form-label" for="g-contact">Guardian's Contact</label>
+            <input value="<%= user.guardian?.contact %>" class="form-control w-100 border border-dark border-4 text-center" type="number" id="g-contact" />
+        </div>
+        <div class="form-group w-100">
+            <label class="form-label" for="g-relationship">Relationship to Patient</label>
+            <input value="<%= user.guardian?.relationship %>" class="form-control w-100 border border-dark border-4 text-center" type="text" id="g-relationship" />
         </div>
         <div class="form-group d-flex flex-column flex-md-row gap-5 justify-content-center p-4 w-100">
-            <button class="btn border border-dark bg-light border-5" id="save">SAVE</button>
-            <button class="btn border border-dark bg-light border-5" id="schedule">SCHEDULE</button>
+            <button class="btn border border-dark border-5 w-25" id="save">SAVE</button>
         </div>
     </div>
 

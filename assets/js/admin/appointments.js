@@ -20,6 +20,16 @@ $(document).ready(function (e) {
         lengthMenu: [[10, 20, 30, 50, -1], [10, 20, 30, 50, "All"]],
         columns: [
             { data: "schedule" },
+            {
+                data: "fullname",
+                render: ({ fname, lname, mi }) => (`${lname}, ${fname} ${mi}.`)
+            },
+            {
+                data: "address"
+            },
+            {
+                data: "contact"
+            },
             { data: "status" },
             {
                 data: "apt_id",
@@ -55,6 +65,16 @@ $(document).ready(function (e) {
             lengthMenu: [[10, 20, 30, 50, -1], [10, 20, 30, 50, "All"]],
             columns: [
                 { data: "schedule" },
+                {
+                    data: "fullname",
+                    render: ({ fname, lname, mi }) => (`${lname}, ${fname} ${mi}.`)
+                },
+                {
+                    data: "address"
+                },
+                {
+                    data: "contact"
+                },
                 { data: "status" },
                 {
                     data: "apt_id",
@@ -71,6 +91,8 @@ $(document).ready(function (e) {
     //APPROVE/CANCEL
     $("table").on("click", "input[type=submit]", function (e) {
         const current = $(this)
+
+        $(".loading").css("display", "block")
 
         $.ajax({
             url: '/admin/action/appointments',
@@ -89,6 +111,16 @@ $(document).ready(function (e) {
                     lengthMenu: [[10, 20, 30, 50, -1], [10, 20, 30, 50, "All"]],
                     columns: [
                         { data: "schedule" },
+                        {
+                            data: "fullname",
+                            render: ({ fname, lname, mi }) => (`${lname}, ${fname} ${mi}.`)
+                        },
+                        {
+                            data: "address"
+                        },
+                        {
+                            data: "contact"
+                        },
                         { data: "status" },
                         {
                             data: "apt_id",
@@ -100,11 +132,14 @@ $(document).ready(function (e) {
                     ordering: false,
                     destroy: true
                 });
-
                 showToast("✅ Success")
             },
             error: (err) => {
                 console.log(err)
+                showToast("❌ Server error")
+            },
+            complete: () => {
+                $(".loading").css("display", "none")
             }
         })
     })

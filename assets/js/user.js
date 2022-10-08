@@ -10,6 +10,11 @@ $(document).ready(function (e) {
         id = $("meta[name=id]").attr("content"),
         age = $("#age");
 
+        const gName = $("#g-name")
+        const gContact = $("#g-contact")
+        const gAddress = $("#g-address")
+        const gRelationship = $("#g-relationship")
+
     function getAge(dateString) {
         var ageInMilliseconds = new Date() - new Date(dateString);
         return Math.floor(ageInMilliseconds / 1000 / 60 / 60 / 24 / 365);
@@ -24,7 +29,7 @@ $(document).ready(function (e) {
     })
 
     //DETECT INPUT UNSAVED CHANGES
-    $("form input, form textarea").on("change keyup paste", function (e) {
+    $("form input, form textarea, form select").on("change keyup paste", function (e) {
         $("#sched").attr("disabled", true)
         $("h5.text-center").css("display", "block")
     })
@@ -68,7 +73,7 @@ $(document).ready(function (e) {
     //SAVE/UPDATE INFORMATION
     $("#save").click(function (e) {
 
-        if (!fname.val() || !mi.val() || !lname.val() || !contact.val() || !address.val() || !gender.val() || !birthdate.val() || !age.val()) return showToast("❌ Complete all user information")
+        if (!fname.val() || !mi.val() || !lname.val() || !contact.val() || !address.val() || !gender.val() || !birthdate.val() || !age.val() || !gName.val() || !gAddress.val() || !gContact.val() || !gRelationship.val()) return showToast("❌ Complete all user information")
 
         $(".user-info .loading").css("display", "block")
 
@@ -88,7 +93,13 @@ $(document).ready(function (e) {
                 address: address.val(),
                 gender: gender.val(),
                 birthdate: birthdate.val(),
-                age: age.val()
+                age: age.val(),
+                guardian: {
+                    name: gName.val(),
+                    address: gAddress.val(),
+                    contact: gContact.val(),
+                    relationship: gRelationship.val()
+                }
             }),
             success: (res) => {
                 if (!res.operation) return showToast("❌ Something went wrong")

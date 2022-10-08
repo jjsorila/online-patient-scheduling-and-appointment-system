@@ -6,7 +6,13 @@ $(document).ready(function (e) {
         birthday = $("#birthday"),
         gender = $("#gender"),
         contact = $("#contact"),
-        address = $("#address");
+        address = $("#address"),
+        gName = $("#g-name"),
+        gContact = $("#g-contact"),
+        gAddress = $("#g-address"),
+        gRelationship = $("#g-relationship"),
+        patient_type = $("#patient_type"),
+        hiddenPatientId = $("#hidden-patient-id");
 
     setInterval(() => {
         $("table").DataTable().ajax.reload()
@@ -22,6 +28,12 @@ $(document).ready(function (e) {
         gender.val("")
         contact.val("")
         address.val("")
+        gName.val("")
+        gContact.val("")
+        gAddress.val("")
+        gRelationship.val("")
+        patient_type.val("Choose")
+        hiddenPatientId.val("")
     }
 
     //AUTO CALCULATE AGE
@@ -54,9 +66,24 @@ $(document).ready(function (e) {
                 }
             },
             {
+                data: "address",
+                orderable: false,
+            },
+            {
+                data: "contact",
+                orderable: false
+            },
+            {
+                data: "birthdate",
+                orderable: false
+            },
+            {
                 data: "id",
                 orderable: false,
-                render: (data) => (`<input type="submit" data-id=${data} class='btn btn-success' value='Open'/>`)
+                render: (data) => (`
+                <input type="submit" data-id=${data} class='btn btn-success' value='Open'/>
+                <input type="submit" data-id=${data} class='btn btn-info' value='Schedule'/>
+                `)
             }
         ]
     });
@@ -78,9 +105,52 @@ $(document).ready(function (e) {
     })
 
     //OPEN PATIENT INFO
-    $("table").on("click", "input[type=submit]", function (e) {
-        let patient_id = $(this).attr("data-id")
+    $("table").on("click", "input[value=Open]", function (e) {
+        const patient_id = $(this).attr("data-id")
         location.href = `/admin/patients/${patient_id}`
+    })
+
+    //SCHEDULE PATIENT
+    $("table").on("click", "input[value=Schedule]", function (e) {
+        const patient_id = $(this).attr("data-id")
+        hiddenPatientId.val(patient_id)
+        $(".bg-shadow-sched").toggleClass("d-none")
+    })
+    $(".bg-shadow-sched").click(function (e) {
+        $(".bg-shadow-sched").toggleClass("d-none")
+        clearInput()
+    })
+    $(".schedule-form").click(function (e) {
+        e.stopPropagation()
+    })
+    $("#schedule").click(function (e) {
+        if (!patient_type.val() || patient_type.val() == "Choose") return showToast("❌ Choose patient type")
+
+        $(".loading").css("display", "block")
+        $.ajax({
+            url: '/admin/schedule/walk-in',
+            type: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: JSON.stringify({
+                patient_id: hiddenPatientId.val(),
+                patient_type: patient_type.val()
+            }),
+            success: (res) => {
+                showToast("✅ Scheduled successfully")
+                clearInput()
+            },
+            error: (err) => {
+                console.log(err)
+                showToast("❌ Server error")
+            },
+            complete: () => {
+                $(".loading").css("display", "none")
+                $(".bg-shadow-sched").toggleClass("d-none")
+                clearInput()
+            }
+        })
     })
 
     //OPEN ADD PATIENT FORM
@@ -97,14 +167,14 @@ $(document).ready(function (e) {
         e.stopPropagation()
     })
 
-    //ADD&SCHEDULE PATIENT
+    //ADD PATIENT
     $("#submit").click(function (e) {
         if (!fname.val() || !mi.val() || !lname.val() || !birthday.val() || !age.val() || !gender.val() || !contact.val() || !address.val()) return showToast("❌ Complete required fields")
 
         $(".loading").css("display", "block")
 
         $.ajax({
-            url: '/admin/schedule/walk-in',
+            url: '/admin/patients/new',
             type: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -119,7 +189,13 @@ $(document).ready(function (e) {
                 birthday: birthday.val(),
                 gender: gender.val(),
                 contact: contact.val(),
-                address: address.val()
+                address: address.val(),
+                guardian: {
+                    name: gName.val(),
+                    address: gAddress.val(),
+                    contact: gContact.val(),
+                    relationship: gRelationship.val()
+                }
             }),
             success: (res) => {
                 if (!res.operation) return showToast("❌ Something went wrong")

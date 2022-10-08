@@ -2,13 +2,17 @@ $(document).ready(function (e) {
     const patient_id = $("meta[name=patient_id]").attr("content")
     const fname = $("#fname")
     const lname = $("#lname")
+    const gender = $("#gender")
     const mi = $("#mi")
     const contact = $("#contact")
     const address = $("#address")
     const birthdate = $("#birthdate")
+    const gName = $("#g-name")
+    const gContact = $("#g-contact")
+    const gAddress = $("#g-address")
+    const gRelationship = $("#g-relationship")
     const age = $("#age")
     const patient_history = $("#patient_history")
-    const patient_type= $("#patient_type")
     function getAge(dateString) {
         var ageInMilliseconds = new Date() - new Date(dateString);
         return Math.floor(ageInMilliseconds / 1000 / 60 / 60 / 24 / 365);
@@ -21,8 +25,7 @@ $(document).ready(function (e) {
     }
 
     //DETECT CHANGES
-    $("input, textarea").on("change paste keyup", function (e) {
-        $("#schedule").attr("disabled", true)
+    $("input, textarea, select").on("change paste keyup", function (e) {
         $(".unsaved-changes").css("display", "block")
     })
 
@@ -38,26 +41,24 @@ $(document).ready(function (e) {
         columns: [
             {
                 data: "ailment",
-                orderable: false,
                 render: ({ diagnosis, description }) => {
                     return `${diagnosis}`
                 }
             },
             {
                 data: "date_created",
-                orderable: false,
             },
             {
                 data: "mr_id",
-                orderable: false,
                 render: (mr_id) => (`<input type="submit" class="btn btn-success" data-id=${mr_id} id="open-record" value="Open"/>`)
             }
-        ]
+        ],
+        ordering: false
     });
 
     //SAVE/UPDATE USER INFORMATION
     $("#save").click(function (e) {
-        // if (!fname.val() || !mi.val() || !lname.val() || !contact.val() || !address.val() || !birthdate.val() || !age.val() || !patient_history.val()) return showToast("❌ Complete required fields")
+        if (!fname.val() || !mi.val() || !lname.val() || !contact.val() || !address.val() || !birthdate.val() || !age.val()) return showToast("❌ Complete required fields")
 
         $(".loading").css("display", "block")
 
@@ -79,7 +80,13 @@ $(document).ready(function (e) {
                 age: age.val(),
                 patient_history: patient_history.val(),
                 id: patient_id,
-                patient_type: patient_type.val()
+                gender: gender.val(),
+                guardian: {
+                    name: gName.val(),
+                    address: gAddress.val(),
+                    contact: gContact.val(),
+                    relationship: gRelationship.val()
+                }
             }),
             success: (res) => {
                 if (!res.operation) return showToast("❌ Something went wrong")
@@ -91,31 +98,7 @@ $(document).ready(function (e) {
             },
             complete: () => {
                 $(".loading").css("display", "none")
-                $("#schedule").attr("disabled", false)
                 $(".unsaved-changes").css("display", "none")
-            }
-        })
-    })
-
-    //SCHEDULE PATIENT
-    $("#schedule").click(function (e) {
-        // if (!fname.val() || !mi.val() || !lname.val() || !contact.val() || !address.val() || !birthdate.val() || !age.val() || !patient_history.val()) return showToast("❌ Complete required fields")
-
-        $(".loading").css("display", "block")
-
-        $.ajax({
-            url: `/admin/schedule/walk-in/${patient_id}`,
-            type: 'PUT',
-            success: (res) => {
-                if (!res.operation) return showToast("❌ Something went wrong")
-                showToast("✅ Scheduled Successfully")
-            },
-            error: (err) => {
-                showToast("❌ Server error")
-                console.log(err)
-            },
-            complete: () => {
-                $(".loading").css("display", "none")
             }
         })
     })

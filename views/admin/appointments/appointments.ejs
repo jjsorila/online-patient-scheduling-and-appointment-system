@@ -21,11 +21,14 @@
         <option value="today">Today</option>
         <option value="none">All</option>
     </select>
-    <div class="container border border-dark border-5 rounded p-3 w-75">
+    <div class="container border border-dark border-5 rounded p-3">
         <table class="table text-center table-striped table-hover">
             <thead>
                 <tr>
                     <th class="text-center">DATE</th>
+                    <th class="text-center">PATIENT'S NAME</th>
+                    <th class="text-center">ADDRESS</th>
+                    <th class="text-center">CONTACT</th>
                     <th class="text-center">STATUS</th>
                     <th class="text-center">ACTION</th>
                 </tr>
@@ -34,6 +37,7 @@
     </div>
 
     <%- include('../../templates/toast.ejs') %>
+    <%- include('../../templates/loading.ejs') %>
         <script type="application/javascript" src="/js/admin/appointments.js"></script>
 </body>
 

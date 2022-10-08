@@ -4,3 +4,8 @@
     width: 100%;
     display: none;
 }
+
+ button#save:hover {
+    background: #292b2c;
+    color: white;
+}

@@ -6,10 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%- include('../../templates/header.ejs') %>
-    <link rel="stylesheet" href="/css/admin/patients.css" />
-    <link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
-    <script type="application/javascript"
-        src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+        <link rel="stylesheet" href="/css/admin/patients.css" />
+        <link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+        <script type="application/javascript"
+            src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 </head>
 
 <body>
@@ -17,70 +17,109 @@
 
     <%- include('../../templates/sidebar.ejs') %>
 
-    <button id="add-patient">Add New Patient</button>
+        <button id="add-patient">Add New Patient</button>
 
-    <div class="container border border-dark border-5 w-50 p-3">
-        <table class="table text-center table-striped table-hover">
-            <thead>
-                <tr>
-                    <th class="text-center">PATIENT NAME</th>
-                    <th class="text-center">ACTION</th>
-                </tr>
-            </thead>
-        </table>
-    </div>
-
-    <div class="bg-shadow d-flex d-none justify-content-center align-items-center">
-        <div class="patient-form border text-light text-center bg-dark border-dark border-4 w-75 h-75 rounded p-4">
-            <div class="form-group w-100 d-flex gap-5">
-                <div class="form-group w-50">
-                    <label class="form-label" for="firstname">Firstname</label>
-                    <input class="form-control " type="text" id="firstname" />
-                </div>
-                <div class="form-group w-50">
-                    <label class="form-label" for="mi">M.I.</label>
-                    <input class="form-control" type="text" id="mi" />
-                </div>
-                <div class="form-group w-50">
-                    <label class="form-label" for="lastname">Lastname</label>
-                    <input class="form-control" type="text" id="lastname" />
-                </div>
-            </div>
-            <div class="form-group w-100 d-flex gap-5">
-                <div class="form-group w-50">
-                    <label class="form-label" for="birthday">Birthday</label>
-                    <input class="form-control" type="date" id="birthday" />
-                </div>
-                <div class="form-group w-50">
-                    <label class="form-label" for="age">Age</label>
-                    <input class="form-control" disabled type="number" id="age" />
-                </div>
-            </div>
-            <div class="form-group w-100">
-                <label class="form-label" for="gender">Gender</label>
-                <select type="text" class="custom-select d-block w-25 mx-auto" id="gender">
-                    <option selected disabled hidden>Choose</option>
-                    <option>Male</option>
-                    <option>Female</option>
-                </select>
-            </div>
-            <div class="form-group w-100">
-                <label class="form-label" for="contact">Contact</label>
-                <input class="form-control w-50 mx-auto" type="number" id="contact" />
-            </div>
-            <div class="form-group w-100">
-                <label class="form-label" for="address">Address</label>
-                <textarea class="form-control w-75 mx-auto" id="address" rows="3"></textarea>
-            </div>
-            <div class="form-group w-100 pt-3">
-                <button id="submit" class="btn btn-info">ADD AND SCHEDULE</button>
-            </div>
-            <%- include('../../templates/loading.ejs') %>
+        <div class="container border border-dark border-5 p-3">
+            <table class="table text-center table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th class="text-center">PATIENT'S NAME</th>
+                        <th class="text-center">ADDRESS</th>
+                        <th class="text-center">CONTACT</th>
+                        <th class="text-center">BIRTHDATE</th>
+                        <th class="text-center">ACTION</th>
+                    </tr>
+                </thead>
+            </table>
         </div>
-    </div>
 
-    <%- include('../../templates/toast.ejs') %>
-        <script type="application/javascript" src="/js/admin/patients.js"></script>
+        <div class="bg-shadow d-flex d-none justify-content-center align-items-center">
+            <div class="patient-form border text-light text-center bg-dark border-dark border-4 w-75 h-75 rounded p-4">
+                <div class="form-group w-100 d-flex gap-5">
+                    <div class="form-group w-50">
+                        <label class="form-label" for="firstname">Firstname</label>
+                        <input class="form-control text-center" type="text" id="firstname" />
+                    </div>
+                    <div class="form-group w-50">
+                        <label class="form-label" for="mi">M.I.</label>
+                        <input class="form-control text-center" type="text" id="mi" />
+                    </div>
+                    <div class="form-group w-50">
+                        <label class="form-label" for="lastname">Lastname</label>
+                        <input class="form-control text-center" type="text" id="lastname" />
+                    </div>
+                </div>
+                <div class="form-group w-100 d-flex gap-5">
+                    <div class="form-group w-50">
+                        <label class="form-label" for="birthday">Birthday</label>
+                        <input class="form-control" type="date" id="birthday" />
+                    </div>
+                    <div class="form-group w-50">
+                        <label class="form-label" for="age">Age</label>
+                        <input class="form-control text-center" disabled type="number" id="age" />
+                    </div>
+                </div>
+                <div class="form-group w-100 d-flex flex-column flex-md-row gap-4 justify-content-center align-center">
+                    <div class="form-group w-50">
+                        <label class="form-label" for="gender">Gender</label>
+                        <select type="text" class="custom-select d-block w-100 mx-auto text-center" id="gender">
+                            <option selected disabled hidden>Choose</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group w-100">
+                    <label class="form-label" for="contact">Contact</label>
+                    <input class="form-control w-50 mx-auto text-center" type="number" id="contact" />
+                </div>
+                <div class="form-group w-100">
+                    <label class="form-label" for="address">Address</label>
+                    <textarea class="form-control w-75 mx-auto text-center" id="address" rows="3"></textarea>
+                </div>
+                <!-- <div class="form-group w-50 mx-auto">
+                    <label class="form-label" for="g-name">Guardian's Name</label>
+                    <input class="form-control w-100 text-center" type="text" id="g-name" />
+                </div>
+                <div class="form-group w-50 mx-auto">
+                    <label class="form-label" for="g-address">Guardian's Address</label>
+                    <input class="form-control w-100 text-center" type="text" id="g-address" />
+                </div>
+                <div class="form-group w-50 mx-auto">
+                    <label class="form-label" for="g-contact">Guardian's Contact</label>
+                    <input class="form-control w-100 text-center" type="number" id="g-contact" />
+                </div>
+                <div class="form-group w-50 mx-auto">
+                    <label class="form-label" for="g-relationship">Relationship to Patient</label>
+                    <input class="form-control w-100 text-center" type="text" id="g-relationship" />
+                </div> -->
+                <div class="form-group w-100 pt-3">
+                    <button id="submit" class="btn btn-info">ADD PATIENT</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCHEDULE -->
+        <div class="bg-shadow-sched d-flex d-none justify-content-center align-items-center">
+            <div class="schedule-form border d-flex flex-column justify-content-center align-items-center gap-4 text-light text-center bg-dark border-dark border-4 w-50 h-50 rounded p-4">
+                <div class="form-group w-75 mx-auto">
+                    <label class="form-label" for="patient_type">Patient Type</label>
+                    <select type="text" class="custom-select d-block w-100 text-center" id="patient_type">
+                        <option selected disabled hidden>Choose</option>
+                        <option value="OB">OB</option>
+                        <option value="Pedia">Pedia</option>
+                    </select>
+                </div>
+                <div class="form-group w-50 mx-auto pt-3">
+                    <input type="hidden" id="hidden-patient-id"/>
+                    <button id="schedule" class="btn btn-info">SCHEDULE PATIENT</button>
+                </div>
+            </div>
+        </div>
+
+        <%- include('../../templates/loading.ejs') %>
+        <%- include('../../templates/toast.ejs') %>
+            <script type="application/javascript" src="/js/admin/patients.js"></script>
 </body>
 
 </html>

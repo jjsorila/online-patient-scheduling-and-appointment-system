@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="apt_id" content="<%= apt_id %>">
-    <meta name="patient_id" content="<%= user.id %>">
+    <meta name="patient_id" content="<%= user.patient_id %>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%- include('../../templates/header.ejs') %>
 </head>
@@ -19,90 +19,94 @@
         <div class="form-group d-flex flex-column flex-md-row gap-5 justify-content-center">
             <div class="form-group">
                 <label class="form-label" for="fname">First Name</label>
-                <input value="<%= user.fullname?.fname %>" type="text" class="form-control border border-dark rounded border-4" id="fname" />
+                <input disabled value="<%= user.fullname?.fname %>" type="text" class="text-center form-control border border-dark rounded border-4" id="fname" />
             </div>
             <div class="form-group">
                 <label class="form-label" for="mi">M.I.</label>
-                <input value="<%= user.fullname?.mi %>" type="text" class="form-control border border-dark rounded border-4" id="mi" />
+                <input disabled value="<%= user.fullname?.mi %>" type="text" class="text-center form-control border border-dark rounded border-4" id="mi" />
             </div>
             <div class="form-group">
                 <label class="form-label" for="lname">Last Name</label>
-                <input value="<%= user.fullname?.lname %>" type="text" class="form-control border border-dark rounded border-4" id="lname" />
+                <input disabled value="<%= user.fullname?.lname %>" type="text" class="text-center form-control border border-dark rounded border-4" id="lname" />
             </div>
             <div class="form-group">
                 <label class="form-label" for="contact">Contact</label>
-                <input value="<%= user.contact %>" type="number" class="form-control border border-dark rounded border-4" id="contact" />
+                <input disabled value="<%= user.contact %>" type="number" class="text-center form-control border border-dark rounded border-4" id="contact" />
             </div>
         </div>
         <div class="form-group d-flex flex-column flex-md-row gap-5 justify-content-center">
             <div class="form-group">
                 <label class="form-label" for="gender">Gender</label>
-                <input value="<%= user.gender %>" class="form-control border border-dark rounded border-4" id="gender" disabled />
+                <input disabled value="<%= user.gender %>" class="text-center form-control border border-dark rounded border-4" id="gender" disabled />
             </div>
             <div class="form-group">
                 <label class="form-label" for="birthdate">Birthdate</label>
-                <input value="<%= user.birthdate %>" type="date" class="form-control border border-dark rounded border-4" id="birthdate" />
+                <input disabled value="<%= user.birthdate %>" type="date" class="form-control border border-dark rounded border-4" id="birthdate" />
             </div>
             <div class="form-group">
                 <label class="form-label" for="age">Age</label>
-                <input value="<%= user.age %>" type="number" class="form-control border border-dark rounded border-4" id="age"
+                <input value="<%= user.age %>" type="number" class="text-center form-control border border-dark rounded border-4" id="age"
                     disabled />
             </div>
         </div>
         <div class="form-group w-100">
             <label class="form-label" for="address">Address</label>
-            <textarea class="form-control border border-dark border-4" id="address" rows="3"><%= user.address %></textarea>
-        </div>
-        <div class="form-group w-100">
-            <label class="form-label" for="patient_history">Patient History</label>
-            <textarea class="form-control border border-dark border-4" id="patient_history" rows="3"><%= user.patient_history %></textarea>
+            <textarea disabled class="form-control border border-dark border-4 text-center" id="address" rows="3"><%= user.address %></textarea>
         </div>
         <div class="form-group">
             <label for="patient_type" class="form-label">Patient Type</label>
-            <select class="form-control border border-dark border-4 text-center" id="patient_type">
-                <% if(user.patient_type) { %>
-                    <option selected hidden value="<%= user.patient_type %>"><%= user.patient_type %></option>
-                    <option value="Pedia">Pedia</option>
-                    <option value="OB">OB</option>
-                <% } else { %>
-                    <option selected disabled>Choose</option>
-                    <option value="Pedia">Pedia</option>
-                    <option value="OB">OB</option>
-                <% } %>
-            </select>
+            <input disabled class="form-control border border-dark border-4 text-center text-center" value="<%= user.patient_type %>" id="patient_type">
         </div>
+        <% if(user.guardian?.name && user.guardian?.address && user.guardian?.contact && user.guardian?.relationship) { %>
+            <div class="form-group w-100">
+                <label class="form-label" for="g-name">Guardian's Name</label>
+                <input disabled value="<%= user.guardian?.name %>" class="form-control w-100 border border-dark border-4 text-center" type="text" id="g-name" />
+            </div>
+            <div class="form-group w-100">
+                <label class="form-label" for="g-address">Guardian's Address</label>
+                <input disabled value="<%= user.guardian?.address %>" class="form-control w-100 border border-dark border-4 text-center" type="text" id="g-address" />
+            </div>
+            <div class="form-group w-100">
+                <label class="form-label" for="g-contact">Guardian's Contact</label>
+                <input disabled value="<%= user.guardian?.contact %>" class="form-control w-100 border border-dark border-4 text-center" type="number" id="g-contact" />
+            </div>
+            <div class="form-group w-100">
+                <label class="form-label" for="g-relationship">Relationship to Patient</label>
+                <input disabled value="<%= user.guardian?.relationship %>" class="form-control w-100 border border-dark border-4 text-center" type="text" id="g-relationship" />
+            </div>
+        <% } %>
 
         <!-- MEDICAL RECORD -->
-        <div class="form-group">
-            <label for="guardian" class="form-label">Guardian</label>
-            <input type="text" class="form-control border border-dark border-4" id="guardian">
+        <div class="form-group w-100">
+            <label class="form-label" for="patient_history">Patient History</label>
+            <textarea class="form-control border border-dark border-4 text-center" id="patient_history" rows="3"><%= user.patient_history %></textarea>
         </div>
         <div class="form-group d-flex flex-column flex-md-row gap-5 justify-content-center">
             <div class="form-group">
                 <label class="form-label" for="temperature">Temperature</label>
-                <input value="" type="number" class="form-control border border-dark rounded border-4"
+                <input value="" type="number" class="form-control border border-dark rounded border-4 text-center"
                     id="temperature" />
             </div>
             <div class="form-group">
                 <label class="form-label" for="bp">Blood Pressure</label>
-                <input value="" type="text" class="form-control border border-dark rounded border-4" id="bp" />
+                <input value="" type="text" class="form-control border border-dark rounded border-4 text-center" id="bp" />
             </div>
             <div class="form-group">
                 <label class="form-label" for="weight">Weight</label>
-                <input value="" type="text" class="form-control border border-dark rounded border-4" id="weight" />
+                <input value="" type="text" class="form-control border border-dark rounded border-4 text-center" id="weight" />
             </div>
             <div class="form-group">
                 <label class="form-label" for="height">Height</label>
-                <input value="" type="text" class="form-control border border-dark rounded border-4" id="height" />
+                <input value="" type="text" class="form-control border border-dark rounded border-4 text-center" id="height" />
             </div>
         </div>
         <div class="form-group">
             <label class="form-label" for="diagnosis">Diagnosis</label>
-            <input value="" type="text" class="form-control border border-dark rounded border-4 text-center" id="diagnosis" />
+            <input value="" type="text" class="form-control border border-dark rounded border-4 text-center text-center" id="diagnosis" />
         </div>
         <div class="form-group">
             <label class="form-label" for="description">Description</label>
-            <textarea class="form-control border border-dark border-4" id="description" rows="3"></textarea>
+            <textarea class="form-control border border-dark border-4 text-center" id="description" rows="3"></textarea>
         </div>
 
         <div class="form-group">

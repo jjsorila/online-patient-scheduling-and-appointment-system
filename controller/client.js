@@ -41,7 +41,7 @@ router.get('/login', login, (req, res) => {
 router.get('/user', protected, (req, res) => {
 
     db.query(`
-        SELECT fullname,contact,gender,address,birthdate,age FROM patient_accounts WHERE id=${db.escape(req.session.user.id)};
+        SELECT fullname,contact,gender,address,birthdate,age,guardian FROM patient_accounts WHERE id=${db.escape(req.session.user.id)};
         SELECT apt.schedule AS schedule,apt.status AS status FROM appointments AS apt INNER JOIN patient_accounts AS ca ON ca.id=apt.id WHERE apt.id=${db.escape(req.session.user.id)} AND NOT apt.status='Done' AND apt.apt_type='Online' ORDER BY DATE(apt.schedule), TIME(apt.schedule);`,
         (err, result) => {
             if (err) throw err;
@@ -53,6 +53,7 @@ router.get('/user', protected, (req, res) => {
                     ...req.session.user,
                     ...result[0][0],
                     fullname: JSON.parse(result[0][0].fullname),
+                    guardian: JSON.parse(result[0][0].guardian),
                     birthdate: dayjs(result[0][0].birthdate).format("YYYY-MM-DD"),
                     age: result[0][0].birthdate ? getAge(result[0][0].birthdate) : null
                 },
@@ -205,12 +206,13 @@ router.put("/reset", (req, res) => {
 //SAVE/UPDATE USER INFORMATION
 router.put('/update/user/:id', (req, res) => {
     let { id } = req.params;
-    let { fullname, contact, address, gender, birthdate, age } = req.body
+    let { fullname, contact, address, gender, birthdate, age, guardian } = req.body
 
     fullname = JSON.stringify(fullname)
+    guardian = JSON.stringify(guardian)
 
     //UPDATE USER INFORMATION
-    db.query(`UPDATE patient_accounts SET fullname=${db.escape(fullname)},contact=${db.escape(contact)},address=${db.escape(address)},gender=${db.escape(gender)},birthdate=${db.escape(birthdate)},age=${db.escape(age)} WHERE id=${db.escape(id)}`,
+    db.query(`UPDATE patient_accounts SET guardian=${db.escape(guardian)},fullname=${db.escape(fullname)},contact=${db.escape(contact)},address=${db.escape(address)},gender=${db.escape(gender)},birthdate=${db.escape(birthdate)},age=${db.escape(age)} WHERE id=${db.escape(id)}`,
         (err, result) => {
             if (err) {
                 console.log(err)
@@ -226,7 +228,7 @@ router.post('/appointments/:id', (req, res) => {
 
     const apt_id = uuid.v4();
 
-    db.query(`INSERT INTO appointments(apt_id,id,schedule,apt_type) VALUES(${db.escape(apt_id)},${db.escape(id)},${db.escape(req.body.schedule)},${db.escape('Online')});`,
+    db.query(`INSERT INTO appointments(apt_id,id,schedule,apt_type) VALUES(${db.escape(apt_id)},${db.escape(id)},${db.escape(req.body.schedule)},'Online');`,
         (err, result) => {
             if (err) throw err;
             res.json({ operation: true })
