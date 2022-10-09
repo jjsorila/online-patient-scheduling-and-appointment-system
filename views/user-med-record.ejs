@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('./templates/header.ejs'); %>
+</head>
+<body class="bg-dark pb-3 h-100">
+    <%- include('./templates/navbar.ejs'); %>
+
+    <div class="container text-center bg-light my-4 p-3 d-flex flex-column gap-4 w-75 rounded">
+        <div class="form-group">
+            <label for="patient_type" class="form-label">Date Created: <%= user.date_created %></label>
+        </div>
+        <div class="form-group">
+            <label for="patient_type" class="form-label">Patient Type</label>
+            <input disabled class="form-control border border-dark border-4 text-center text-center" value="<%= user.patient_type %>" id="patient_type">
+        </div>
+        <div class="form-group w-100">
+            <label class="form-label" for="patient_history">Patient History</label>
+            <textarea disabled class="form-control border border-dark border-4 text-center" id="patient_history" rows="3"><%= user.patient_history %></textarea>
+        </div>
+        <div class="form-group d-flex flex-column flex-md-row gap-2 gap-md-5 justify-content-center">
+            <div class="form-group">
+                <label class="form-label" for="temperature">Temperature</label>
+                <input disabled value="<%= user.temperature %>" type="number" class="form-control border border-dark rounded border-4 text-center"
+                    id="temperature" />
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="bp">Blood Pressure</label>
+                <input disabled value="<%= user.bp %>" type="text" class="form-control border border-dark rounded border-4 text-center" id="bp" />
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="weight">Weight</label>
+                <input disabled value="<%= user.weight %>" type="text" class="form-control border border-dark rounded border-4 text-center" id="weight" />
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="height">Height</label>
+                <input disabled value="<%= user.height %>" type="text" class="form-control border border-dark rounded border-4 text-center" id="height" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="diagnosis">Diagnosis</label>
+            <input disabled value="<%= user.ailment?.diagnosis %>" type="text" class="form-control border border-dark rounded border-4 text-center text-center" id="diagnosis" />
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="description">Description</label>
+            <textarea disabled class="form-control border border-dark border-4 text-center" id="description" rows="3"><%= user.ailment?.description %></textarea>
+        </div>
+    </div>
+
+    <%- include('./templates/loading.ejs'); %>
+        <%- include('./templates/toast.ejs'); %>
+            <script type="application/javascript" src="/js/user-med-record.js"></script>
+</body>
+</html>

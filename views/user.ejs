@@ -20,6 +20,13 @@
         <form
             class="container border border-dark border-5 bg-light user-info p-5 d-flex flex-column gap-5 align-items-center">
             <h5 class="text-center text-danger">You have unsaved changes</h5>
+            <div class="form-group d-flex flex-column">
+                <div class="img-container border border-dark border-4">
+                    <img id="img" class="img-fluid" src="<%= user.picture %>"/>
+                </div>
+                <label class="btn" for="myFile">CHANGE</label>
+                <input type="file" class="d-none" id="myFile"/>
+            </div>
             <div class="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-5">
                 <div class="form-group text-center">
                     <label for="fname">First Name</label>
@@ -28,8 +35,8 @@
                 </div>
                 <div class="form-group text-center">
                     <label for="mi">M.I.</label>
-                    <input value="<%= user.fullname?.mi %>" type="text" class="text-center form-control border border-dark border-4"
-                        id="mi" />
+                    <input value="<%= user.fullname?.mi %>" type="text"
+                        class="text-center form-control border border-dark border-4" id="mi" />
                 </div>
                 <div class="form-group text-center">
                     <label for="lname">Last Name</label>
@@ -43,28 +50,30 @@
                     <select type="text" class="form-select border border-dark border-4 d-block text-center" id="gender"
                         name="gender">
                         <% if(user.gender) { %>
-                            <option selected hidden value="<%= user.gender %>"><%= user.gender %></option>
-                        <% }else{ %>
-                            <option selected disabled hidden>Choose</option>
-                        <% } %>
-                        <option>Male</option>
-                        <option>Female</option>
+                            <option selected hidden value="<%= user.gender %>">
+                                <%= user.gender %>
+                            </option>
+                            <% }else{ %>
+                                <option selected disabled hidden>Choose</option>
+                                <% } %>
+                                    <option>Male</option>
+                                    <option>Female</option>
                     </select>
                 </div>
                 <div class="form-group text-center">
                     <label for="birthdate">Birthdate</label>
-                    <input value="<%= user.birthdate %>" type="date" class="text-center form-control border border-dark border-4"
-                        id="birthdate" name="birthdate" />
+                    <input value="<%= user.birthdate %>" type="date"
+                        class="text-center form-control border border-dark border-4" id="birthdate" name="birthdate" />
                 </div>
                 <div class="form-group text-center">
                     <label for="age" class="control-label">Age</label>
-                    <input type="number" value="<%= user.age %>" class="text-center form-control border border-dark border-4"
-                        id="age" />
+                    <input type="number" value="<%= user.age %>"
+                        class="text-center form-control border border-dark border-4" id="age" />
                 </div>
                 <div class="form-group text-center">
                     <label for="contact">Contact</label>
-                    <input value="<%= user.contact %>" type="text" class="text-center form-control border border-dark border-4"
-                        id="contact" name="contact" />
+                    <input value="<%= user.contact %>" type="text"
+                        class="text-center form-control border border-dark border-4" id="contact" name="contact" />
                 </div>
             </div>
             <div class="form-group text-center w-75">
@@ -74,8 +83,8 @@
             </div>
             <div class="form-group text-center w-75">
                 <label for="g-name" class="control-label">Guardian's Name</label>
-                <input type="text" value="<%= user.guardian?.name %>" class="text-center form-control border border-dark border-4"
-                    id="g-name" />
+                <input type="text" value="<%= user.guardian?.name %>"
+                    class="text-center form-control border border-dark border-4" id="g-name" />
             </div>
             <div class="form-group text-center w-75">
                 <label for="g-address" class="control-label">Guardian's Address</label>
@@ -84,71 +93,34 @@
             </div>
             <div class="form-group text-center w-75">
                 <label for="g-contact" class="control-label">Guardian's Contact</label>
-                <input type="number" value="<%= user.guardian?.contact %>" class="text-center form-control border border-dark border-4"
-                    id="g-contact" />
+                <input type="number" value="<%= user.guardian?.contact %>"
+                    class="text-center form-control border border-dark border-4" id="g-contact" />
             </div>
             <div class="form-group text-center w-75">
                 <label for="age" class="control-label">Relationship to Patient</label>
-                <input type="g-relationship" value="<%= user.guardian?.relationship %>" class="text-center form-control border border-dark border-4"
-                    id="g-relationship" />
+                <input type="g-relationship" value="<%= user.guardian?.relationship %>"
+                    class="text-center form-control border border-dark border-4" id="g-relationship" />
             </div>
-            <div class="d-flex flex-column flex-lg-row justify-content-space-around align-items-center gap-5">
-                <button id="save" class="btn btn-light border border-dark border-4 rounded">SAVE</button>
-                <button id="sched" class="btn btn-light border border-dark border-4 rounded">MAKE AN
-                    APPOINTMENT</button>
+            <div class="d-flex justify-content-center w-100">
+                <button id="save" disabled class="btn btn-light border border-dark border-4 rounded">SAVE</button>
             </div>
-
-            <!-- FALLBACK LOADING -->
-            <%- include('./templates/loading.ejs') %>
         </form>
 
-        <!-- APOINTMENTS TABLE -->
-        <h1 class="text-center text-light mb-4 mt-5">Appointments</h1>
+        <h1 class="text-center text-light mb-4 mt-5">Medical Records</h1>
         <section class="container bg-light appointments-table p-4 w-75 mb-4">
-            <table class="table text-center table-striped table-hover" id="appointments">
+            <table class="table text-center table-striped table-hover">
                 <thead>
-                    <th class="text-center">DATE</th>
-                    <th class="text-center">STATUS</th>
+                    <th class="text-center">DIAGNOSIS</th>
+                    <th class="text-center">PATIENT TYPE</th>
+                    <th class="text-center">DATE CREATED</th>
+                    <th class="text-center">ACTION</th>
                 </thead>
-                <tbody>
-                    <% appointments.forEach((val)=> { %>
-                        <tr>
-                            <td>
-                                <%= val.schedule %>
-                            </td>
-                            <td>
-                                <%= val.status %>
-                            </td>
-                        </tr>
-                        <% }) %>
-                </tbody>
             </table>
         </section>
 
-        <!-- APPOINTMENT SCHEDULE FORM -->
-        <div class="bg-shadow-dim d-flex align-items-center justify-content-center d-none">
-            <div class="bg-light w-75 position-relative d-flex gap-5 flex-column">
-                <label id="close"><i class="bi bi-x-square-fill"></i></label>
-                <h5
-                    class="text-center border-bottom border-dark border-3 w-100 text-dark d-block pb-4 mt-2 position-relative">
-                    Appointment Date</h5>
-                <div class="w-100 d-flex flex-column gap-3 position-relative align-items-center">
-                    <div class="form-group text-center w-50 mb-1">
-                        <label for="date-sched" class="control-label">Date</label>
-                        <input type="datetime-local" class="form-control border border-dark border-4 w-100 mx-auto mb-3"
-                            id="date-sched">
-                    </div>
-                    <div class="form-group text-center my-4">
-                        <button id="submit-sched"
-                            class="btn btn-light border border-dark border-4 rounded">SUBMIT</button>
-                    </div>
-                </div>
-                <!-- FALLBACK LOADING -->
-                <%- include('./templates/loading.ejs') %>
-            </div>
-        </div>
 
-        <!-- TOAST -->
+        <%- include('./templates/confirmation.ejs') %>
+        <%- include('./templates/loading.ejs') %>
         <%- include('./templates/toast.ejs') %>
             <script type="application/javascript" src="/js/user.js"></script>
 </body>

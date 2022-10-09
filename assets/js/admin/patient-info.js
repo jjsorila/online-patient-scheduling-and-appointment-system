@@ -26,6 +26,7 @@ $(document).ready(function (e) {
 
     //DETECT CHANGES
     $("input, textarea, select").on("change paste keyup", function (e) {
+        $("#save").attr("disabled", false)
         $(".unsaved-changes").css("display", "block")
     })
 
@@ -59,7 +60,9 @@ $(document).ready(function (e) {
     //SAVE/UPDATE USER INFORMATION
     $("#save").click(function (e) {
         if (!fname.val() || !mi.val() || !lname.val() || !contact.val() || !address.val() || !birthdate.val() || !age.val()) return showToast("❌ Complete required fields")
-
+        $(".confirmation-shadow").toggleClass("d-none")
+    })
+    $("#yes").click(function(e) {
         $(".loading").css("display", "block")
 
         $.ajax({
@@ -97,10 +100,15 @@ $(document).ready(function (e) {
                 console.log(err)
             },
             complete: () => {
+                $(".confirmation-shadow").toggleClass("d-none")
+                $("#save").attr("disabled", true)
                 $(".loading").css("display", "none")
                 $(".unsaved-changes").css("display", "none")
             }
         })
+    })
+    $("#no").click(function(e) {
+        $(".confirmation-shadow").toggleClass("d-none")
     })
 
     //OPEN MEDICAL RECORD

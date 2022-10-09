@@ -27,6 +27,9 @@ $(document).ready(function (e) {
 
     //UPDATE MEDICAL RECORD
     $("#save").click(function (e) {
+        $(".confirmation-shadow").toggleClass("d-none")
+    })
+    $("#yes").click(function(e) {
         $(".loading").css("display", "block")
 
         $.ajax({
@@ -50,6 +53,7 @@ $(document).ready(function (e) {
             success: (res) => {
                 if(!res.operation) return showToast("❌ Something went wrong")
                 showToast("✅ Updated Successfully")
+                $(".confirmation-shadow").toggleClass("d-none")
                 location.href = `/admin/patients/${patient_id}`
             },
             error: (err) => {
@@ -60,5 +64,8 @@ $(document).ready(function (e) {
                 $(".loading").css("display", "none")
             }
         })
+    })
+    $("#no").click(function(e) {
+        $(".confirmation-shadow").toggleClass("d-none")
     })
 })

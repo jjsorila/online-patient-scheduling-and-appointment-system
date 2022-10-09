@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="patient_id" content="<%= user.id %>"/>
+    <%- include('./templates/header.ejs'); %>
+        <link rel="stylesheet" href="/css/user-appointments.css" />
+        <link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+        <script type="application/javascript" src="//cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+</head>
+
+<body class="bg-dark h-100">
+    <%- include('./templates/navbar.ejs'); %>
+
+    <div class="container w-75 d-flex justify-content-center my-5">
+        <button id="sched" class="btn btn-light border bg-dark text-light border-light border-4 rounded">MAKE AN
+            APPOINTMENT</button>
+    </div>
+
+    <!-- APOINTMENTS TABLE -->
+    <h1 class="text-center text-light mb-3">Appointments</h1>
+    <section class="container bg-light appointments-table p-4 w-75 mb-4 d-flex flex-column gap-3">
+        <div class="form-group text-center d-flex flex-column gap-3 mb-3">
+            <div class="form-group">
+                <label for="sort" class="form-label">Sort Status</label>
+                <select id="sort" class="form-select border border-dark border-4">
+                    <option selected value="none">All</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="show" class="form-label">Show Appointments</label>
+                <select id="show" class="form-select border border-dark border-4">
+                    <option selected value="none">All</option>
+                    <option value="Today">Today</option>
+                    <option value="Week">This Week</option>
+                    <option value="Month">This Month</option>
+                </select>
+            </div>
+        </div>
+        <table class="table text-center table-striped table-hover">
+            <thead>
+                <th class="text-center">DATE</th>
+                <th class="text-center">PATIENT TYPE</th>
+                <th class="text-center">STATUS</th>
+            </thead>
+        </table>
+    </section>
+
+
+
+        <!-- APPOINTMENT SCHEDULE FORM -->
+        <div class="bg-shadow-dim d-flex align-items-center justify-content-center d-none">
+            <div class="form-sched bg-light w-75 position-relative d-flex gap-5 flex-column rounded">
+                <label id="close"><i class="bi bi-x-square-fill"></i></label>
+                <h5
+                    class="text-center border-bottom border-dark border-3 w-100 text-dark d-block py-3 mt-2 position-relative">
+                    Make an Appointment</h5>
+                <div class="w-100 d-flex flex-column gap-3 position-relative align-items-center">
+                    <div class="form-group text-center w-50">
+                        <label for="date-sched" class="form-label">Date</label>
+                        <input type="datetime-local" class="text-center form-control border border-dark border-4 w-100 mx-auto mb-3"
+                            id="date-sched">
+                    </div>
+                    <div class="form-group text-center w-50">
+                        <label for="patient_type" class="form-label">Patient Type</label>
+                        <select id="patient_type" class="text-center form-select border border-dark border-4">
+                            <option selected hidden disabled>Choose</option>
+                            <option value="Pedia">Pedia</option>
+                            <option value="OB">OB</option>
+                        </select>
+                    </div>
+                    <div class="form-group text-center w-50">
+                        <label for="med-complain" class="form-label">Medical Complain</label>
+                        <textarea rows="3" id="med-complain" class="form-control text-center border border-dark border-4"></textarea>
+                    </div>
+                    <div class="form-group text-center my-4">
+                        <button id="submit-sched"
+                            class="btn btn-light border border-dark border-4 rounded">SUBMIT</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <%- include('./templates/loading.ejs'); %>
+        <%- include('./templates/toast.ejs'); %>
+            <script type="application/javascript" src="/js/user-appointments.js"></script>
+</body>
+
+</html>

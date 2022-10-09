@@ -30,7 +30,7 @@ $(document).ready(function (e) {
             {
                 data: "contact"
             },
-            { data: "status" },
+            // { data: "status" },
             {
                 data: "apt_id",
                 render: (data) => {
@@ -75,7 +75,7 @@ $(document).ready(function (e) {
                 {
                     data: "contact"
                 },
-                { data: "status" },
+                // { data: "status" },
                 {
                     data: "apt_id",
                     render: (data) => {
@@ -121,7 +121,7 @@ $(document).ready(function (e) {
                         {
                             data: "contact"
                         },
-                        { data: "status" },
+                        // { data: "status" },
                         {
                             data: "apt_id",
                             render: (data) => {

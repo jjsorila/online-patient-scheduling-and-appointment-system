@@ -48,15 +48,21 @@
                 <input value="<%= user.age %>" type="number" class="text-center form-control border border-dark rounded border-4" id="age"
                     disabled />
             </div>
+            <div class="form-group">
+                <label for="patient_type" class="form-label">Patient Type</label>
+                <input disabled class="form-control border border-dark border-4 text-center text-center" value="<%= user.patient_type %>" id="patient_type">
+            </div>
         </div>
         <div class="form-group w-100">
             <label class="form-label" for="address">Address</label>
             <textarea disabled class="form-control border border-dark border-4 text-center" id="address" rows="3"><%= user.address %></textarea>
         </div>
-        <div class="form-group">
-            <label for="patient_type" class="form-label">Patient Type</label>
-            <input disabled class="form-control border border-dark border-4 text-center text-center" value="<%= user.patient_type %>" id="patient_type">
-        </div>
+        <% if(user.med_complain) { %>
+            <div class="form-group w-100">
+                <label class="form-label" for="med_complain">Medical Complain</label>
+                <textarea disabled class="form-control w-100 border border-dark border-4 text-center" id="med_complain" ><%= user.med_complain %></textarea>
+            </div>
+        <% } %>
         <% if(user.guardian?.name && user.guardian?.address && user.guardian?.contact && user.guardian?.relationship) { %>
             <div class="form-group w-100">
                 <label class="form-label" for="g-name">Guardian's Name</label>
@@ -114,6 +120,7 @@
         </div>
     </div>
 
+    <%- include('../../templates/confirmation.ejs') %>
     <%- include('../../templates/loading.ejs') %>
         <%- include('../../templates/toast.ejs') %>
             <script type="application/javascript" src="/js/admin/new-med-record.js"></script>

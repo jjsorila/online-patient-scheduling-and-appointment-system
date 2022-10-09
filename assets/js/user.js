@@ -6,7 +6,6 @@ $(document).ready(function (e) {
         contact = $("#contact"),
         gender = $("#gender"),
         address = $("#address"),
-        dateSched = $("#date-sched"),
         id = $("meta[name=id]").attr("content"),
         age = $("#age");
 
@@ -15,13 +14,88 @@ $(document).ready(function (e) {
         const gAddress = $("#g-address")
         const gRelationship = $("#g-relationship")
 
+    const toBase64 = (file) => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+
     function getAge(dateString) {
         var ageInMilliseconds = new Date() - new Date(dateString);
         return Math.floor(ageInMilliseconds / 1000 / 60 / 60 / 24 / 365);
     }
 
-    //DISABLE SCHEDULING ON PREVIOUS DATES
-    document.getElementById("date-sched").min = new Date().toISOString().slice(0, 16);
+    //UPLOAD NEW PICTURE
+    $("#myFile").on("change", function(e) {
+        const file = document.getElementById("myFile").files[0]
+
+        $(".loading").css("display", "block")
+        if(file.size > 1000000) {
+            showToast("❌ File size should be below 1MB")
+            $(this).val("")
+            return $(".loading").css("display", "none")
+        }
+
+        let data = new FormData();
+        data.append("image", file)
+
+        $.ajax({
+            url: `/client/update/user/${id}`,
+            type: 'PUT',
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 600000,
+            data: data,
+            success: (res) => {
+                if(!res.operation) return showToast("❌ Something went wrong")
+                showToast("✅ Profile picture updated")
+                toBase64(file).then((res) => {
+                    $("#img").attr("src", res)
+                })
+            },
+            error: (err) => {
+                console.log(err)
+                showToast("❌ Server error")
+            },
+            complete: () => {
+                $(".loading").css("display", "none")
+            }
+        })
+    })
+
+    //INITIALIZE MEDICAL RECORDS DATATABLE
+    $("table").DataTable({
+        ajax: '/client/med-records',
+        lengthMenu: [[10, 20, 30, 50, -1], [10, 20, 30, 50, "All"]],
+        ordering: false,
+        columns: [
+            {
+                data: "ailment",
+                render: ({ diagnosis }) => (`${diagnosis}`)
+            },
+            {
+                data: "patient_type"
+            },
+            {
+                data: "date_created"
+            },
+            {
+                data: "mr_id",
+                render: (mr_id) => (`
+                    <input type="submit" value="View" data-id=${mr_id} class="btn btn-success" />
+                `)
+            }
+        ]
+    })
+
+    //OPEN MEDICAL RECORD
+    $("table").on("click", "input[type=submit]", function(e) {
+        const mr_id = $(this).attr("data-id")
+        location.href = `/client/view/med-record/${mr_id}`
+    })
 
     //CALCULATE AGE
     birthdate.on("change", function (e) {
@@ -29,8 +103,8 @@ $(document).ready(function (e) {
     })
 
     //DETECT INPUT UNSAVED CHANGES
-    $("form input, form textarea, form select").on("change keyup paste", function (e) {
-        $("#sched").attr("disabled", true)
+    $("form input:not([type=file]), form textarea, form select").on("change keyup paste", function (e) {
+        $("#save").attr("disabled", false)
         $("h5.text-center").css("display", "block")
     })
 
@@ -40,34 +114,9 @@ $(document).ready(function (e) {
         $(".toast").toast("show")
     }
 
-    //DATA TABLE OPTIONS
-    $('#appointments').DataTable({
-        lengthMenu: [[10, 20, 30, 50, -1], [10, 20, 30, 50, "All"]],
-        'columnDefs': [{
-            'targets': [-1], // column index (start from 0, -1 means all)
-            'orderable': false, // set orderable false for selected columns
-        }],
-        ordering: false
-    });
-
     //DISABLE DEFAULT SUBMIT ACTION FOR USER INFORMATION
     $("form").submit(function (e) {
         e.preventDefault()
-    })
-
-    //LOGOUT ACCOUNT
-    $(".logout").click(function (e) {
-        $.ajax({
-            url: '/client/logout',
-            type: 'POST',
-            success: (res) => {
-                if (!res.operation) return alert("Server error");
-                location.href = "/client/login"
-            },
-            error: (err) => {
-                alert(err)
-            }
-        })
     })
 
     //SAVE/UPDATE INFORMATION
@@ -75,7 +124,10 @@ $(document).ready(function (e) {
 
         if (!fname.val() || !mi.val() || !lname.val() || !contact.val() || !address.val() || !gender.val() || !birthdate.val() || !age.val() || !gName.val() || !gAddress.val() || !gContact.val() || !gRelationship.val()) return showToast("❌ Complete all user information")
 
-        $(".user-info .loading").css("display", "block")
+        $(".confirmation-shadow").toggleClass("d-none")
+    })
+    $("#yes").click(function(e) {
+        $(".loading").css("display", "block")
 
         $.ajax({
             url: `/client/update/user/${id}`,
@@ -103,6 +155,8 @@ $(document).ready(function (e) {
             }),
             success: (res) => {
                 if (!res.operation) return showToast("❌ Something went wrong")
+                $(".confirmation-shadow").toggleClass("d-none")
+                $("#save").attr("disabled", true)
                 showToast("✅ User updated!")
             },
             error: (err) => {
@@ -110,52 +164,11 @@ $(document).ready(function (e) {
             },
             complete: () => {
                 $("h5.text-center").css("display", "none")
-                $("#sched").attr("disabled", false)
-                $(".user-info .loading").css("display", "none")
+                $(".loading").css("display", "none")
             }
         })
     })
-
-    //OPEN APPOINTMENT FORM
-    $("#sched").click(function (e) {
-        if (!fname.val() || !mi.val() || !lname.val() || !contact.val() || !address.val() || !gender.val() || !birthdate.val()) return showToast("❌ Complete all user information")
-        $(".bg-shadow-dim").toggleClass("d-none")
-    })
-
-    //CLOSE APPOINTMENT FORM
-    $(".bg-shadow-dim #close").click(function (e) {
-        e.stopPropagation()
-        $(".bg-shadow-dim").toggleClass("d-none")
-    })
-
-    //SCHEDULE APPOINTMENT
-    $("#submit-sched").click(function (e) {
-
-        if (!dateSched.val()) return showToast("❌ Set date field!")
-
-        $(".bg-shadow-dim .loading").css("display", "block")
-
-        $.ajax({
-            url: `/client/appointments/${id}`,
-            type: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: JSON.stringify({
-                schedule: dateSched.val()
-            }),
-            success: (res) => {
-                if (!res.operation) return showToast("❌ Something went wrong")
-                showToast("✅ Appointment successfully submitted")
-            },
-            error: (err) => {
-                console.log(err)
-            },
-            complete: () => {
-                $(".bg-shadow-dim .loading").css("display", "none")
-                $(".bg-shadow-dim").toggleClass("d-none")
-                location.reload()
-            }
-        })
+    $("#no").click(function(e) {
+        $(".confirmation-shadow").toggleClass("d-none")
     })
 })

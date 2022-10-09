@@ -21,7 +21,9 @@ $(document).ready(function (e) {
 
     //ADD NEW MEDICAL RECORD
     $("#save").click(function(e) {
-
+        $(".confirmation-shadow").toggleClass("d-none")
+    })
+    $("#yes").click(function(e) {
         $(".loading").css("display", "block")
         $.ajax({
             url: `/admin/med-record/add/${apt_id}`,
@@ -44,6 +46,7 @@ $(document).ready(function (e) {
             success: (res) => {
                 if(!res.operation) return showToast("❌ Something went wrong")
                 showToast("✅ Record Added Successfully")
+                $(".confirmation-shadow").toggleClass("d-none")
                 location.href = "/admin/scheduled"
             },
             error: (err) => {
@@ -54,7 +57,9 @@ $(document).ready(function (e) {
                 $(".loading").css("display", "none")
             }
         })
-
+    })
+    $("#no").click(function(e) {
+        $(".confirmation-shadow").toggleClass("d-none")
     })
 
 })

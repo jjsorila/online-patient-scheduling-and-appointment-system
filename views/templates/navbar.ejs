@@ -18,14 +18,33 @@
 
     <div class="collapse navbar-collapse" id="navmenu">
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item text-center">
+        <li class="nav-item text-center d-flex flex-column flex-lg-row gap-1 gap-lg-5">
           <% if(user) { %>
-            <a class="nav-link logout">LOGOUT</a>
+            <a class="nav-link" href="/client/user" style="cursor: pointer;">USER</a>
+            <a class="nav-link" href="/client/appointments" style="cursor: pointer;">APPOINTMENTS</a>
+            <a class="nav-link logout" style="cursor: pointer;">LOGOUT</a>
             <% } else { %>
-              <a href="#about" class="nav-link">ABOUT</a>
+              <a href="#about" class="nav-link" style="cursor: pointer;">ABOUT</a>
               <% } %>
         </li>
       </ul>
     </div>
   </div>
 </nav>
+
+<script>
+  //LOGOUT ACCOUNT
+  $(".logout").click(function (e) {
+        $.ajax({
+            url: '/client/logout',
+            type: 'POST',
+            success: (res) => {
+                if (!res.operation) return alert("Server error");
+                location.href = "/client/login"
+            },
+            error: (err) => {
+                alert(err)
+            }
+        })
+    })
+</script>

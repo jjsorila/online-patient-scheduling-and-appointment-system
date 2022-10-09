@@ -23,7 +23,9 @@ const express = require('express'),
             html: body
         })
     },
-    uuid = require('uuid');
+    uuid = require('uuid'),
+    form = require('formidable')({ keepExtensions: true }),
+    fs = require('fs');
 
 function getAge(dateString) {
     var ageInMilliseconds = new Date() - new Date(dateString);
@@ -37,31 +39,59 @@ router.get('/login', login, (req, res) => {
     res.render('login.ejs')
 })
 
-//CLIENT USER PAGE
+//USER PAGE
 router.get('/user', protected, (req, res) => {
 
     db.query(`
-        SELECT fullname,contact,gender,address,birthdate,age,guardian FROM patient_accounts WHERE id=${db.escape(req.session.user.id)};
-        SELECT apt.schedule AS schedule,apt.status AS status FROM appointments AS apt INNER JOIN patient_accounts AS ca ON ca.id=apt.id WHERE apt.id=${db.escape(req.session.user.id)} AND NOT apt.status='Done' AND apt.apt_type='Online' ORDER BY DATE(apt.schedule), TIME(apt.schedule);`,
+        SELECT picture,fullname,contact,gender,address,birthdate,age,guardian FROM patient_accounts WHERE id=${db.escape(req.session.user.id)};`,
         (err, result) => {
             if (err) throw err;
-
-            const userAppointments = result[1].map((val) => ({ ...val, schedule: dayjs(val.schedule).format("hh:mm A MMM DD, YYYY") }));
 
             res.render('user.ejs', {
                 user: {
                     ...req.session.user,
-                    ...result[0][0],
-                    fullname: JSON.parse(result[0][0].fullname),
-                    guardian: JSON.parse(result[0][0].guardian),
-                    birthdate: dayjs(result[0][0].birthdate).format("YYYY-MM-DD"),
-                    age: result[0][0].birthdate ? getAge(result[0][0].birthdate) : null
-                },
-                appointments: userAppointments
+                    ...result[0],
+                    fullname: JSON.parse(result[0].fullname),
+                    guardian: JSON.parse(result[0].guardian),
+                    birthdate: dayjs(result[0].birthdate).format("YYYY-MM-DD"),
+                    age: result[0].birthdate ? getAge(result[0].birthdate) : null
+                }
             })
         })
 
 
+})
+
+//VIEW MEDICAL RECORD PAGE
+router.get("/view/med-record/:mr_id", protected, (req, res) => {
+    const { mr_id } = req.params
+
+    let pa = `pa.patient_history AS patient_history`
+    let apt = `apt.patient_type AS patient_type`
+    let mr = `mr.temperature AS temperature,mr.bp AS bp,mr.weight AS weight,mr.height AS height,mr.ailment AS ailment,mr.date_created AS date_created`
+
+    db.query(`SELECT ${pa},${apt},${mr} FROM ((patient_accounts AS pa INNER JOIN appointments AS apt ON pa.id=apt.id) INNER JOIN medical_records AS mr ON pa.id=mr.id) WHERE mr.mr_id=${db.escape(mr_id)} AND apt.apt_id=${db.escape(mr_id)};`,
+        (err, result) => {
+            if (err) throw err;
+
+            res.render("user-med-record.ejs", {
+                user: {
+                    ...result[0],
+                    ailment: JSON.parse(result[0].ailment),
+                    date_created: dayjs(result[0].date_created).format("MMM DD, YYYY hh:mm A")
+                }
+            })
+        })
+
+})
+
+//APPOINTMENTS PAGE
+router.get("/appointments", protected, (req, res) => {
+    res.render("user-appointments.ejs", {
+        user: {
+            ...req.session.user
+        }
+    })
 })
 
 //CLIENT RESET PASSWORD PAGE
@@ -206,6 +236,39 @@ router.put("/reset", (req, res) => {
 //SAVE/UPDATE USER INFORMATION
 router.put('/update/user/:id', (req, res) => {
     let { id } = req.params;
+
+    //UPDATE PICTURE
+    if (req.headers['content-type'] != 'application/json') {
+        form.parse(req, (err, fields, files) => {
+            if (err) throw err;
+
+            const { image } = files;
+
+            db.query(`SELECT picture FROM patient_accounts WHERE id=${db.escape(id)}`,
+                (queryError, checkPicture) => {
+                    if (queryError) throw queryError;
+
+                    let newFileName = '';
+                    if (checkPicture[0].picture == '/images/profile-placeholder.jpg') {
+                        newFileName = image.newFilename
+                    } else {
+                        const splittedFileName = checkPicture[0].picture.split("/");
+                        newFileName = splittedFileName[splittedFileName.length - 1];
+                    }
+
+                    fs.renameSync(image.filepath, `${process.cwd()}/assets/images/${newFileName}`)
+
+                    db.query(`UPDATE patient_accounts SET picture=${db.escape(`/images/${newFileName}`)} WHERE id=${db.escape(id)}`,
+                    (updateError) => {
+                        if (updateError) throw updateError;
+                        res.json({ operation: true })
+                    })
+                })
+
+        })
+        return null
+    }
+
     let { fullname, contact, address, gender, birthdate, age, guardian } = req.body
 
     fullname = JSON.stringify(fullname)
@@ -225,13 +288,71 @@ router.put('/update/user/:id', (req, res) => {
 //MAKE AN APPOINTMENT
 router.post('/appointments/:id', (req, res) => {
     const { id } = req.params;
-
+    const { patient_type, med_complain } = req.body
     const apt_id = uuid.v4();
 
-    db.query(`INSERT INTO appointments(apt_id,id,schedule,apt_type) VALUES(${db.escape(apt_id)},${db.escape(id)},${db.escape(req.body.schedule)},'Online');`,
+    db.query(`SELECT * FROM patient_accounts WHERE id=${db.escape(id)}`,
         (err, result) => {
             if (err) throw err;
-            res.json({ operation: true })
+
+            if (!result[0].fullname || !result[0].address || !result[0].birthdate) return res.json({ operation: false })
+
+            db.query(`INSERT INTO appointments(apt_id,id,schedule,apt_type,patient_type,med_complain) VALUES(${db.escape(apt_id)},${db.escape(id)},${db.escape(req.body.schedule)},'Online',${db.escape(patient_type)},${db.escape(med_complain)});`,
+                (err) => {
+                    if (err) throw err;
+                    res.json({ operation: true })
+                })
+        })
+
+})
+
+//GET PATIENT APPOINTMENTS
+router.get('/appointments/list', (req, res) => {
+    const { id } = req.session.user
+    const { sort, show } = req.query
+
+    let status = `NOT status='Done'`
+    let schedule = `NOT schedule IS NULL`
+
+    if (sort == "Approved") status = `status='Approved'`
+    if (sort == "Pending") status = `status='Pending'`
+    if (sort == "Cancelled") status = `status='Cancelled'`
+
+    if (show == "Today") schedule = `DATE(schedule)=CURDATE()`
+    if (show == "Week") schedule = `WEEK(schedule)=WEEK(CURDATE())`
+    if (show == "Month") schedule = `MONTH(schedule)=MONTH(CURDATE())`
+
+    db.query(`SELECT schedule,patient_type,status FROM appointments WHERE ${status} AND ${schedule} AND id=${db.escape(id)} ORDER BY schedule;`,
+        (err, result) => {
+            if (err) throw err;
+
+            res.json({
+                data: result.map((obj) => ({
+                    ...obj,
+                    schedule: dayjs(obj.schedule).format("MMM DD, YYYY hh:mm A")
+                }))
+            })
+        })
+})
+
+//GET PATIENT MEDICAL RECORDS
+router.get("/med-records", (req, res) => {
+    const { id } = req.session.user
+
+    let mr = `mr.ailment AS ailment,mr.date_created AS date_created,mr.mr_id AS mr_id`
+    let apt = `apt.patient_type AS patient_type`
+
+    db.query(`SELECT ${mr},${apt} FROM medical_records AS mr INNER JOIN appointments AS apt ON mr.mr_id=apt.apt_id WHERE mr.id=${db.escape(id)} AND apt.status='Done' ORDER BY date_created DESC;`,
+        (err, result) => {
+            if (err) throw err;
+
+            res.json({
+                data: result.map((obj) => ({
+                    ...obj,
+                    date_created: dayjs(obj.date_created).format("MMM DD, YYYY hh:mm A"),
+                    ailment: JSON.parse(obj.ailment)
+                }))
+            })
         })
 })
 
