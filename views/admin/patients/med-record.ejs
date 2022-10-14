@@ -66,13 +66,6 @@
             <textarea disabled class="form-control border border-dark border-4 text-center" id="address"
                 rows="3"><%= user.address %></textarea>
         </div>
-        <% if(user.med_complain) { %>
-            <div class="form-group w-100">
-                <label class="form-label" for="med_complain">Medical Complain</label>
-                <textarea disabled class="form-control w-100 border border-dark border-4 text-center"
-                    id="med_complain"><%= user.med_complain %></textarea>
-            </div>
-        <% } %>
         <% if(user.guardian?.name) { %>
             <div class="form-group w-100">
                 <label class="form-label" for="g-name">Guardian's Name</label>
@@ -97,6 +90,13 @@
                 <input disabled value="<%= user.guardian?.relationship %>"
                     class="form-control w-100 border border-dark border-4 text-center" type="text"
                     id="g-relationship" />
+            </div>
+        <% } %>
+        <% if(user.med_complain) { %>
+            <div class="form-group w-100">
+                <label class="form-label" for="med_complain">Medical Complain</label>
+                <textarea disabled class="form-control w-100 border border-dark border-4 text-center"
+                    id="med_complain"><%= user.med_complain %></textarea>
             </div>
         <% } %>
 

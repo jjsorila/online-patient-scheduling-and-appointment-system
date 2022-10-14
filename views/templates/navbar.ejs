@@ -5,11 +5,11 @@
 <nav class="navbar navbar-expand-lg bg-dark navbar-dark <%= border %> py-3">
   <div class="container">
 
-    <a href="#" class="navbar-brand">
+    <a href="/" class="navbar-brand">
       <div style="width: 40px; height: 40px; overflow: hidden;" class="border rounded-circle d-inline-block">
         <img src="/favicon.ico" class="img-fluid w-100 h-100 img-thumbnail" />
       </div>
-      <a href="#" class="navbar-brand">OPASS</a>
+      <a href="/" class="navbar-brand">OPIS</a>
     </a>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
@@ -20,7 +20,8 @@
       <ul class="navbar-nav ms-auto">
         <li class="nav-item text-center d-flex flex-column flex-lg-row gap-1 gap-lg-5">
           <% if(user) { %>
-            <a class="nav-link" href="/client/user" style="cursor: pointer;">USER</a>
+            <a class="nav-link" href="/client/dashboard" style="cursor: pointer;">DASHBOARD</a>
+            <a class="nav-link" href="/client/user" style="cursor: pointer;">PROFILE</a>
             <a class="nav-link" href="/client/appointments" style="cursor: pointer;">APPOINTMENTS</a>
             <a class="nav-link logout" style="cursor: pointer;">LOGOUT</a>
             <% } else { %>

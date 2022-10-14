@@ -86,6 +86,7 @@ $(document).ready(function (e) {
 
     //OPEN APPOINTMENT FORM
     $("#sched").click(function (e) {
+        if(!$('input[type=hidden]').val()) return showToast("❌ Please update user information")
         $(".bg-shadow-dim").toggleClass("d-none")
     })
 
@@ -100,7 +101,7 @@ $(document).ready(function (e) {
 
         if (!dateSched.val() || !patient_type.val() || patient_type.val() == "Choose" || !medComplain.val()) return showToast("❌ Complete required fields")
 
-        $(".bg-shadow-dim .loading").css("display", "block")
+        $(".loading").css("display", "block")
 
         $.ajax({
             url: `/client/appointments/${patient_id}`,
@@ -114,7 +115,7 @@ $(document).ready(function (e) {
                 med_complain: medComplain.val()
             }),
             success: (res) => {
-                if (!res.operation) return showToast("❌ Update your user info")
+                if (!res.operation) return showToast("❌ Please update user information")
                 showToast("✅ Appointment successfully submitted")
                 $("table").DataTable().ajax.reload()
                 clearInput()
@@ -124,7 +125,7 @@ $(document).ready(function (e) {
                 showToast("❌ Server error")
             },
             complete: () => {
-                $(".bg-shadow-dim .loading").css("display", "none")
+                $(".loading").css("display", "none")
                 $(".bg-shadow-dim").toggleClass("d-none")
             }
         })

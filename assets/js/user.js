@@ -122,7 +122,7 @@ $(document).ready(function (e) {
     //SAVE/UPDATE INFORMATION
     $("#save").click(function (e) {
 
-        if (!fname.val() || !mi.val() || !lname.val() || !contact.val() || !address.val() || !gender.val() || !birthdate.val() || !age.val() || !gName.val() || !gAddress.val() || !gContact.val() || !gRelationship.val()) return showToast("❌ Complete all user information")
+        if (!fname.val() || !mi.val() || !lname.val() || !contact.val() || !address.val() || !gender.val() || !birthdate.val() || !age.val()) return showToast("❌ Complete all user information")
 
         $(".confirmation-shadow").toggleClass("d-none")
     })

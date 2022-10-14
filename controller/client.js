@@ -39,6 +39,11 @@ router.get('/login', login, (req, res) => {
     res.render('login.ejs')
 })
 
+//DASHBOARD PAGE
+router.get('/dashboard', protected, (req ,res) => {
+    res.render('dashboard.ejs', { user: req.session.user })
+})
+
 //USER PAGE
 router.get('/user', protected, (req, res) => {
 
@@ -87,11 +92,20 @@ router.get("/view/med-record/:mr_id", protected, (req, res) => {
 
 //APPOINTMENTS PAGE
 router.get("/appointments", protected, (req, res) => {
-    res.render("user-appointments.ejs", {
-        user: {
-            ...req.session.user
-        }
+
+    db.query(`SELECT fullname FROM patient_accounts WHERE id=${db.escape(req.session.user.id)}`,
+    (err, result) => {
+        if(err) throw err;
+
+        res.render("user-appointments.ejs", {
+            user: {
+                ...req.session.user,
+                ...result[0]
+            }
+        })
     })
+
+
 })
 
 //CLIENT RESET PASSWORD PAGE
@@ -307,7 +321,7 @@ router.post('/appointments/:id', (req, res) => {
 })
 
 //GET PATIENT APPOINTMENTS
-router.get('/appointments/list', (req, res) => {
+router.get('/appointments/list', protected, (req, res) => {
     const { id } = req.session.user
     const { sort, show } = req.query
 
@@ -335,8 +349,25 @@ router.get('/appointments/list', (req, res) => {
         })
 })
 
+//GET PATIENT APPOINTMENTS FOR FULLCALENDAR DISPLAY
+router.get('/appointments/calendar', protected, (req, res) => {
+    const { id } = req.session.user
+
+    db.query(`SELECT id,patient_type AS title,schedule AS start,status FROM appointments WHERE id=${db.escape(id)} AND NOT schedule IS NULL AND apt_type='Online';`,
+    (err, result) => {
+        if(err) throw err;
+
+        let data = result.map((obj) => ({
+            ...obj,
+            title: `${dayjs(obj.start).format("h:mmA")} ${obj.title}`
+        }))
+
+        res.status(200).json(data)
+    })
+})
+
 //GET PATIENT MEDICAL RECORDS
-router.get("/med-records", (req, res) => {
+router.get("/med-records", protected, (req, res) => {
     const { id } = req.session.user
 
     let mr = `mr.ailment AS ailment,mr.date_created AS date_created,mr.mr_id AS mr_id`

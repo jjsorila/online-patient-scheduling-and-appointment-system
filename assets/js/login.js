@@ -57,7 +57,7 @@ $(document).ready(function (e) {
             }),
             success: (res) => {
                 if (!res.operation) return showToast("❌ Invalid Credentials")
-                location.href = "/client/user"
+                location.href = "/client/dashboard"
             },
             error: (err) => {
                 console.log(err)

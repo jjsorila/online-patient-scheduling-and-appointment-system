@@ -14,14 +14,15 @@
 
 <body class="bg-dark h-100">
     <%- include('./templates/navbar.ejs'); %>
+    <input type="hidden" value="<%= user.fullname %>"/>
+    <h1 class="text-center text-light mt-4">Appointments</h1>
 
-    <div class="container w-75 d-flex justify-content-center my-5">
+    <div class="container w-75 d-flex justify-content-center my-4">
         <button id="sched" class="btn btn-light border bg-dark text-light border-light border-4 rounded">MAKE AN
             APPOINTMENT</button>
     </div>
 
     <!-- APOINTMENTS TABLE -->
-    <h1 class="text-center text-light mb-3">Appointments</h1>
     <section class="container bg-light appointments-table p-4 w-75 mb-4 d-flex flex-column gap-3">
         <div class="form-group text-center d-flex flex-column gap-3 mb-3">
             <div class="form-group">
