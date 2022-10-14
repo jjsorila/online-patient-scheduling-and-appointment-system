@@ -1,7 +1,7 @@
 require("dotenv").config({ path: `${process.cwd()}/.env` })
 const express = require('express');
 const router = express.Router();
-const { protected, login } = require('../middlewares/admin');
+const { protected, login, onlyAdmin } = require('../middlewares/admin');
 const db = require('../db/db')
 const dayjs = require('dayjs');
 const uuid = require("uuid")
@@ -17,9 +17,14 @@ router.get('/login', login, (req, res) => {
     res.render('admin/login.ejs')
 })
 
-//PATIENT LIST
+//ADMIN ACCOUNT PAGE
+router.get('/accounts', protected, onlyAdmin, (req, res) => {
+    res.render('admin/accounts/accounts.ejs', { admin: { ...req.session.admin } })
+})
+
+//PATIENT LIST PAGE
 router.get('/patients', protected, (req, res) => {
-    res.render('admin/patients/patients.ejs')
+    res.render('admin/patients/patients.ejs', { admin: { ...req.session.admin } })
 })
 
 //PATIENT INFO PAGE
@@ -70,12 +75,12 @@ router.get('/patients/:patient_id/:mr_id', protected, (req, res) => {
 
 //APPOINTMENT LIST PAGE
 router.get('/appointments', protected, (req, res) => {
-    res.render('admin/appointments/appointments.ejs')
+    res.render('admin/appointments/appointments.ejs', { admin: { ...req.session.admin } })
 })
 
 //SCHEDULED APPOINTMENTS PAGE
 router.get('/scheduled', protected, (req, res) => {
-    res.render("admin/scheduled/scheduled.ejs")
+    res.render("admin/scheduled/scheduled.ejs", { admin: { ...req.session.admin } })
 })
 
 //CREATE MEDICAL RECORD PAGE
@@ -107,7 +112,7 @@ router.get('/scheduled/:apt_id', protected, (req, res) => {
 router.post('/login', (req, res) => {
     let { username, password } = req.body
 
-    db.query(`SELECT admin_id,username,password FROM admin_accounts WHERE username=${db.escape(username)}`,
+    db.query(`SELECT admin_id,username,password,specialty FROM admin_accounts WHERE username=${db.escape(username)}`,
         (err, result) => {
             if (err) throw err;
 
@@ -117,7 +122,7 @@ router.post('/login', (req, res) => {
 
             req.session.admin = {
                 id: user.admin_id,
-                user: user.username
+                specialty: user.specialty
             }
 
             res.json({ operation: true })

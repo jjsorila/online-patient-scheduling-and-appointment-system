@@ -1,6 +1,9 @@
 <ul>
-    <li><button id="logout">Logout</button></li>
     <li><a href="/admin/appointments">Online Appointments</a></li>
     <li><a href="/admin/scheduled">Scheduled Patients</a></li>
     <li><a href="/admin/patients">Patients</a></li>
+    <% if(admin.specialty == "admin") { %>
+        <li><a href="/admin/accounts">Accounts</a></li>
+    <% } %>
+    <li><button id="logout">Logout</button></li>
 </ul>

@@ -7,6 +7,11 @@ exports.protected = (req, res, next) => {
 }
 
 exports.login = (req, res, next) => {
-    if (req.session.admin) return res.redirect('/admin/appointments')
+    if (req.session.admin) return res.redirect('/admin/scheduled')
+    return next()
+}
+
+exports.onlyAdmin = (req, res, next) => {
+    if(req.session.admin.specialty != "admin") return res.redirect('/admin/scheduled')
     return next()
 }
