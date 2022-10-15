@@ -18,51 +18,61 @@
     <h1 class="text-center text-light">Patient Information</h1>
     <div class="container border border-dark rounded border-5 text-dark bg-light text-center w-75 mb-5 position-relative d-flex flex-column gap-4 p-4 pt-5">
         <h5 class="unsaved-changes text-danger text-center position-absolute">You have unsaved changes</h5>
-        <div class="img-container border border-dark border-4 rounded mx-auto">
-            <img id="img" class="img-fluid" src="<%= user.picture %>"/>
+
+        <div class="form-group w-100 d-flex justify-content-around align-items-center">
+
+            <div class="form-group d-flex flex-column gap-3 align-items-center">
+                <div class="img-container border border-dark border-4 rounded mx-auto">
+                    <img id="img" class="img-fluid" src="<%= user.picture %>"/>
+                </div>
+
+                <div class="form-group w-100">
+                    <label class="form-label" for="gender">Gender*</label>
+                    <select class="form-select border border-dark rounded border-4 text-center" id="gender">
+                        <% if(user.gender) { %>
+                            <option value="<%= user.gender %>" hidden><%= user.gender %></option>
+                        <% } else { %>
+                            <option selected disabled hidden>Choose</option>
+                        <% } %>
+                        <option value="Female">Female</option>
+                        <option value="Male">Male</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group d-flex flex-column gap-5 justify-content-center">
+                <div class="form-group">
+                    <label class="form-label" for="fname">First Name*</label>
+                    <input value="<%= user.fullname?.fname %>" type="text" class="form-control border border-dark rounded border-4 text-center" id="fname" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="mi">M.I.*</label>
+                    <input value="<%= user.fullname?.mi %>" type="text" class="form-control border border-dark rounded border-4 text-center" id="mi" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="lname">Last Name*</label>
+                    <input value="<%= user.fullname?.lname %>" type="text" class="form-control border border-dark rounded border-4 text-center" id="lname" />
+                </div>
+            </div>
+
+            <div class="form-group d-flex flex-column gap-5 justify-content-center">
+                <div class="form-group">
+                    <label class="form-label" for="birthdate">Birthdate*</label>
+                    <input value="<%= user.birthdate %>" type="date" class="form-control text-center border border-dark rounded border-4" id="birthdate" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="age">Age*</label>
+                    <input value="<%= user.age %>" type="number" class="form-control border border-dark rounded border-4 text-center" id="age" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="contact">Contact*</label>
+                    <input value="<%= user.contact %>" type="number" class="form-control border border-dark rounded border-4 text-center" id="contact" />
+                </div>
+            </div>
         </div>
-        <div class="form-group d-flex flex-column flex-md-row gap-5 justify-content-center p-4">
-            <div class="form-group">
-                <label class="form-label" for="fname">First Name</label>
-                <input value="<%= user.fullname?.fname %>" type="text" class="form-control border border-dark rounded border-4 text-center" id="fname" />
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="mi">M.I.</label>
-                <input value="<%= user.fullname?.mi %>" type="text" class="form-control border border-dark rounded border-4 text-center" id="mi" />
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="lname">Last Name</label>
-                <input value="<%= user.fullname?.lname %>" type="text" class="form-control border border-dark rounded border-4 text-center" id="lname" />
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="contact">Contact</label>
-                <input value="<%= user.contact %>" type="number" class="form-control border border-dark rounded border-4 text-center" id="contact" />
-            </div>
-        </div>
-        <div class="form-group d-flex flex-column flex-md-row gap-5 justify-content-center p-4">
-            <div class="form-group">
-                <label class="form-label" for="gender">Gender</label>
-                <select class="form-select border border-dark rounded border-4" id="gender">
-                    <% if(user.gender) { %>
-                        <option value="<%= user.gender %>" hidden><%= user.gender %></option>
-                    <% } else { %>
-                        <option selected disabled hidden>Choose</option>
-                    <% } %>
-                    <option value="Female">Female</option>
-                    <option value="Male">Male</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="birthdate">Birthdate</label>
-                <input value="<%= user.birthdate %>" type="date" class="form-control border border-dark rounded border-4" id="birthdate" />
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="age">Age</label>
-                <input value="<%= user.age %>" type="number" class="form-control border border-dark rounded border-4 text-center" id="age" />
-            </div>
-        </div>
+
         <div class="form-group w-100">
-            <label class="form-label" for="address">Patient's Address</label>
+            <label class="form-label" for="address">Patient's Address*</label>
             <textarea class="form-control border border-dark border-4 text-center" id="address"
                 rows="3"><%= user.address %></textarea>
         </div>

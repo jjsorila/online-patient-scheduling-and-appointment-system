@@ -18,91 +18,101 @@
 
         <!-- USER INFO -->
         <form
-            class="container border border-light border-5 rounded bg-light user-info p-5 d-flex flex-column gap-5 align-items-center">
+            class="container border border-light border-5 rounded bg-light user-info p-5 d-flex flex-column gap-4 align-items-center">
             <h5 class="text-center text-danger">You have unsaved changes</h5>
-            <div class="form-group d-flex flex-column">
-                <div class="img-container border border-dark border-4 rounded">
-                    <img id="img" class="img-fluid" src="<%= user.picture %>"/>
+
+            <div class="form-group d-flex flex-column flex-md-row gap-5">
+
+                <!-- PROFILE IMAGE -->
+                <div class="form-group d-flex flex-column align-items-center gap-2">
+                    <div class="img-container w-100 border border-dark border-4 rounded">
+                        <img id="img" class="img-fluid" src="<%= user.picture %>"/>
+                    </div>
+                    <label class="btn btn-primary border border-dark border-3" for="myFile">CHANGE</label>
+                    <input type="file" class="d-none" id="myFile"/>
+                    <div class="form-group text-center">
+                        <label for="gender">Gender*</label>
+                        <select type="text" class="form-select border border-dark border-4 d-block text-center" id="gender"
+                            name="gender">
+                            <% if(user.gender) { %>
+                                <option selected hidden value="<%= user.gender %>">
+                                    <%= user.gender %>
+                                </option>
+                                <% }else{ %>
+                                    <option selected disabled hidden>Choose</option>
+                                    <% } %>
+                                        <option>Male</option>
+                                        <option>Female</option>
+                        </select>
+                    </div>
                 </div>
-                <label class="btn" for="myFile">CHANGE</label>
-                <input type="file" class="d-none" id="myFile"/>
+
+                <!-- PROFILE INFO -->
+                <div class="form-group d-flex flex-column justify-content-start align-items-center gap-5">
+                    <div class="form-group text-center">
+                        <label for="fname">First Name*</label>
+                        <input value="<%= user.fullname?.fname %>" type="text"
+                            class="form-control border border-dark border-4 text-center" id="fname" />
+                    </div>
+                    <div class="form-group text-center">
+                        <label for="mi">M.I.*</label>
+                        <input value="<%= user.fullname?.mi %>" type="text"
+                            class="text-center form-control border border-dark border-4" id="mi" />
+                    </div>
+                    <div class="form-group text-center">
+                        <label for="lname">Last Name*</label>
+                        <input value="<%= user.fullname?.lname %>" type="text"
+                            class="form-control border border-dark border-4 text-center" id="lname" />
+                    </div>
+                </div>
+
+                <div class="form-group d-flex flex-column justify-content-start align-items-center gap-5">
+                    <div class="form-group w-100 text-center">
+                        <label for="birthdate">Birthdate*</label>
+                        <input value="<%= user.birthdate %>" type="date"
+                            class="text-center w-100 form-control border border-dark border-4" id="birthdate" name="birthdate" />
+                    </div>
+                    <div class="form-group text-center">
+                        <label for="age" class="control-label">Age*</label>
+                        <input type="number" value="<%= user.age %>"
+                            class="text-center form-control border border-dark border-4" id="age" />
+                    </div>
+                    <div class="form-group text-center">
+                        <label for="contact">Contact*</label>
+                        <input value="<%= user.contact %>" type="text"
+                            class="text-center form-control border border-dark border-4" id="contact" name="contact" />
+                    </div>
+                </div>
             </div>
-            <div class="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-5">
-                <div class="form-group text-center">
-                    <label for="fname">First Name*</label>
-                    <input value="<%= user.fullname?.fname %>" type="text"
-                        class="form-control border border-dark border-4 text-center" id="fname" />
-                </div>
-                <div class="form-group text-center">
-                    <label for="mi">M.I.*</label>
-                    <input value="<%= user.fullname?.mi %>" type="text"
-                        class="text-center form-control border border-dark border-4" id="mi" />
-                </div>
-                <div class="form-group text-center">
-                    <label for="lname">Last Name*</label>
-                    <input value="<%= user.fullname?.lname %>" type="text"
-                        class="form-control border border-dark border-4 text-center" id="lname" />
-                </div>
-            </div>
-            <div class="d-flex flex-column flex-lg-row justify-content-space-evenly align-items-center gap-5">
-                <div class="form-group text-center">
-                    <label for="gender">Gender*</label>
-                    <select type="text" class="form-select border border-dark border-4 d-block text-center" id="gender"
-                        name="gender">
-                        <% if(user.gender) { %>
-                            <option selected hidden value="<%= user.gender %>">
-                                <%= user.gender %>
-                            </option>
-                            <% }else{ %>
-                                <option selected disabled hidden>Choose</option>
-                                <% } %>
-                                    <option>Male</option>
-                                    <option>Female</option>
-                    </select>
-                </div>
-                <div class="form-group text-center">
-                    <label for="birthdate">Birthdate*</label>
-                    <input value="<%= user.birthdate %>" type="date"
-                        class="text-center form-control border border-dark border-4" id="birthdate" name="birthdate" />
-                </div>
-                <div class="form-group text-center">
-                    <label for="age" class="control-label">Age*</label>
-                    <input type="number" value="<%= user.age %>"
-                        class="text-center form-control border border-dark border-4" id="age" />
-                </div>
-                <div class="form-group text-center">
-                    <label for="contact">Contact*</label>
-                    <input value="<%= user.contact %>" type="text"
-                        class="text-center form-control border border-dark border-4" id="contact" name="contact" />
-                </div>
-            </div>
-            <div class="form-group text-center w-75">
+
+
+            <div class="form-group text-center w-100">
                 <label for="address">Patient's Address*</label>
                 <textarea class="form-control border border-dark border-4 text-center" id="address"
                     rows="3"><%= user.address %></textarea>
             </div>
-            <div class="form-group text-center w-75">
+            <div class="form-group text-center w-100">
                 <label for="g-name" class="control-label">Guardian's Name</label>
                 <input type="text" value="<%= user.guardian?.name %>"
                     class="text-center form-control border border-dark border-4" id="g-name" />
             </div>
-            <div class="form-group text-center w-75">
+            <div class="form-group text-center w-100">
                 <label for="g-address" class="control-label">Guardian's Address</label>
                 <textarea class="form-control border border-dark border-4 text-center" id="g-address"
                     rows="3"><%= user.guardian?.address %></textarea>
             </div>
-            <div class="form-group text-center w-75">
+            <div class="form-group text-center w-100">
                 <label for="g-contact" class="control-label">Guardian's Contact</label>
                 <input type="number" value="<%= user.guardian?.contact %>"
                     class="text-center form-control border border-dark border-4" id="g-contact" />
             </div>
-            <div class="form-group text-center w-75">
+            <div class="form-group text-center w-100">
                 <label for="age" class="control-label">Relationship to Patient</label>
                 <input type="g-relationship" value="<%= user.guardian?.relationship %>"
                     class="text-center form-control border border-dark border-4" id="g-relationship" />
             </div>
             <div class="d-flex justify-content-center w-100">
-                <button id="save" disabled class="btn btn-light border border-dark border-4 rounded">SAVE</button>
+                <button id="save" disabled class="btn btn-light border w-25 border-dark border-4 rounded">SAVE</button>
             </div>
         </form>
 
