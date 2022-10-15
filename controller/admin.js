@@ -244,8 +244,8 @@ router.put("/patient/update", (req, res) => {
 router.get('/schedule/list', (req, res) => {
 
     db.query(`
-        SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE DATE(apt.schedule)=CURDATE() AND apt.apt_type='Online' AND apt.status='Approved' ORDER BY apt.schedule;
-        SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE DATE(apt.date_created_walk_in)=CURDATE() AND apt.apt_type='Walk-in' AND apt.status='Approved' ORDER BY apt.date_created_walk_in;
+        SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE DATE(apt.schedule)=CURDATE() AND apt.apt_type='Online' AND apt.status='Approved' ORDER BY apt.schedule;
+        SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE DATE(apt.date_created_walk_in)=CURDATE() AND apt.apt_type='Walk-in' AND apt.status='Approved' ORDER BY apt.date_created_walk_in;
         `,
         (err, result) => {
             if (err) throw err;

@@ -26,7 +26,7 @@ $(document).ready(function() {
                 render: ({ fname, lname, mi }) => (`${lname}, ${fname} ${mi}.`)
             },
             {
-                data: "apt_type",
+                data: "patient_type",
                 orderable: false,
             },
             {
