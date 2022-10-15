@@ -187,7 +187,7 @@ router.get('/list/patients', (req, res) => {
 router.post('/schedule/walk-in', (req, res) => {
     const { patient_type, patient_id } = req.body
 
-    const patientMedicalRecordDate = dayjs(dayjs(new Date().toLocaleString().replace(',','')).toDate()).format("YYYY-MM-DD HH:mm:ss A")
+    const patientMedicalRecordDate = dayjs(dayjs(new Date().toLocaleString().replace(',','')).toDate()).format("YYYY-MM-DD HH:mm:ss")
 
     db.query(`INSERT INTO appointments(apt_id,id,status,apt_type,date_created_walk_in,patient_type) VALUES(${db.escape(uuid.v4())},${db.escape(patient_id)},'Approved','Walk-in',${db.escape(patientMedicalRecordDate)},${db.escape(patient_type)})`,
         (err, result) => {
@@ -274,7 +274,7 @@ router.post('/med-record/add/:apt_id', (req, res) => {
     } = req.body
 
     ailment = JSON.stringify(ailment)
-    const patientMedicalRecordDate = dayjs(dayjs(new Date().toLocaleString().replace(',','')).toDate()).format("YYYY-MM-DD HH:mm:ss A")
+    const patientMedicalRecordDate = dayjs(dayjs(new Date().toLocaleString().replace(',','')).toDate()).format("YYYY-MM-DD HH:mm:ss")
 
     db.query(`
         UPDATE appointments SET status='Done' WHERE apt_id=${db.escape(apt_id)};
@@ -301,7 +301,7 @@ router.put('/med-record/update/:mr_id', (req, res) => {
     } = req.body
 
     ailment = JSON.stringify(ailment)
-    const patientMedicalRecordDate = dayjs(dayjs(new Date().toLocaleString().replace(',','')).toDate()).format("YYYY-MM-DD HH:mm:ss A")
+    const patientMedicalRecordDate = dayjs(dayjs(new Date().toLocaleString().replace(',','')).toDate()).format("YYYY-MM-DD HH:mm:ss")
 
     db.query(`
         UPDATE patient_accounts SET patient_history=${db.escape(patient_history)} WHERE id=${db.escape(patient_id)};
