@@ -187,7 +187,7 @@ router.get('/list/patients', (req, res) => {
 router.post('/schedule/walk-in', (req, res) => {
     const { patient_type, patient_id } = req.body
 
-    db.query(`INSERT INTO appointments(apt_id,id,status,apt_type,date_created_walk_in,patient_type) VALUES(${db.escape(uuid.v4())},${db.escape(patient_id)},'Approved','Walk-in',CURRENT_TIMESTAMP(),${db.escape(patient_type)})`,
+    db.query(`INSERT INTO appointments(apt_id,id,status,apt_type,date_created_walk_in,patient_type) VALUES(${db.escape(uuid.v4())},${db.escape(patient_id)},'Approved','Walk-in',CONVERT(datetime, ${new Date().toLocaleString().replace(',','')}),${db.escape(patient_type)})`,
         (err, result) => {
             if (err) throw err;
             res.json({ operation: true })
