@@ -187,7 +187,9 @@ router.get('/list/patients', (req, res) => {
 router.post('/schedule/walk-in', (req, res) => {
     const { patient_type, patient_id } = req.body
 
-    db.query(`INSERT INTO appointments(apt_id,id,status,apt_type,date_created_walk_in,patient_type) VALUES(${db.escape(uuid.v4())},${db.escape(patient_id)},'Approved','Walk-in',CONVERT(datetime, ${new Date().toLocaleString().replace(',','')}),${db.escape(patient_type)})`,
+    const currentDate = dayjs(dayjs(new Date().toLocaleString().replace(',','')).toDate()).format("YYYY-MM-DD HH:mm:ss A")
+
+    db.query(`INSERT INTO appointments(apt_id,id,status,apt_type,date_created_walk_in,patient_type) VALUES(${db.escape(uuid.v4())},${db.escape(patient_id)},'Approved','Walk-in',${db.escape(currentDate)},${db.escape(patient_type)})`,
         (err, result) => {
             if (err) throw err;
             res.json({ operation: true })
@@ -272,11 +274,12 @@ router.post('/med-record/add/:apt_id', (req, res) => {
     } = req.body
 
     ailment = JSON.stringify(ailment)
+    const currentDate = dayjs(dayjs(new Date().toLocaleString().replace(',','')).toDate()).format("YYYY-MM-DD HH:mm:ss A")
 
     db.query(`
         UPDATE appointments SET status='Done' WHERE apt_id=${db.escape(apt_id)};
         UPDATE patient_accounts SET patient_history=${db.escape(patient_history)} WHERE id=${db.escape(patient_id)};
-        INSERT INTO medical_records VALUES(${db.escape(apt_id)},${db.escape(patient_id)},${db.escape(temperature)},${db.escape(bp)},${db.escape(weight)},${db.escape(height)},${db.escape(ailment)},CONVERT(datetime,${new Date().toLocaleDateString().replace(',','')}),NULL);
+        INSERT INTO medical_records VALUES(${db.escape(apt_id)},${db.escape(patient_id)},${db.escape(temperature)},${db.escape(bp)},${db.escape(weight)},${db.escape(height)},${db.escape(ailment)},${db.escape(currentDate)},NULL);
     `,
         (err, result) => {
             if (err) throw err;
@@ -298,10 +301,11 @@ router.put('/med-record/update/:mr_id', (req, res) => {
     } = req.body
 
     ailment = JSON.stringify(ailment)
+    const currentDate = dayjs(dayjs(new Date().toLocaleString().replace(',','')).toDate()).format("YYYY-MM-DD HH:mm:ss A")
 
     db.query(`
         UPDATE patient_accounts SET patient_history=${db.escape(patient_history)} WHERE id=${db.escape(patient_id)};
-        UPDATE medical_records SET temperature=${db.escape(temperature)},bp=${db.escape(bp)},height=${db.escape(height)},weight=${db.escape(weight)},ailment=${db.escape(ailment)},date_updated=CONVERT(datetime,${new Date().toLocaleDateString().replace(',','')}) WHERE mr_id=${db.escape(mr_id)};
+        UPDATE medical_records SET temperature=${db.escape(temperature)},bp=${db.escape(bp)},height=${db.escape(height)},weight=${db.escape(weight)},ailment=${db.escape(ailment)},date_updated=${db.escape(currentDate)} WHERE mr_id=${db.escape(mr_id)};
     `,
         (err, result) => {
             if (err) throw err;
