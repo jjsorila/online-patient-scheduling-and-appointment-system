@@ -41,7 +41,7 @@
             type: 'POST',
             success: (res) => {
                 if (!res.operation) return alert("Server error");
-                location.href = "/client/login"
+                location.replace("/client/login")
             },
             error: (err) => {
                 alert(err)

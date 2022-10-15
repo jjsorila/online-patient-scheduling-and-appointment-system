@@ -1,18 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%- include('../../templates/header.ejs') %>
+    <link rel="stylesheet" href="/css/admin/accounts.css" />
+    <link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+    <script type="application/javascript"
+        src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 </head>
-<body>
-    <h1>ONLY ADMIN PAGE</h1>
-    <%- include('../../templates/sidebar.ejs') %>
 
-    <%- include('../../templates/confirmation.ejs') %>
-    <%- include('../../templates/loading.ejs') %>
-    <%- include('../../templates/toast.ejs') %>
-    <script type="application/javascript" src="/js/admin/accounts.js"></script>
+<body class="bg-dark text-light">
+    <h1>Admin Only</h1>
+    <%- include('../../templates/sidebar.ejs') %>
+        <div class="container">
+            <button class="btn btn-primary border border-primary border-1 rounded" id="showForm">Add Account</button>
+        </div>
+
+        <section class="container bg-light text-dark p-4">
+            <table class="table text-center table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th class="text-center">DOCTOR'S NAME</th>
+                        <th class="text-center">LICENSE NUMBER</th>
+                        <th class="text-center">SPECIALTY</th>
+                        <th class="text-center">ACTION</th>
+                    </tr>
+                </thead>
+            </table>
+        </section>
+        <input type="hidden" id="doctor-id" />
+
+        <!-- ACCOUNT FORM -->
+        <div class="bg-shadow d-flex justify-content-center align-items-center d-none">
+            <div
+                class="add-account-form h-75 w-75 bg-dark border border-light border-5 rounded text-light d-flex flex-column align-items-center gap-4 py-4">
+                <div class="form-group w-50">
+                    <label class="form-label text-center d-block" for="dName">Doctor's Name</label>
+                    <input type="text" class="form-control bg-light border border-light border-5 rounded text-center"
+                        id="dName" placeholder="Lastname, Firstname M.I."/>
+                </div>
+                <div class="form-group w-50">
+                    <label class="form-label text-center d-block" for="dLicense">License Number</label>
+                    <input type="text" class="form-control bg-light border border-light border-5 rounded text-center"
+                        id="dLicense" />
+                </div>
+                <div class="form-group w-50">
+                    <label class="form-label text-center d-block" for="dSpecialty">Specialty</label>
+                    <select class="form-select bg-light border border-light border-5 rounded text-center"
+                        id="dSpecialty">
+                        <option selected hidden disabled>Choose</option>
+                        <option value="Pedia">Pedia</option>
+                        <option value="OB">OB-GYNE</option>
+                    </select>
+                </div>
+                <div class="form-group w-50">
+                    <label class="form-label text-center d-block" for="dUsername">Username</label>
+                    <input type="text" class="form-control bg-light border border-light border-5 rounded text-center"
+                        id="dUsername" />
+                </div>
+                <div class="form-group w-50">
+                    <label class="form-label text-center d-block" for="dPassword">Password</label>
+                    <input type="password"
+                        class="form-control bg-light border border-light border-5 rounded text-center" id="dPassword" />
+                </div>
+                <div class="form-group w-50">
+                    <input type="submit"
+                        class="btn btn-info border border-info border-1 rounded text-center w-25 mx-auto d-block"
+                        id="add" value="ADD" />
+                </div>
+            </div>
+        </div>
+
+        <%- include('../../templates/confirmation.ejs') %>
+            <%- include('../../templates/loading.ejs') %>
+                <%- include('../../templates/toast.ejs') %>
+                    <script type="application/javascript" src="/js/admin/accounts.js"></script>
 </body>
+
 </html>

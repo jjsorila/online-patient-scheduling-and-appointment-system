@@ -3,14 +3,9 @@ body {
 }
 
 .user-info {
-    border-radius: 50px;
     width: max-content;
     position: relative;
     overflow: hidden;
-}
-
-.appointments-table {
-    border-radius: 50px;
 }
 
 #save:hover {

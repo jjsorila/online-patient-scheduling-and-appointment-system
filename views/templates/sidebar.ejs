@@ -2,8 +2,27 @@
     <li><a href="/admin/appointments">Online Appointments</a></li>
     <li><a href="/admin/scheduled">Scheduled Patients</a></li>
     <li><a href="/admin/patients">Patients</a></li>
-    <% if(admin.specialty == "admin") { %>
+    <% if(admin.specialty=="admin" ) { %>
         <li><a href="/admin/accounts">Accounts</a></li>
-    <% } %>
-    <li><button id="logout">Logout</button></li>
+        <% } %>
+            <li><button id="logout">Logout</button></li>
 </ul>
+
+<script>
+    $(document).ready(function (e) {
+        $("#logout").click(function (e) {
+            $.ajax({
+                url: '/admin/logout',
+                type: 'POST',
+                success: (res) => {
+                    if (!res.operation) return showToast("❌ Something went wrong")
+                    location.replace('/admin/login')
+                },
+                error: (err) => {
+                    console.log(err)
+                    showToast("❌ Something went wrong")
+                }
+            })
+        })
+    })
+</script>

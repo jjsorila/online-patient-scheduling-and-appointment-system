@@ -21,7 +21,3 @@
     display: grid;
     gap: 20px;
 }
-
-.patient-form input {
-    border-radius: 50px;
-}

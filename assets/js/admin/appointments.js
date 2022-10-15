@@ -41,22 +41,6 @@ $(document).ready(function (e) {
         ordering: false,
     });
 
-    //LOGOUT ACCOUNT
-    $("#logout").click(function (e) {
-        $.ajax({
-            url: '/admin/logout',
-            type: 'POST',
-            success: (res) => {
-                if (!res.operation) return showToast("❌ Something went wrong")
-                location.href = '/admin/login'
-            },
-            error: (err) => {
-                console.log(err)
-                showToast("❌ Something went wrong")
-            }
-        })
-    })
-
     //CHANGE APPOINTMENTS TABLE SORT
     $("select").on("change", function (e) {
 

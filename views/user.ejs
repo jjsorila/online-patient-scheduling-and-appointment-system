@@ -14,14 +14,14 @@
 
 <body class="bg-dark">
     <%- include('./templates/navbar.ejs'); %>
-        <h1 class="text-center text-light my-4">User Information</h1>
+        <h1 class="text-center text-light my-4">Profile</h1>
 
         <!-- USER INFO -->
         <form
-            class="container border border-dark border-5 bg-light user-info p-5 d-flex flex-column gap-5 align-items-center">
+            class="container border border-light border-5 rounded bg-light user-info p-5 d-flex flex-column gap-5 align-items-center">
             <h5 class="text-center text-danger">You have unsaved changes</h5>
             <div class="form-group d-flex flex-column">
-                <div class="img-container border border-dark border-4">
+                <div class="img-container border border-dark border-4 rounded">
                     <img id="img" class="img-fluid" src="<%= user.picture %>"/>
                 </div>
                 <label class="btn" for="myFile">CHANGE</label>
@@ -29,24 +29,24 @@
             </div>
             <div class="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-5">
                 <div class="form-group text-center">
-                    <label for="fname">First Name</label>
+                    <label for="fname">First Name*</label>
                     <input value="<%= user.fullname?.fname %>" type="text"
                         class="form-control border border-dark border-4 text-center" id="fname" />
                 </div>
                 <div class="form-group text-center">
-                    <label for="mi">M.I.</label>
+                    <label for="mi">M.I.*</label>
                     <input value="<%= user.fullname?.mi %>" type="text"
                         class="text-center form-control border border-dark border-4" id="mi" />
                 </div>
                 <div class="form-group text-center">
-                    <label for="lname">Last Name</label>
+                    <label for="lname">Last Name*</label>
                     <input value="<%= user.fullname?.lname %>" type="text"
                         class="form-control border border-dark border-4 text-center" id="lname" />
                 </div>
             </div>
             <div class="d-flex flex-column flex-lg-row justify-content-space-evenly align-items-center gap-5">
                 <div class="form-group text-center">
-                    <label for="gender">Gender</label>
+                    <label for="gender">Gender*</label>
                     <select type="text" class="form-select border border-dark border-4 d-block text-center" id="gender"
                         name="gender">
                         <% if(user.gender) { %>
@@ -61,23 +61,23 @@
                     </select>
                 </div>
                 <div class="form-group text-center">
-                    <label for="birthdate">Birthdate</label>
+                    <label for="birthdate">Birthdate*</label>
                     <input value="<%= user.birthdate %>" type="date"
                         class="text-center form-control border border-dark border-4" id="birthdate" name="birthdate" />
                 </div>
                 <div class="form-group text-center">
-                    <label for="age" class="control-label">Age</label>
+                    <label for="age" class="control-label">Age*</label>
                     <input type="number" value="<%= user.age %>"
                         class="text-center form-control border border-dark border-4" id="age" />
                 </div>
                 <div class="form-group text-center">
-                    <label for="contact">Contact</label>
+                    <label for="contact">Contact*</label>
                     <input value="<%= user.contact %>" type="text"
                         class="text-center form-control border border-dark border-4" id="contact" name="contact" />
                 </div>
             </div>
             <div class="form-group text-center w-75">
-                <label for="address">Patient's Address</label>
+                <label for="address">Patient's Address*</label>
                 <textarea class="form-control border border-dark border-4 text-center" id="address"
                     rows="3"><%= user.address %></textarea>
             </div>
@@ -107,7 +107,7 @@
         </form>
 
         <h1 class="text-center text-light mb-4 mt-5">Medical Records</h1>
-        <section class="container bg-light appointments-table p-4 w-75 mb-4">
+        <section class="container bg-light appointments-table p-4 w-75 mb-4 border border-light border-5 rounded">
             <table class="table text-center table-striped table-hover">
                 <thead>
                     <th class="text-center">DIAGNOSIS</th>

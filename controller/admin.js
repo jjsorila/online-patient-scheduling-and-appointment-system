@@ -4,11 +4,7 @@ const router = express.Router();
 const { protected, login, onlyAdmin } = require('../middlewares/admin');
 const db = require('../db/db')
 const dayjs = require('dayjs');
-const uuid = require("uuid")
-function getAge(dateString) {
-    var ageInMilliseconds = new Date() - new Date(dateString);
-    return Math.floor(ageInMilliseconds / 1000 / 60 / 60 / 24 / 365); // convert to years
-}
+const uuid = require("uuid");
 
 //================================================================================================================================
 
@@ -118,7 +114,7 @@ router.post('/login', (req, res) => {
 
             const user = { ...result[0] }
 
-            if (password != user.password) return res.json({ operation: false })
+            if (password != user.password || result.length <= 0) return res.json({ operation: false })
 
             req.session.admin = {
                 id: user.admin_id,
@@ -311,6 +307,43 @@ router.put('/med-record/update/:mr_id', (req, res) => {
             if (err) throw err;
             res.json({ operation: true })
         })
+})
+
+//GET ALL DOCTOR ACCOUNTS
+router.get("/doctors", protected, onlyAdmin, (req ,res) => {
+
+    db.query(`SELECT fullname,license_number,admin_id,specialty FROM admin_accounts WHERE NOT specialty='admin' ORDER BY fullname;`,
+    (err, result) => {
+        if(err) throw err;
+
+        res.json({ data: result.map((acc) => ({
+            ...acc,
+            specialty: acc.specialty == "OB" ? "OB-GYNE" : acc.specialty
+        })) })
+    })
+})
+
+//DELETE DOCTOR ACCOUNT
+router.delete("/doctors", protected, onlyAdmin, (req ,res) => {
+    const { admin_id } = req.body;
+
+    db.query(`DELETE FROM admin_accounts WHERE admin_id=${db.escape(admin_id)};`,
+    (err, result) => {
+        if(err) throw err;
+        res.json({ operation: true })
+    })
+})
+
+//ADD DOCTOR ACCOUNT
+router.post("/doctors", protected, onlyAdmin, (req, res) => {
+    const { fullname, license_number, username, specialty, password } = req.body
+
+    let values = `${db.escape(specialty)},${db.escape(username)},${db.escape(password)},${db.escape(fullname)},${db.escape(license_number)}`
+    db.query(`INSERT INTO admin_accounts(specialty,username,password,fullname,license_number) VALUES(${values})`,
+    (err, result) => {
+        if(err) throw err;
+        res.json({ operation: true })
+    })
 })
 
 //EXPORT

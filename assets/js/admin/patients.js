@@ -82,27 +82,11 @@ $(document).ready(function (e) {
                 orderable: false,
                 render: (data) => (`
                 <input type="submit" data-id=${data} class='btn btn-success' value='Open'/>
-                <input type="submit" data-id=${data} class='btn btn-info' value='Schedule'/>
+                <input type="submit" data-id=${data} class='btn btn-primary' value='Schedule'/>
                 `)
             }
         ]
     });
-
-    //LOGOUT ACCOUNT
-    $("#logout").click(function (e) {
-        $.ajax({
-            url: '/admin/logout',
-            type: 'POST',
-            success: (res) => {
-                if (!res.operation) return showToast("❌ Something went wrong")
-                location.href = '/admin/login'
-            },
-            error: (err) => {
-                console.log(err)
-                showToast("❌ Something went wrong")
-            }
-        })
-    })
 
     //OPEN PATIENT INFO
     $("table").on("click", "input[value=Open]", function (e) {
