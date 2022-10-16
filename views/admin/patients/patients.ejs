@@ -12,14 +12,16 @@
             src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 </head>
 
-<body>
-    <h1>List of Patients Page</h1>
-
+<body class="bg-dark text-light">
     <%- include('../../templates/sidebar.ejs') %>
+    <%- include('../../templates/admin-navbar.ejs', { content: "Patients' List" }) %>
 
-        <button id="add-patient" class="btn btn-primary">Add New Patient</button>
+    <div class="content">
+        <div class="form-group d-flex justify-content-center mb-4">
+            <button id="add-patient" class="btn bg-dark text-light border border-light border-5">NEW PATIENT</button>
+        </div>
 
-        <div class="container border border-dark border-5 p-3">
+        <div class="container border border-light border-2 rounded p-3 bg-light">
             <table class="table text-center table-striped table-hover">
                 <thead>
                     <tr>
@@ -32,10 +34,11 @@
                 </thead>
             </table>
         </div>
+    </div>
 
         <!-- ADD NEW PATIENT -->
         <div class="bg-shadow d-flex d-none justify-content-center align-items-center">
-            <div class="patient-form border text-light text-center bg-dark border-dark border-4 w-75 h-75 rounded p-4">
+            <div class="patient-form border text-light text-center bg-dark border-light border-4 w-75 h-75 rounded p-4">
                 <div class="form-group w-100 d-flex gap-5">
                     <div class="form-group w-50">
                         <label class="form-label" for="firstname">Firstname</label>

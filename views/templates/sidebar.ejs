@@ -1,12 +1,96 @@
-<ul>
-    <li><a href="/admin/appointments">Online Appointments</a></li>
-    <li><a href="/admin/scheduled">Scheduled Patients</a></li>
-    <li><a href="/admin/patients">Patients</a></li>
-    <% if(admin.specialty=="admin" ) { %>
-        <li><a href="/admin/accounts">Accounts</a></li>
+<style>
+#side_nav {
+    width: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 10;
+    transition: width .1s linear;
+    overflow: hidden;
+}
+
+#side_nav > * {
+    width: 300px;
+}
+
+input[type=checkbox] {
+    display: none;
+}
+
+.content {
+    min-height: 100vh;
+    width: 100%;
+}
+
+.header-box .img-span {
+    height: 40px;
+    width: 40px;
+}
+
+.header-box img {
+    width: 100%;
+    height: 100%;
+}
+
+.header-box label {
+    cursor: pointer;
+}
+
+hr.h-color {
+    background: white;
+}
+
+.sidebar li a {
+    color: white;
+}
+
+.sidebar li a:hover {
+    color: black !important;
+    background: white;
+    border-radius: 8px;
+}
+
+#toggleSideBar:checked ~ #side_nav {
+    width: 300px;
+}
+
+#toggleSideBar:checked ~ .sidebar-shadow {
+    display: block;
+}
+
+.sidebar-shadow {
+    display: none;
+    position: fixed;
+    z-index: 9;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.6);
+}
+</style>
+
+<input type="checkbox" id="toggleSideBar" />
+<div class="sidebar-shadow"></div>
+<div class="sidebar bg-dark d-flex flex-column align-items-center gap-2 border-right border-light border-5" id="side_nav">
+    <div class="header-box pt-4">
+        <h1 class="fs-4 d-flex align-items-center"><span class="bg-light d-block text-dark rounded-circle shadow mx-3 p-2 img-span"><img class="d-block" src="/favicon.ico"/></span><span class="text-light">OPIS</span><label for="toggleSideBar" class="ms-auto me-3"><i class="bi bi-x-circle-fill text-light p-cursor"></i></label></h1>
+    </div>
+    <hr class="h-color">
+    <ul class="list-unstyled px-2">
+        <li><a class="text-decoration-none px-3 py-2 d-flex gap-2" href="/admin/appointments"><i class="bi bi-calendar-check-fill d-flex align-items-center"></i>Online Appointments</a></li>
+        <li><a class="text-decoration-none px-3 py-2 d-flex gap-2" href="/admin/scheduled"><i class="bi bi-clock-fill d-flex align-items-center"></i>Scheduled Patients</a></li>
+        <li><a class="text-decoration-none px-3 py-2 d-flex gap-2" href="/admin/patients"><i class="bi bi-clipboard2-pulse-fill d-flex align-items-center"></i>Patients' List</a></li>
+        <% if(admin.specialty=="admin" ) { %>
+            <li><a class="text-decoration-none px-3 py-2 d-flex gap-2" href="/admin/accounts"><i class="bi bi-person-circle d-flex align-items-center"></i>Doctors' List</a></li>
         <% } %>
-            <li><button id="logout">Logout</button></li>
-</ul>
+    </ul>
+    <hr class="h-color">
+    <div class="d-flex justify-content-center">
+        <button class="btn btn-danger w-75" id="logout">LOGOUT</button>
+    </div>
+</div>
 
 <script>
     $(document).ready(function (e) {
@@ -23,6 +107,10 @@
                     showToast("❌ Something went wrong")
                 }
             })
+        })
+
+        $(".sidebar-shadow").click(function(e) {
+            $("#toggleSideBar").prop("checked", false)
         })
     })
 </script>

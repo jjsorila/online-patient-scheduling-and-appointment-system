@@ -10,3 +10,8 @@
 .add-account-form {
     overflow-y: scroll;
 }
+
+#showForm:hover {
+    color: #292b2c !important;
+    background: white !important;
+}

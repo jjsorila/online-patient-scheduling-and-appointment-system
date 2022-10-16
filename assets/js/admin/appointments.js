@@ -5,7 +5,6 @@ $(document).ready(function (e) {
     //AUTO RELOAD
     setInterval(() => {
         $("table").DataTable().ajax.reload()
-        console.log("Reloaded")
     }, 5000)
 
     //SHOW TOAST

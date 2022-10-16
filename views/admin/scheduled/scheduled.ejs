@@ -11,10 +11,11 @@
             src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 </head>
 
-<body>
-    <h1>Today Scheduled Patients Page</h1>
+<body class="bg-dark text-light">
     <%- include('../../templates/sidebar.ejs') %>
-        <div class="container border border-dark border-5 rounded w-75 p-4">
+    <%- include('../../templates/admin-navbar.ejs', { content: "Scheduled Patients" }) %>
+    <div class="content">
+        <div class="container w-75 p-4 border border-light border-3 rounded bg-light">
             <table class="table text-center table-striped table-hover">
                 <thead>
                     <tr>
@@ -26,10 +27,10 @@
                 </thead>
             </table>
         </div>
-
-        <%- include('../../templates/loading.ejs') %>
-            <%- include('../../templates/toast.ejs') %>
-                <script type="application/javascript" src="/js/admin/scheduled.js"></script>
+    </div>
+    <%- include('../../templates/loading.ejs') %>
+    <%- include('../../templates/toast.ejs') %>
+    <script type="application/javascript" src="/js/admin/scheduled.js"></script>
 </body>
 
 </html>

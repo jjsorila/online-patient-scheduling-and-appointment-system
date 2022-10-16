@@ -21,3 +21,8 @@
     display: grid;
     gap: 20px;
 }
+
+#add-patient:hover {
+    color: #292b2c !important;
+    background: white !important;
+}

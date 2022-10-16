@@ -108,7 +108,7 @@ router.get('/scheduled/:apt_id', protected, (req, res) => {
 router.post('/login', (req, res) => {
     let { username, password } = req.body
 
-    db.query(`SELECT admin_id,username,password,specialty FROM admin_accounts WHERE username=${db.escape(username)}`,
+    db.query(`SELECT admin_id,username,password,specialty,fullname FROM admin_accounts WHERE username=${db.escape(username)}`,
         (err, result) => {
             if (err) throw err;
 
@@ -118,7 +118,8 @@ router.post('/login', (req, res) => {
 
             req.session.admin = {
                 id: user.admin_id,
-                specialty: user.specialty
+                specialty: user.specialty,
+                fullname: user.fullname
             }
 
             res.json({ operation: true })
@@ -175,11 +176,13 @@ router.get('/list/patients', (req, res) => {
     db.query(`SELECT fullname,id,contact,address,birthdate FROM patient_accounts WHERE NOT fullname IS NULL;`,
         (err, result) => {
             if (err) throw err;
-            res.json({ data: result.map((patient) => ({
-                ...patient,
-                fullname: JSON.parse(patient.fullname),
-                birthdate: dayjs(patient.birthdate).format("MMM DD, YYYY")
-            })) })
+            res.json({
+                data: result.map((patient) => ({
+                    ...patient,
+                    fullname: JSON.parse(patient.fullname),
+                    birthdate: dayjs(patient.birthdate).format("MMM DD, YYYY")
+                }))
+            })
         })
 })
 
@@ -187,7 +190,7 @@ router.get('/list/patients', (req, res) => {
 router.post('/schedule/walk-in', (req, res) => {
     const { patient_type, patient_id } = req.body
 
-    const patientMedicalRecordDate = dayjs(dayjs(new Date().toLocaleString("en-US", { timeZone: 'Asia/Hong_Kong' }).replace(',','')).toDate()).format("YYYY-MM-DD HH:mm:ss")
+    const patientMedicalRecordDate = dayjs(dayjs(new Date().toLocaleString("en-US", { timeZone: 'Asia/Hong_Kong' }).replace(',', '')).toDate()).format("YYYY-MM-DD HH:mm:ss")
 
     db.query(`INSERT INTO appointments(apt_id,id,status,apt_type,date_created_walk_in,patient_type) VALUES(${db.escape(uuid.v4())},${db.escape(patient_id)},'Approved','Walk-in',${db.escape(patientMedicalRecordDate)},${db.escape(patient_type)})`,
         (err, result) => {
@@ -274,7 +277,7 @@ router.post('/med-record/add/:apt_id', (req, res) => {
     } = req.body
 
     ailment = JSON.stringify(ailment)
-    const patientMedicalRecordDate = dayjs(dayjs(new Date().toLocaleString("en-US", { timeZone: 'Asia/Hong_Kong' }).replace(',','')).toDate()).format("YYYY-MM-DD HH:mm:ss")
+    const patientMedicalRecordDate = dayjs(dayjs(new Date().toLocaleString("en-US", { timeZone: 'Asia/Hong_Kong' }).replace(',', '')).toDate()).format("YYYY-MM-DD HH:mm:ss")
 
     db.query(`
         UPDATE appointments SET status='Done' WHERE apt_id=${db.escape(apt_id)};
@@ -301,7 +304,7 @@ router.put('/med-record/update/:mr_id', (req, res) => {
     } = req.body
 
     ailment = JSON.stringify(ailment)
-    const patientMedicalRecordDate = dayjs(dayjs(new Date().toLocaleString("en-US", { timeZone: 'Asia/Hong_Kong' }).replace(',','')).toDate()).format("YYYY-MM-DD HH:mm:ss")
+    const patientMedicalRecordDate = dayjs(dayjs(new Date().toLocaleString("en-US", { timeZone: 'Asia/Hong_Kong' }).replace(',', '')).toDate()).format("YYYY-MM-DD HH:mm:ss")
 
     db.query(`
         UPDATE patient_accounts SET patient_history=${db.escape(patient_history)} WHERE id=${db.escape(patient_id)};
@@ -314,28 +317,30 @@ router.put('/med-record/update/:mr_id', (req, res) => {
 })
 
 //GET ALL DOCTOR ACCOUNTS
-router.get("/doctors", protected, onlyAdmin, (req ,res) => {
+router.get("/doctors", protected, onlyAdmin, (req, res) => {
 
     db.query(`SELECT fullname,license_number,admin_id,specialty FROM admin_accounts WHERE NOT specialty='admin' ORDER BY fullname;`,
-    (err, result) => {
-        if(err) throw err;
+        (err, result) => {
+            if (err) throw err;
 
-        res.json({ data: result.map((acc) => ({
-            ...acc,
-            specialty: acc.specialty == "OB" ? "OB-GYNE" : acc.specialty
-        })) })
-    })
+            res.json({
+                data: result.map((acc) => ({
+                    ...acc,
+                    specialty: acc.specialty == "OB" ? "OB-GYNE" : acc.specialty
+                }))
+            })
+        })
 })
 
 //DELETE DOCTOR ACCOUNT
-router.delete("/doctors", protected, onlyAdmin, (req ,res) => {
+router.delete("/doctors", protected, onlyAdmin, (req, res) => {
     const { admin_id } = req.body;
 
     db.query(`DELETE FROM admin_accounts WHERE admin_id=${db.escape(admin_id)};`,
-    (err, result) => {
-        if(err) throw err;
-        res.json({ operation: true })
-    })
+        (err, result) => {
+            if (err) throw err;
+            res.json({ operation: true })
+        })
 })
 
 //ADD DOCTOR ACCOUNT
@@ -343,11 +348,18 @@ router.post("/doctors", protected, onlyAdmin, (req, res) => {
     const { fullname, license_number, username, specialty, password } = req.body
 
     let values = `${db.escape(specialty)},${db.escape(username)},${db.escape(password)},${db.escape(fullname)},${db.escape(license_number)}`
-    db.query(`INSERT INTO admin_accounts(specialty,username,password,fullname,license_number) VALUES(${values})`,
-    (err, result) => {
-        if(err) throw err;
-        res.json({ operation: true })
-    })
+    db.query(`SELECT username FROM admin_accounts WHERE username=${db.escape(username)};`,
+        (errMatch, checkMatch) => {
+            if (errMatch) throw errMatch;
+
+            if (checkMatch.length >= 1) return res.json({ operation: false })
+
+            db.query(`INSERT INTO admin_accounts(specialty,username,password,fullname,license_number) VALUES(${values})`,
+            (err, result) => {
+                if (err) throw err;
+                res.json({ operation: true })
+            })
+        })
 })
 
 //EXPORT

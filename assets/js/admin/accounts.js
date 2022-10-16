@@ -121,9 +121,11 @@ $(document).ready(function (e) {
                 password: dPassword.val()
             }),
             success: (res) => {
-                if (!res.operation) return showToast("❌ Something went wrong")
+                if (!res.operation) return showToast("❌ Username already exist")
                 $("table").DataTable().ajax.reload()
+                $(".bg-shadow").toggleClass("d-none")
                 showToast("✅ Added successfully")
+                clearInput()
             },
             error: (err) => {
                 showToast("❌ Server error")
@@ -131,8 +133,6 @@ $(document).ready(function (e) {
             },
             complete: () => {
                 $(".loading").css("display", "none")
-                $(".bg-shadow").toggleClass("d-none")
-                clearInput()
             }
         })
     })

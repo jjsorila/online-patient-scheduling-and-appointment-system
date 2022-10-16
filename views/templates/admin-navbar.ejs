@@ -1,0 +1,25 @@
+<style>
+    nav h1 label {
+        cursor: pointer;
+    }
+
+    nav {
+        height: 80px;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+    }
+
+    nav h1, h2 {
+        display: flex;
+        align-items: center;
+        height: 100%;
+    }
+</style>
+
+<nav class="border-bottom border-light border-5 mb-4 bg-dark text-light">
+    <h1 class="ms-3 mb-0"><label for="toggleSideBar"><i class="bi bi-list"></i></label></h1>
+    <h2 class="mb-0"><%= content %></h2>
+    <div class="me-5 d-flex justify-content-end align-items-center">
+        <label><%= admin.fullname %></label>
+    </div>
+</nav>
