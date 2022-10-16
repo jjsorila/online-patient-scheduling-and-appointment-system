@@ -83,7 +83,7 @@ router.get('/scheduled', protected, (req, res) => {
 router.get('/scheduled/:apt_id', protected, (req, res) => {
     const { apt_id } = req.params
 
-    const pa = `pa.id AS patient_id,pa.fullname AS fullname,pa.age AS age,pa.birthdate AS birthdate,pa.contact AS contact,pa.address AS address,pa.gender AS gender,pa.patient_history AS patient_history,pa.guardian AS guardian`
+    const pa = `pa.id AS patient_id,pa.fullname AS fullname,pa.age AS age,pa.birthdate AS birthdate,pa.contact AS contact,pa.address AS address,pa.gender AS gender,pa.patient_history AS patient_history,pa.guardian AS guardian,pa.picture AS picture`
     const apt = `apt.patient_type AS patient_type,apt.med_complain AS med_complain`
 
     db.query(`SELECT ${pa},${apt} FROM patient_accounts AS pa INNER JOIN appointments AS apt ON pa.id=apt.id WHERE apt.apt_id=${db.escape(apt_id)}`,

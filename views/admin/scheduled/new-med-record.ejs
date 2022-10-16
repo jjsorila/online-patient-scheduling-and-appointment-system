@@ -8,50 +8,64 @@
     <meta name="patient_id" content="<%= user.patient_id %>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%- include('../../templates/header.ejs') %>
+    <link rel="stylesheet" href="/css/admin/new-med-record.css"/>
 </head>
 
-<body>
-    <h1>Schedule ID #<%= apt_id %></h1>
-    <a class="btn btn-info" href="/admin/scheduled">BACK</a>
+<body class="bg-dark text-light">
+    <a class="btn btn-info position-fixed top-0 left-0" href="/admin/scheduled"><i class="bi bi-box-arrow-left me-3"></i>BACK</a>
+    <h1 class="text-center mb-3 mt-4">Schedule</h1>
+    <h1 class="text-center mb-3">#<%= apt_id %></h1>
 
     <div
-        class="container border border-dark rounded border-5 text-dark bg-light text-center w-75 mb-5 position-relative p-4 d-flex flex-column gap-3">
-        <div class="form-group d-flex flex-column flex-md-row gap-5 justify-content-center">
-            <div class="form-group">
-                <label class="form-label" for="fname">First Name</label>
-                <input disabled value="<%= user.fullname?.fname %>" type="text" class="text-center form-control border border-dark rounded border-4" id="fname" />
+        class="container border border-light rounded border-5 text-dark bg-light text-center w-75 mb-5 position-relative p-4 d-flex flex-column gap-3">
+
+        <div class="form-group w-100 d-flex justify-content-around align-items-center">
+
+            <div class="form-group d-flex flex-column align-items-center">
+                <div class="img-container border border-dark border-4 rounded mx-auto">
+                    <img id="img" class="img-fluid" src="<%= user.picture %>"/>
+                </div>
             </div>
-            <div class="form-group">
-                <label class="form-label" for="mi">M.I.</label>
-                <input disabled value="<%= user.fullname?.mi %>" type="text" class="text-center form-control border border-dark rounded border-4" id="mi" />
+
+            <div class="form-group d-flex flex-column gap-2 justify-content-center">
+                <div class="form-group">
+                    <label class="form-label" for="fname">First Name</label>
+                    <input disabled value="<%= user.fullname?.fname %>" type="text" class="text-center form-control border border-dark rounded border-4" id="fname" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="mi">M.I.</label>
+                    <input disabled value="<%= user.fullname?.mi %>" type="text" class="text-center form-control border border-dark rounded border-4" id="mi" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="lname">Last Name</label>
+                    <input disabled value="<%= user.fullname?.lname %>" type="text" class="text-center form-control border border-dark rounded border-4" id="lname" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="contact">Contact</label>
+                    <input disabled value="<%= user.contact %>" type="number" class="text-center form-control border border-dark rounded border-4" id="contact" />
+                </div>
             </div>
-            <div class="form-group">
-                <label class="form-label" for="lname">Last Name</label>
-                <input disabled value="<%= user.fullname?.lname %>" type="text" class="text-center form-control border border-dark rounded border-4" id="lname" />
+
+            <div class="form-group d-flex flex-column gap-2 justify-content-center">
+                <div class="form-group">
+                    <label class="form-label" for="gender">Gender</label>
+                    <input disabled value="<%= user.gender %>" class="text-center form-control border border-dark rounded border-4" id="gender" disabled />
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="birthdate">Birthdate</label>
+                    <input disabled value="<%= user.birthdate %>" type="date" class="form-control border border-dark rounded border-4 text-center" id="birthdate" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="age">Age</label>
+                    <input value="<%= user.age %>" type="number" class="text-center form-control border border-dark rounded border-4" id="age"
+                        disabled />
+                </div>
+                <div class="form-group">
+                    <label for="patient_type" class="form-label">Patient Type</label>
+                    <input disabled class="form-control border border-dark border-4 text-center text-center" value="<%= user.patient_type %>" id="patient_type">
+                </div>
             </div>
-            <div class="form-group">
-                <label class="form-label" for="contact">Contact</label>
-                <input disabled value="<%= user.contact %>" type="number" class="text-center form-control border border-dark rounded border-4" id="contact" />
-            </div>
-        </div>
-        <div class="form-group d-flex flex-column flex-md-row gap-5 justify-content-center">
-            <div class="form-group">
-                <label class="form-label" for="gender">Gender</label>
-                <input disabled value="<%= user.gender %>" class="text-center form-control border border-dark rounded border-4" id="gender" disabled />
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="birthdate">Birthdate</label>
-                <input disabled value="<%= user.birthdate %>" type="date" class="form-control border border-dark rounded border-4 text-center" id="birthdate" />
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="age">Age</label>
-                <input value="<%= user.age %>" type="number" class="text-center form-control border border-dark rounded border-4" id="age"
-                    disabled />
-            </div>
-            <div class="form-group">
-                <label for="patient_type" class="form-label">Patient Type</label>
-                <input disabled class="form-control border border-dark border-4 text-center text-center" value="<%= user.patient_type %>" id="patient_type">
-            </div>
+
         </div>
         <div class="form-group w-100">
             <label class="form-label" for="address">Address</label>
