@@ -68,6 +68,7 @@ $(document).ready(function (e) {
             {
                 data: "address",
                 orderable: false,
+                render: (addr) => (`${addr.slice(0, 7)}...`)
             },
             {
                 data: "contact",
@@ -81,8 +82,10 @@ $(document).ready(function (e) {
                 data: "id",
                 orderable: false,
                 render: (data) => (`
-                <input type="submit" data-id=${data} class='btn btn-success' value='Open'/>
-                <input type="submit" data-id=${data} class='btn btn-primary' value='Schedule'/>
+                <div class="from-group d-flex gap-1 justify-content-center">
+                    <input type="submit" data-id=${data} class='btn btn-success' value='Open'/>
+                    <input type="submit" data-id=${data} class='btn btn-primary' value='Schedule'/>
+                </div>
                 `)
             }
         ]

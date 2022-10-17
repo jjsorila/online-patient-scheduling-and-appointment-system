@@ -24,7 +24,8 @@ $(document).ready(function (e) {
                 render: ({ fname, lname, mi }) => (`${lname}, ${fname} ${mi}.`)
             },
             {
-                data: "address"
+                data: "address",
+                render: (addr) => (`${addr.slice(0, 7)}...`)
             },
             {
                 data: "contact"
@@ -33,7 +34,12 @@ $(document).ready(function (e) {
             {
                 data: "apt_id",
                 render: (data) => {
-                    return `<input type="submit" data-id=${data} data-val='Approved' class='btn btn-success' value='Approve'/> <input type="submit" data-id=${data} data-val='Cancelled' class='btn btn-danger' value='Cancel'/>`
+                    return (`
+                    <div class="form-group d-flex gap-1 justify-content-center">
+                        <input type="submit" data-id=${data} data-val='Approved' class='btn btn-success' value='Approve'/>
+                        <input type="submit" data-id=${data} data-val='Cancelled' class='btn btn-danger' value='Cancel'/>
+                    </div>
+                    `)
                 }
             }
         ],
@@ -53,7 +59,8 @@ $(document).ready(function (e) {
                     render: ({ fname, lname, mi }) => (`${lname}, ${fname} ${mi}.`)
                 },
                 {
-                    data: "address"
+                    data: "address",
+                    render: (addr) => (`${addr.slice(0, 7)}...`)
                 },
                 {
                     data: "contact"
@@ -62,7 +69,12 @@ $(document).ready(function (e) {
                 {
                     data: "apt_id",
                     render: (data) => {
-                        return `<input type="submit" data-id=${data} data-val='Approved' class='btn btn-success' value='Approve'/> <input type="submit" data-id=${data} data-val='Cancelled' class='btn btn-danger' value='Cancel'/>`
+                        return (`
+                        <div class="form-group d-flex gap-1 justify-content-center">
+                            <input type="submit" data-id=${data} data-val='Approved' class='btn btn-success' value='Approve'/>
+                            <input type="submit" data-id=${data} data-val='Cancelled' class='btn btn-danger' value='Cancel'/>
+                        </div>
+                        `)
                     }
                 }
             ],
@@ -99,7 +111,8 @@ $(document).ready(function (e) {
                             render: ({ fname, lname, mi }) => (`${lname}, ${fname} ${mi}.`)
                         },
                         {
-                            data: "address"
+                            data: "address",
+                            render: (addr) => (`${addr.slice(0, 7)}...`)
                         },
                         {
                             data: "contact"
@@ -108,7 +121,12 @@ $(document).ready(function (e) {
                         {
                             data: "apt_id",
                             render: (data) => {
-                                return `<input type="submit" data-id=${data} data-val='Approved' class='btn btn-success' value='Approve'/> <input type="submit" data-id=${data} data-val='Cancelled' class='btn btn-danger' value='Cancel'/>`
+                                return (`
+                                <div class="form-group d-flex gap-1 justify-content-center">
+                                    <input type="submit" data-id=${data} data-val='Approved' class='btn btn-success' value='Approve'/>
+                                    <input type="submit" data-id=${data} data-val='Cancelled' class='btn btn-danger' value='Cancel'/>
+                                </div>
+                                `)
                             }
                         }
                     ],
