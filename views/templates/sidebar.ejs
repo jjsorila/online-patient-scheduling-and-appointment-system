@@ -45,7 +45,7 @@ hr.h-color {
     color: white;
 }
 
-.sidebar li a:hover {
+.sidebar li.active a, .sidebar li a:hover {
     color: black !important;
     background: white;
     border-radius: 8px;
@@ -79,11 +79,11 @@ hr.h-color {
     </div>
     <hr class="h-color">
     <ul class="list-unstyled px-2">
-        <li><a class="text-decoration-none px-3 py-2 d-flex gap-2" href="/admin/scheduled"><i class="bi bi-clock-fill d-flex align-items-center"></i>Scheduled Patients</a></li>
-        <li><a class="text-decoration-none px-3 py-2 d-flex gap-2" href="/admin/appointments"><i class="bi bi-calendar-check-fill d-flex align-items-center"></i>Online Appointments</a></li>
-        <li><a class="text-decoration-none px-3 py-2 d-flex gap-2" href="/admin/patients"><i class="bi bi-clipboard2-pulse-fill d-flex align-items-center"></i>Patients' List</a></li>
+        <li id="scheduled" class="py-2"><a class="text-decoration-none px-3 py-2 d-flex gap-2" href="/admin/scheduled"><i class="bi bi-clock-fill d-flex align-items-center"></i>Scheduled Patients</a></li>
+        <li id="appointments" class="py-2"><a class="text-decoration-none px-3 py-2 d-flex gap-2" href="/admin/appointments"><i class="bi bi-calendar-check-fill d-flex align-items-center"></i>Online Appointments</a></li>
+        <li id="patients" class="py-2"><a class="text-decoration-none px-3 py-2 d-flex gap-2" href="/admin/patients"><i class="bi bi-clipboard2-pulse-fill d-flex align-items-center"></i>Patients' List</a></li>
         <% if(admin.specialty=="admin" ) { %>
-            <li><a class="text-decoration-none px-3 py-2 d-flex gap-2" href="/admin/accounts"><i class="bi bi-person-circle d-flex align-items-center"></i>Doctors' List</a></li>
+            <li id="accounts" class="py-2"><a class="text-decoration-none px-3 py-2 d-flex gap-2" href="/admin/accounts"><i class="bi bi-person-circle d-flex align-items-center"></i>Doctors' List</a></li>
         <% } %>
     </ul>
     <hr class="h-color">
@@ -94,6 +94,13 @@ hr.h-color {
 
 <script>
     $(document).ready(function (e) {
+        let currentPage = window.location.pathname.split('/')
+        currentPage = currentPage[currentPage.length-1]
+
+        $(".sidebar li").removeClass("active")
+        $(`.sidebar li#${currentPage}`).addClass("active")
+
+
         $("#logout").click(function (e) {
             $.ajax({
                 url: '/admin/logout',
