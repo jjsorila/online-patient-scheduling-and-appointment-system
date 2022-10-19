@@ -7,7 +7,7 @@
     bottom: 0;
     z-index: 10;
     transition: width .1s linear;
-    overflow: hidden;
+    overflow-y: scroll;
 }
 
 #side_nav > * {
@@ -52,7 +52,7 @@ hr.h-color {
 }
 
 #toggleSideBar:checked ~ #side_nav {
-    width: 300px;
+    width: 315px;
 }
 
 #toggleSideBar:checked ~ .sidebar-shadow {
@@ -73,7 +73,7 @@ hr.h-color {
 
 <input type="checkbox" id="toggleSideBar" />
 <div class="sidebar-shadow"></div>
-<div class="sidebar bg-dark d-flex flex-column align-items-center gap-2 border-right border-light border-5" id="side_nav">
+<div class="sidebar bg-dark d-flex flex-column align-items-center gap-2 border-right border-light border-5 h-100" id="side_nav">
     <div class="header-box pt-4">
         <h1 class="fs-4 d-flex align-items-center"><span class="bg-light d-block text-dark rounded-circle shadow mx-3 p-2 img-span"><img class="d-block" src="/favicon.ico"/></span><span class="text-light">OPIS</span><label for="toggleSideBar" class="ms-auto me-3"><i class="bi bi-x-circle-fill text-light p-cursor"></i></label></h1>
     </div>
@@ -81,6 +81,7 @@ hr.h-color {
     <ul class="list-unstyled px-2">
         <li id="scheduled" class="py-2"><a class="text-decoration-none px-3 py-2 d-flex gap-2" href="/admin/scheduled"><i class="bi bi-clock-fill d-flex align-items-center"></i>Scheduled Patients</a></li>
         <li id="appointments" class="py-2"><a class="text-decoration-none px-3 py-2 d-flex gap-2" href="/admin/appointments"><i class="bi bi-calendar-check-fill d-flex align-items-center"></i>Online Appointments</a></li>
+        <li id="reports" class="py-2"><a class="text-decoration-none px-3 py-2 d-flex gap-2" href="/reports"><i class="bi bi-folder-fill d-flex align-items-center"></i>Reports</a></li>
         <li id="patients" class="py-2"><a class="text-decoration-none px-3 py-2 d-flex gap-2" href="/admin/patients"><i class="bi bi-clipboard2-pulse-fill d-flex align-items-center"></i>Patients' List</a></li>
         <% if(admin.specialty=="admin" ) { %>
             <li id="accounts" class="py-2"><a class="text-decoration-none px-3 py-2 d-flex gap-2" href="/admin/accounts"><i class="bi bi-person-circle d-flex align-items-center"></i>Doctors' List</a></li>
@@ -96,10 +97,7 @@ hr.h-color {
     $(document).ready(function (e) {
         let currentPage = window.location.pathname.split('/')
         currentPage = currentPage[currentPage.length-1]
-
-        $(".sidebar li").removeClass("active")
         $(`.sidebar li#${currentPage}`).addClass("active")
-
 
         $("#logout").click(function (e) {
             $.ajax({

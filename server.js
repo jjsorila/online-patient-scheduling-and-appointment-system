@@ -29,6 +29,9 @@ app.use('/client', require('./controller/client'))
 //ADMIN
 app.use('/admin', require('./controller/admin'))
 
+//REPORTS
+app.use('/reports', require('./controller/reports'))
+
 //404 NOT FOUND
 app.all("*", (req, res) => res.send("<h1>404 Not Found</h1>"))
 

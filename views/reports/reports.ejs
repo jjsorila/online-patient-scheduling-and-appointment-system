@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('../templates/header.ejs') %>
+    <link rel="stylesheet" href="/css/admin/reports.css"/>
+    <link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+    <script type="application/javascript"
+        src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script type="application/javascript" src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+    <script type="application/javascript" src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.print.min.js"></script>
+</head>
+
+<body class="bg-dark text-light">
+    <%- include('../templates/sidebar.ejs') %>
+    <%- include('../templates/admin-navbar.ejs', { content: "Reports" }) %>
+
+    <div class="container border border-light rounded p-3 border-3 mb-4">
+        <h3 class="text-center mb-3">Patients' Masterlist</h3>
+        <div class="container border border-light border-2 rounded p-3 bg-light">
+            <table class="table text-center table-striped table-hover" id="patients_masterlist">
+                <thead>
+                    <tr>
+                        <th class="text-center">PATIENT'S NAME</th>
+                        <th class="text-center">ADDRESS</th>
+                        <th class="text-center">CONTACT</th>
+                        <th class="text-center">BIRTHDATE</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <div class="container border border-light rounded p-3 border-3 mb-4">
+        <h3 class="text-center mb-3">Patients' Accommodated</h3>
+        <div class="form-group mb-3">
+            <select id="sort" class="form-select text-center">
+                <option selected value="All">All</option>
+                <option value="year">This Year</option>
+                <option value="month">This Month</option>
+                <option value="week">This Week</option>
+                <option value="today">Today</option>
+            </select>
+        </div>
+        <div class="container border border-light border-2 rounded p-3 bg-light">
+            <table class="table text-center table-striped table-hover" id="patients_accommodated">
+                <thead>
+                    <tr>
+                        <th class="text-center">PATIENT'S NAME</th>
+                        <th class="text-center">DIAGNOSIS</th>
+                        <th class="text-center">PATIENT TYPE</th>
+                        <th class="text-center">DATE CREATED</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <%- include('../templates/loading.ejs') %>
+    <%- include('../templates/toast.ejs') %>
+
+    <script type="application/javascript" src="/js/admin/reports.js"></script>
+</body>
+
+</html>
