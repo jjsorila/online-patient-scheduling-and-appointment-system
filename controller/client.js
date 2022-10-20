@@ -17,9 +17,9 @@ const express = require('express'),
                 pass: process.env.PASSWORD
             }
         }).sendMail({
-            from: `"OPASS" <${process.env.EMAIL}>`,
+            from: `"OPIS" <${process.env.EMAIL}>`,
             to: email,
-            subject: `Online Patient Appointment and Scheduling System`,
+            subject: `Online Patient Information System`,
             html: body
         })
     },
