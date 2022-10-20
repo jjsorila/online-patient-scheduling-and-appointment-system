@@ -7,6 +7,7 @@
     bottom: 0;
     z-index: 10;
     transition: width .1s linear;
+    overflow-x: hidden;
     overflow-y: scroll;
 }
 
@@ -73,7 +74,7 @@ hr.h-color {
 
 <input type="checkbox" id="toggleSideBar" />
 <div class="sidebar-shadow"></div>
-<div class="sidebar bg-dark d-flex flex-column align-items-center gap-2 border-right border-light border-5 h-100" id="side_nav">
+<div class="sidebar bg-dark d-flex flex-column align-items-center gap-2 border-right border-light border-5" id="side_nav">
     <div class="header-box pt-4">
         <h1 class="fs-4 d-flex align-items-center"><span class="bg-light d-block text-dark rounded-circle shadow mx-3 p-2 img-span"><img class="d-block" src="/favicon.ico"/></span><span class="text-light">OPIS</span><label for="toggleSideBar" class="ms-auto me-3"><i class="bi bi-x-circle-fill text-light p-cursor"></i></label></h1>
     </div>
@@ -88,7 +89,7 @@ hr.h-color {
         <% } %>
     </ul>
     <hr class="h-color">
-    <div class="d-flex justify-content-center">
+    <div class="d-flex justify-content-center mb-3">
         <button class="btn btn-danger w-75" id="logout">LOGOUT</button>
     </div>
 </div>

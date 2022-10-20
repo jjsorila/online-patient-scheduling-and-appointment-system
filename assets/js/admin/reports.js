@@ -1,5 +1,8 @@
 $(document).ready(function(e) {
-    const sort = $("#sort")
+    const year = $("#year")
+    const month = $("#month")
+    const day = $("#day")
+    const selectContainer = $("div.select-container")
 
     //SHOW TOAST
     function showToast(text) {
@@ -49,7 +52,7 @@ $(document).ready(function(e) {
 
     //PATIENTS' ACCOMMODATED
     $("#patients_accommodated").DataTable({
-        ajax: `/reports/scheduled/done?show=${sort.val()}`,
+        ajax: `/reports/scheduled/done?year=${year.val()}&month=${month.val()}&day=${day.val()}`,
         dom: 'lBfrtip',
         buttons: [
             {
@@ -88,9 +91,9 @@ $(document).ready(function(e) {
     })
 
     //CHANGE SORT FOR ACCOMMODATED PATIENTS
-    sort.on("change", function(e) {
+    selectContainer.on("change", "select", function(e) {
         $("#patients_accommodated").DataTable({
-            ajax: `/reports/scheduled/done?show=${sort.val()}`,
+            ajax: `/reports/scheduled/done?year=${year.val()}&month=${month.val()}&day=${day.val()}`,
             dom: 'lBfrtip',
             buttons: [
                 {

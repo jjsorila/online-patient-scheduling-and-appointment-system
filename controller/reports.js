@@ -33,12 +33,18 @@ router.get('/patients', (req, res) => {
 
 //GET ALL DONE/ACCOMMODATED PATIENTS
 router.get('/scheduled/done', (req, res) => {
-    let { show } = req.query
+    let { day, month, year } = req.query
+
     let sort = `WHERE NOT date_created IS NULL`
-    if(show == "year") sort = `WHERE YEAR(date_created)=YEAR(NOW())`
-    if(show == "month") sort = `WHERE MONTH(date_created)=MONTH(NOW())`
-    if(show == "week") sort = `WHERE WEEK(date_created)=WEEK(NOW())`
-    if(show == "today") sort = `WHERE DAY(date_created)=DAY(NOW())`
+
+    if(year != "all") sort = `WHERE YEAR(date_created)=${db.escape(year)}`
+    if(month != "all") sort = `WHERE MONTH(date_created)=${db.escape(month)}`
+    if(day != "all") sort = `WHERE DAY(date_created)=${db.escape(day)}`
+
+    if(year != "all" && month != "all") sort = `WHERE YEAR(date_created)=${db.escape(year)} AND MONTH(date_created)=${db.escape(month)}`
+    if(year != "all" && day != "all") sort = `WHERE YEAR(date_created)=${db.escape(year)} AND DAY(date_created)=${db.escape(day)}`
+    if(month != "all" && day != "all") sort = `WHERE MONTH(date_created)=${db.escape(month)} AND DAY(date_created)=${db.escape(day)}`
+    if(year != "all" && month != "all" && day != "all") sort = `WHERE YEAR(date_created)=${db.escape(year)} AND MONTH(date_created)=${db.escape(month)} AND DAY(date_created)=${db.escape(day)}`
 
     const pa = `pa.fullname AS fullname`
     const apt = `apt.patient_type AS patient_type`
