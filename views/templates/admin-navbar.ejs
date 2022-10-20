@@ -5,8 +5,7 @@
 
     nav {
         height: 80px;
-        display: grid;
-        grid-template-columns: 1fr auto 1fr;
+        z-index: 5;
     }
 
     nav h1, nav h2 {
@@ -16,7 +15,7 @@
     }
 </style>
 
-<nav class="navbar border-bottom border-light border-5 mb-4 bg-dark text-light">
+<nav class="navbar border-bottom border-light border-5 mb-4 bg-dark text-light position-sticky top-0">
     <h1 class="ms-4 mb-0"><label for="toggleSideBar"><i class="bi bi-list"></i></label></h1>
     <h2 class="mb-0 d-none d-sm-flex"><%= content %></h2>
     <div class="me-4 d-flex justify-content-end align-items-center">
