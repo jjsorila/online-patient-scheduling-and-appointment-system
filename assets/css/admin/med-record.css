@@ -1,0 +1,12 @@
+@media print {
+    body > *:not(.to-print) {
+        display: none !important;
+    }
+
+    .to-print {
+        display: flex !important;
+        flex-direction: column;
+        gap: 20px;
+        color: black;
+    }
+}

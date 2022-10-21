@@ -15,6 +15,8 @@ $(document).ready(function (e) {
         return Math.floor(ageInMilliseconds / 1000 / 60 / 60 / 24 / 365);
     }
 
+
+    //AUTO CALCULATE AGE
     birthdate.on("change", function (e) {
         age.val(getAge(birthdate.val()))
     })
@@ -24,6 +26,13 @@ $(document).ready(function (e) {
         $(".toast-body").text(text)
         $(".toast").toast("show")
     }
+
+    //DETECT CHANGES
+    $("input, textarea").on("change keyup paste", function(e) {
+        $(window).on('beforeunload', function(e) {
+            return "You have unsaved changes"
+        });
+    })
 
     //UPDATE MEDICAL RECORD
     $("#save").click(function (e) {
@@ -54,7 +63,7 @@ $(document).ready(function (e) {
                 if(!res.operation) return showToast("❌ Something went wrong")
                 showToast("✅ Updated Successfully")
                 $(".confirmation-shadow").toggleClass("d-none")
-                location.href = `/admin/patients/${patient_id}`
+                $(window).off('beforeunload');
             },
             error: (err) => {
                 console.log(err)
@@ -67,5 +76,19 @@ $(document).ready(function (e) {
     })
     $("#no").click(function(e) {
         $(".confirmation-shadow").toggleClass("d-none")
+    })
+
+    //PRINT MEDICAL RECORD
+    $("#print").click(function(e) {
+        $(".patient-history").text(`History: ${patient_history.val()}`)
+        $(".patient-weight").text(`Weight: ${weight.val()}`)
+        $(".patient-height").text(`Height: ${height.val()}`)
+        $(".patient-temp").text(`Temeprature: ${temperature.val()}`)
+        $(".patient-bp").text(`Blood Pressure ${bp.val()}`)
+
+        $(".diagnosis-title").text(diagnosis.val())
+        $(".diagnosis-description").text(description.val())
+
+        window.print()
     })
 })

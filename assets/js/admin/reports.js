@@ -17,7 +17,8 @@ $(document).ready(function(e) {
         buttons: [
             {
                 extend: 'print',
-                title: ''
+                title: '',
+                className: 'btn btn-outline-dark',
             }
         ],
         columnDefs: [
@@ -57,7 +58,8 @@ $(document).ready(function(e) {
         buttons: [
             {
                 extend: 'print',
-                title: ''
+                title: '',
+                className: 'btn btn-outline-dark',
             }
         ],
         columnDefs: [
@@ -98,7 +100,7 @@ $(document).ready(function(e) {
             buttons: [
                 {
                     extend: 'print',
-                    title: ''
+                    title: '',
                 }
             ],
             columnDefs: [
