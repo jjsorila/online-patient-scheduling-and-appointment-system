@@ -6,16 +6,12 @@
     bottom: 0;
     z-index: 5;
     transition: width .1s linear;
-    overflow: hidden;
-    border-right: none;
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
 
 #side_nav > * {
     width: 300px;
-}
-
-input[type=checkbox] {
-    display: none;
 }
 
 .content {
@@ -39,6 +35,8 @@ input[type=checkbox] {
 
 hr.h-color {
     background: white;
+    height: 2px;
+    flex-shrink: 0;
 }
 
 .sidebar li a {
@@ -53,7 +51,6 @@ hr.h-color {
 
 #toggleSideBar:checked ~ #side_nav {
     width: 315px;
-    border-right: white solid 5px;
 }
 
 #toggleSideBar:checked ~ .sidebar-shadow {
@@ -75,10 +72,67 @@ hr.h-color {
     width: 100%;
 }
 
+#reports {
+    transition: height .1s linear;
+    height: 40px;
+    overflow: hidden;
+}
+
+.submenu {
+    height: 180px;
+    background-color: black;
+}
+
+.arrow {
+    transition: transform .1s linear;
+}
+
+#reports_submenu:checked ~ #reports {
+    height: 225px !important;
+    border-radius: 8px;
+    border-bottom: white solid 5px;
+}
+
+#reports_submenu:checked ~ #reports #reports_toggler {
+    color: black !important;
+    background: white;
+}
+
+#reports_submenu:checked ~ #reports .arrow {
+    transform: rotate(-180deg);
+}
+
+#reports > div.submenu > a:hover{
+    cursor: pointer;
+    border-radius: 0;
+}
+
+#reports > div.submenu > a.active {
+    color: black !important;
+    background: white;
+}
+
+.reports {
+    color: black !important;
+    background: white;
+    border-radius: 8px;
+}
+
+#reports_toggler {
+    cursor: pointer;
+    transition: transform .1s linear;
+    border-radius: 8px;
+}
+
+#reports_toggler:hover {
+    color: black !important;
+    background: white;
+    border-radius: 8px;
+}
+
 @media screen and (min-width: 768px) {
     #side_nav {
         width: 315px;
-        border-right: white solid 5px;
     }
 
     div.main {
@@ -88,7 +142,7 @@ hr.h-color {
 }
 </style>
 
-<input type="checkbox" id="toggleSideBar" />
+<input type="checkbox" id="toggleSideBar" class="d-none" />
 <div class="sidebar-shadow d-md-none"></div>
 <div class="sidebar position-fixed position-md-sticky bg-dark d-md-flex flex-column align-items-center gap-2" id="side_nav">
     <div class="header-box pt-4">
@@ -98,7 +152,15 @@ hr.h-color {
     <ul class="list-unstyled px-2">
         <li id="scheduled" class="py-2"><a class="text-decoration-none px-3 py-2 d-flex gap-2" href="/admin/scheduled"><i class="bi bi-clock-fill d-flex align-items-center"></i>Scheduled Patients</a></li>
         <li id="appointments" class="py-2"><a class="text-decoration-none px-3 py-2 d-flex gap-2" href="/admin/appointments"><i class="bi bi-calendar-check-fill d-flex align-items-center"></i>Online Appointments</a></li>
-        <li id="reports" class="py-2"><a class="text-decoration-none px-3 py-2 d-flex gap-2" href="/reports"><i class="bi bi-folder-fill d-flex align-items-center"></i>Reports</a></li>
+        <input type="checkbox" id="reports_submenu" class="d-none"/>
+        <li id="reports" class="my-2">
+            <label for="reports_submenu" class="text-decoration-none px-3 py-2 d-flex gap-2" id="reports_toggler"><i class="bi bi-folder-fill d-flex align-items-center"></i>Reports<i class="bi bi-caret-down-fill ms-auto arrow"></i></label>
+            <div class="submenu d-flex flex-column gap-3 pt-3 pb-3 text-center">
+                <a class="text-decoration-none reports_masterlist w-100 py-2" href="/reports/reports_masterlist">Patient Masterlist</a>
+                <a class="text-decoration-none reports_accommodated w-100 py-2" href="/reports/reports_accommodated">Accommodated Patients</a>
+                <a class="text-decoration-none reports_scheduled w-100 py-2">Scheduled Patients</a>
+            </div>
+        </li>
         <li id="patients" class="py-2"><a class="text-decoration-none px-3 py-2 d-flex gap-2" href="/admin/patients"><i class="bi bi-clipboard2-pulse-fill d-flex align-items-center"></i>Patients' List</a></li>
         <% if(admin.specialty=="admin" ) { %>
             <li id="accounts" class="py-2"><a class="text-decoration-none px-3 py-2 d-flex gap-2" href="/admin/accounts"><i class="bi bi-person-circle d-flex align-items-center"></i>Doctors' List</a></li>
@@ -112,9 +174,17 @@ hr.h-color {
 
 <script>
     $(document).ready(function (e) {
-        let currentPage = window.location.pathname.split('/')
-        currentPage = currentPage[currentPage.length-1]
+        let urlAddress = window.location.pathname.split('/')
+        let currentPage = urlAddress[urlAddress.length-1]
         $(`.sidebar li#${currentPage}`).addClass("active")
+
+        if(urlAddress.some(val => (val == 'reports'))){
+            $("#reports_submenu").prop("checked", true)
+            $(`.sidebar li#reports`).removeClass("active")
+            $(`.sidebar li#reports label#reports_toggler`).addClass("reports")
+
+            $(`div.submenu > a.${currentPage}`).addClass("active")
+        }
 
         $("#logout").click(function (e) {
             $.ajax({

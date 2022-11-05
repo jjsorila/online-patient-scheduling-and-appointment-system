@@ -8,8 +8,14 @@ const uuid = require("uuid");
 
 //================================================================================================================================
 
-router.get('/', protected, (req, res) => {
-    res.render("reports/reports.ejs", {
+router.get('/reports_masterlist', protected, (req, res) => {
+    res.render("reports/reports_masterlist.ejs", {
+        admin: { ...req.session.admin }
+    })
+})
+
+router.get('/reports_accommodated', protected, (req, res) => {
+    res.render("reports/reports_accommodated.ejs", {
         admin: { ...req.session.admin }
     })
 })
