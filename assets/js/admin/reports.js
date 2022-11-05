@@ -18,7 +18,7 @@ $(document).ready(function(e) {
             {
                 extend: 'print',
                 title: '',
-                className: 'btn btn-outline-dark',
+                className: 'btn btn-outline-dark text-uppercase',
             }
         ],
         columnDefs: [
@@ -59,7 +59,7 @@ $(document).ready(function(e) {
             {
                 extend: 'print',
                 title: '',
-                className: 'btn btn-outline-dark',
+                className: 'btn btn-outline-dark text-uppercase',
             }
         ],
         columnDefs: [

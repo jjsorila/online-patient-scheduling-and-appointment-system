@@ -6,26 +6,28 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%- include('../../templates/header.ejs') %>
-        <link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
-        <script type="application/javascript"
-            src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+    <script type="application/javascript"
+        src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 </head>
 
 <body class="bg-dark text-light">
-    <%- include('../../templates/sidebar.ejs') %>
-    <%- include('../../templates/admin-navbar.ejs', { content: "Scheduled Patients" }) %>
-    <div class="content">
-        <div class="container w-75 p-4 border border-light border-3 rounded bg-light">
-            <table class="table text-center table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th class="text-center">PATIENT ID</th>
-                        <th class="text-center">PATIENT'S NAME</th>
-                        <th class="text-center">PATIENT TYPE</th>
-                        <th class="text-center">ACTION</th>
-                    </tr>
-                </thead>
-            </table>
+    <div class="content d-flex">
+        <%- include('../../templates/sidebar.ejs') %>
+        <div class="main">
+            <%- include('../../templates/admin-navbar.ejs', { content: "Scheduled Patients" }) %>
+            <div class="container w-100 m-md-2 p-4 border border-light border-3 rounded bg-light">
+                <table class="table text-center table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th class="text-center">PATIENT ID</th>
+                            <th class="text-center">PATIENT'S NAME</th>
+                            <th class="text-center">PATIENT TYPE</th>
+                            <th class="text-center">ACTION</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
         </div>
     </div>
     <%- include('../../templates/loading.ejs') %>

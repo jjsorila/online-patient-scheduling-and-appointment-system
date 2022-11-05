@@ -32,67 +32,70 @@
 </head>
 
 <body class="bg-dark text-light">
-    <%- include('../templates/sidebar.ejs') %>
-    <%- include('../templates/admin-navbar.ejs', { content: "Reports" }) %>
+    <div class="content d-flex">
+        <%- include('../templates/sidebar.ejs') %>
+        <div class="main">
+            <%- include('../templates/admin-navbar.ejs', { content: "Reports" }) %>
+            <div class="container mb-4">
+                <h3 class="text-center mb-3">Patients' Masterlist</h3>
+                <div class="container border border-light border-2 rounded p-3 bg-light">
+                    <table class="table text-center table-striped table-hover" id="patients_masterlist">
+                        <thead>
+                            <tr>
+                                <th class="text-center">PATIENT'S NAME</th>
+                                <th class="text-center">ADDRESS</th>
+                                <th class="text-center">CONTACT</th>
+                                <th class="text-center">BIRTHDATE</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
 
-    <div class="container border border-light rounded p-3 border-3 mb-4">
-        <h3 class="text-center mb-3">Patients' Masterlist</h3>
-        <div class="container border border-light border-2 rounded p-3 bg-light">
-            <table class="table text-center table-striped table-hover" id="patients_masterlist">
-                <thead>
-                    <tr>
-                        <th class="text-center">PATIENT'S NAME</th>
-                        <th class="text-center">ADDRESS</th>
-                        <th class="text-center">CONTACT</th>
-                        <th class="text-center">BIRTHDATE</th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
-    </div>
-
-    <div class="container border border-light rounded p-3 border-3 mb-4">
-        <h3 class="text-center mb-3">Accommodated Patients</h3>
-        <div class="form-group select-container mb-3 d-flex gap-2">
-            <div class="form-group w-100">
-                <label class="form-label w-100 text-center">Year</label>
-                <select id="year" class="form-select text-center">
-                    <option selected value="all">All</option>
-                    <% for(let i = 2020; i <= 2070; i++) { %>
-                        <option value="<%= i %>"><%= i %></option>
-                    <% } %>
-                </select>
+            <div class="container mb-4">
+                <h3 class="text-center mb-3">Accommodated Patients</h3>
+                <div class="form-group select-container mb-3 d-flex gap-2">
+                    <div class="form-group w-100">
+                        <label class="form-label w-100 text-center">Year</label>
+                        <select id="year" class="form-select text-center">
+                            <option selected value="all">All</option>
+                            <% for(let i = 2020; i <= 2070; i++) { %>
+                                <option value="<%= i %>"><%= i %></option>
+                            <% } %>
+                        </select>
+                    </div>
+                    <div class="form-group w-100">
+                        <label class="form-label w-100 text-center">Month</label>
+                        <select id="month" class="form-select text-center">
+                            <option selected value="all">All</option>
+                            <% for(let i = 1; i <= 12; i++) { %>
+                                <option value="<%= i %>"><%= months[i-1] %></option>
+                            <% } %>
+                        </select>
+                    </div>
+                    <div class="form-group w-100">
+                        <label class="form-label w-100 text-center">Day</label>
+                        <select id="day" class="form-select text-center">
+                            <option selected value="all">All</option>
+                            <% for(let i = 1; i <= 31; i++) { %>
+                                <option value="<%= i %>"><%= i %></option>
+                            <% } %>
+                        </select>
+                    </div>
+                </div>
+                <div class="container border border-light border-2 rounded p-3 bg-light">
+                    <table class="table text-center table-striped table-hover" id="patients_accommodated">
+                        <thead>
+                            <tr>
+                                <th class="text-center">PATIENT'S NAME</th>
+                                <th class="text-center">DIAGNOSIS</th>
+                                <th class="text-center">PATIENT TYPE</th>
+                                <th class="text-center">DATE CREATED</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
             </div>
-            <div class="form-group w-100">
-                <label class="form-label w-100 text-center">Month</label>
-                <select id="month" class="form-select text-center">
-                    <option selected value="all">All</option>
-                    <% for(let i = 1; i <= 12; i++) { %>
-                        <option value="<%= i %>"><%= months[i-1] %></option>
-                    <% } %>
-                </select>
-            </div>
-            <div class="form-group w-100">
-                <label class="form-label w-100 text-center">Day</label>
-                <select id="day" class="form-select text-center">
-                    <option selected value="all">All</option>
-                    <% for(let i = 1; i <= 31; i++) { %>
-                        <option value="<%= i %>"><%= i %></option>
-                    <% } %>
-                </select>
-            </div>
-        </div>
-        <div class="container border border-light border-2 rounded p-3 bg-light">
-            <table class="table text-center table-striped table-hover" id="patients_accommodated">
-                <thead>
-                    <tr>
-                        <th class="text-center">PATIENT'S NAME</th>
-                        <th class="text-center">DIAGNOSIS</th>
-                        <th class="text-center">PATIENT TYPE</th>
-                        <th class="text-center">DATE CREATED</th>
-                    </tr>
-                </thead>
-            </table>
         </div>
     </div>
 

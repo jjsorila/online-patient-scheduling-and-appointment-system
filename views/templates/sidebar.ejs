@@ -1,14 +1,13 @@
 <style>
 #side_nav {
     width: 0;
-    position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
-    z-index: 10;
+    z-index: 5;
     transition: width .1s linear;
-    overflow-x: hidden;
-    overflow-y: scroll;
+    overflow: hidden;
+    border-right: none;
 }
 
 #side_nav > * {
@@ -54,6 +53,7 @@ hr.h-color {
 
 #toggleSideBar:checked ~ #side_nav {
     width: 315px;
+    border-right: white solid 5px;
 }
 
 #toggleSideBar:checked ~ .sidebar-shadow {
@@ -63,20 +63,36 @@ hr.h-color {
 .sidebar-shadow {
     display: none;
     position: fixed;
-    z-index: 9;
+    z-index: 4;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
     background: rgba(0, 0, 0, 0.6);
 }
+
+.main {
+    width: 100%;
+}
+
+@media screen and (min-width: 768px) {
+    #side_nav {
+        width: 315px;
+        border-right: white solid 5px;
+    }
+
+    div.main {
+        width: calc(100% - 315px);
+        margin-left: auto;
+    }
+}
 </style>
 
 <input type="checkbox" id="toggleSideBar" />
-<div class="sidebar-shadow"></div>
-<div class="sidebar bg-dark d-flex flex-column align-items-center gap-2 border-right border-light border-5" id="side_nav">
+<div class="sidebar-shadow d-md-none"></div>
+<div class="sidebar position-fixed position-md-sticky bg-dark d-md-flex flex-column align-items-center gap-2" id="side_nav">
     <div class="header-box pt-4">
-        <h1 class="fs-4 d-flex align-items-center"><span class="bg-light d-block text-dark rounded-circle shadow mx-3 p-2 img-span"><img class="d-block" src="/favicon.ico"/></span><span class="text-light">OPIS</span><label for="toggleSideBar" class="ms-auto me-3"><i class="bi bi-x-circle-fill text-light p-cursor"></i></label></h1>
+        <h1 class="fs-4 d-flex align-items-center"><span class="bg-light d-block text-dark rounded-circle shadow mx-3 p-2 img-span"><img class="d-block" src="/favicon.ico"/></span><span class="text-light">OPIS</span><label for="toggleSideBar" class="ms-auto me-3 d-block d-md-none"><i class="bi bi-x-circle-fill text-light p-cursor"></i></label></h1>
     </div>
     <hr class="h-color">
     <ul class="list-unstyled px-2">

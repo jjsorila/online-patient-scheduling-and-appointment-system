@@ -13,117 +13,118 @@
 </head>
 
 <body class="bg-dark text-light">
-    <%- include('../../templates/sidebar.ejs') %>
-    <%- include('../../templates/admin-navbar.ejs', { content: "Patients' List" }) %>
+    <div class="content d-flex">
+        <%- include('../../templates/sidebar.ejs') %>
+        <div class="main">
+            <%- include('../../templates/admin-navbar.ejs', { content: "Patients' List" }) %>
+            <div class="form-group d-flex justify-content-center mb-4">
+                <button id="add-patient" class="btn bg-dark text-light border border-light border-5">NEW PATIENT</button>
+            </div>
 
-    <div class="content">
-        <div class="form-group d-flex justify-content-center mb-4">
-            <button id="add-patient" class="btn bg-dark text-light border border-light border-5">NEW PATIENT</button>
-        </div>
-
-        <div class="container border border-light border-2 rounded p-3 bg-light">
-            <table class="table text-center table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th class="text-center">PATIENT'S NAME</th>
-                        <th class="text-center">ADDRESS</th>
-                        <th class="text-center">CONTACT</th>
-                        <th class="text-center">BIRTHDATE</th>
-                        <th class="text-center">ACTION</th>
-                    </tr>
-                </thead>
-            </table>
+            <div class="container w-100 m-md-2 border border-light border-2 rounded p-3 bg-light">
+                <table class="table text-center table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th class="text-center">PATIENT'S NAME</th>
+                            <th class="text-center">ADDRESS</th>
+                            <th class="text-center">CONTACT</th>
+                            <th class="text-center">BIRTHDATE</th>
+                            <th class="text-center">ACTION</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
         </div>
     </div>
 
-        <!-- ADD NEW PATIENT -->
-        <div class="bg-shadow d-flex d-none justify-content-center align-items-center">
-            <div class="patient-form border text-light text-center bg-dark border-light border-4 w-75 h-75 rounded p-4">
-                <div class="form-group w-100 d-flex gap-5">
-                    <div class="form-group w-50">
-                        <label class="form-label" for="firstname">Firstname</label>
-                        <input class="form-control text-center" type="text" id="firstname" />
-                    </div>
-                    <div class="form-group w-50">
-                        <label class="form-label" for="mi">M.I.</label>
-                        <input class="form-control text-center" type="text" id="mi" />
-                    </div>
-                    <div class="form-group w-50">
-                        <label class="form-label" for="lastname">Lastname</label>
-                        <input class="form-control text-center" type="text" id="lastname" />
-                    </div>
+    <!-- ADD NEW PATIENT -->
+    <div class="bg-shadow d-flex d-none justify-content-center align-items-center">
+        <div class="patient-form border text-light text-center bg-dark border-light border-4 w-75 h-75 rounded p-4">
+            <div class="form-group w-100 d-flex gap-5">
+                <div class="form-group w-50">
+                    <label class="form-label" for="firstname">Firstname</label>
+                    <input class="form-control text-center" type="text" id="firstname" />
                 </div>
-                <div class="form-group w-100 d-flex gap-5">
-                    <div class="form-group w-50">
-                        <label class="form-label" for="birthday">Birthday</label>
-                        <input class="form-control text-center" type="date" id="birthday" />
-                    </div>
-                    <div class="form-group w-50">
-                        <label class="form-label" for="age">Age</label>
-                        <input class="form-control text-center" type="number" id="age" />
-                    </div>
+                <div class="form-group w-50">
+                    <label class="form-label" for="mi">M.I.</label>
+                    <input class="form-control text-center" type="text" id="mi" />
                 </div>
-                <div class="form-group w-100 d-flex gap-5">
-                    <div class="form-group w-50">
-                        <label class="form-label" for="gender">Gender</label>
-                        <select type="text" class="form-select d-block w-100 mx-auto text-center" id="gender">
-                            <option selected disabled hidden>Choose</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                        </select>
-                    </div>
-                    <div class="form-group w-50">
-                        <label class="form-label" for="contact">Contact</label>
-                        <input class="form-control w-100 mx-auto text-center" type="number" id="contact" />
-                    </div>
-                </div>
-                <div class="form-group w-100">
-                    <label class="form-label" for="address">Address</label>
-                    <textarea class="form-control w-75 mx-auto text-center" id="address" rows="3"></textarea>
-                </div>
-                <!-- <div class="form-group w-50 mx-auto">
-                    <label class="form-label" for="g-name">Guardian's Name</label>
-                    <input class="form-control w-100 text-center" type="text" id="g-name" />
-                </div>
-                <div class="form-group w-50 mx-auto">
-                    <label class="form-label" for="g-address">Guardian's Address</label>
-                    <input class="form-control w-100 text-center" type="text" id="g-address" />
-                </div>
-                <div class="form-group w-50 mx-auto">
-                    <label class="form-label" for="g-contact">Guardian's Contact</label>
-                    <input class="form-control w-100 text-center" type="number" id="g-contact" />
-                </div>
-                <div class="form-group w-50 mx-auto">
-                    <label class="form-label" for="g-relationship">Relationship to Patient</label>
-                    <input class="form-control w-100 text-center" type="text" id="g-relationship" />
-                </div> -->
-                <div class="form-group w-100 pt-3">
-                    <button id="submit" class="btn btn-success">ADD PATIENT</button>
+                <div class="form-group w-50">
+                    <label class="form-label" for="lastname">Lastname</label>
+                    <input class="form-control text-center" type="text" id="lastname" />
                 </div>
             </div>
-        </div>
-
-        <!-- SCHEDULE -->
-        <div class="bg-shadow-sched d-flex d-none justify-content-center align-items-center">
-            <div class="schedule-form border d-flex flex-column justify-content-center align-items-center gap-4 text-light text-center bg-dark border-light border-4 w-50 h-50 rounded p-4">
-                <div class="form-group w-75 mx-auto">
-                    <label class="form-label" for="patient_type">Patient Type</label>
-                    <select type="text" class="form-select d-block w-100 text-center" id="patient_type">
+            <div class="form-group w-100 d-flex gap-5">
+                <div class="form-group w-50">
+                    <label class="form-label" for="birthday">Birthday</label>
+                    <input class="form-control text-center" type="date" id="birthday" />
+                </div>
+                <div class="form-group w-50">
+                    <label class="form-label" for="age">Age</label>
+                    <input class="form-control text-center" type="number" id="age" />
+                </div>
+            </div>
+            <div class="form-group w-100 d-flex gap-5">
+                <div class="form-group w-50">
+                    <label class="form-label" for="gender">Gender</label>
+                    <select type="text" class="form-select d-block w-100 mx-auto text-center" id="gender">
                         <option selected disabled hidden>Choose</option>
-                        <option value="OB">OB</option>
-                        <option value="Pedia">Pedia</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
                     </select>
                 </div>
-                <div class="form-group w-50 mx-auto pt-3">
-                    <input type="hidden" id="hidden-patient-id"/>
-                    <button id="schedule" class="btn btn-info">SCHEDULE PATIENT</button>
+                <div class="form-group w-50">
+                    <label class="form-label" for="contact">Contact</label>
+                    <input class="form-control w-100 mx-auto text-center" type="number" id="contact" />
                 </div>
             </div>
+            <div class="form-group w-100">
+                <label class="form-label" for="address">Address</label>
+                <textarea class="form-control w-75 mx-auto text-center" id="address" rows="3"></textarea>
+            </div>
+            <!-- <div class="form-group w-50 mx-auto">
+                <label class="form-label" for="g-name">Guardian's Name</label>
+                <input class="form-control w-100 text-center" type="text" id="g-name" />
+            </div>
+            <div class="form-group w-50 mx-auto">
+                <label class="form-label" for="g-address">Guardian's Address</label>
+                <input class="form-control w-100 text-center" type="text" id="g-address" />
+            </div>
+            <div class="form-group w-50 mx-auto">
+                <label class="form-label" for="g-contact">Guardian's Contact</label>
+                <input class="form-control w-100 text-center" type="number" id="g-contact" />
+            </div>
+            <div class="form-group w-50 mx-auto">
+                <label class="form-label" for="g-relationship">Relationship to Patient</label>
+                <input class="form-control w-100 text-center" type="text" id="g-relationship" />
+            </div> -->
+            <div class="form-group w-100 pt-3">
+                <button id="submit" class="btn btn-success">ADD PATIENT</button>
+            </div>
         </div>
+    </div>
 
-        <%- include('../../templates/loading.ejs') %>
-        <%- include('../../templates/toast.ejs') %>
-            <script type="application/javascript" src="/js/admin/patients.js"></script>
+    <!-- SCHEDULE -->
+    <div class="bg-shadow-sched d-flex d-none justify-content-center align-items-center">
+        <div class="schedule-form border d-flex flex-column justify-content-center align-items-center gap-4 text-light text-center bg-dark border-light border-4 w-50 h-50 rounded p-4">
+            <div class="form-group w-75 mx-auto">
+                <label class="form-label" for="patient_type">Patient Type</label>
+                <select type="text" class="form-select d-block w-100 text-center" id="patient_type">
+                    <option selected disabled hidden>Choose</option>
+                    <option value="OB">OB</option>
+                    <option value="Pedia">Pedia</option>
+                </select>
+            </div>
+            <div class="form-group w-50 mx-auto pt-3">
+                <input type="hidden" id="hidden-patient-id"/>
+                <button id="schedule" class="btn btn-info">SCHEDULE PATIENT</button>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../../templates/loading.ejs') %>
+    <%- include('../../templates/toast.ejs') %>
+    <script type="application/javascript" src="/js/admin/patients.js"></script>
 </body>
 
 </html>
