@@ -21,8 +21,17 @@
             <%- include('../templates/admin-navbar.ejs', { content: "Accommodated Patients" }) %>
 
             <div class="container mb-4">
-                <h3 class="text-center mb-3">Accommodated Patients</h3>
                 <div class="container border border-light border-2 rounded p-3 bg-light">
+                    <div class="date_container d-flex flex-column flex-md-row w-100 justify-content-center gap-2 mb-3">
+                        <div class="form-group text-center w-100">
+                            <label class="form-label text-dark">FROM</label>
+                            <input type="date" class="text-center form-control border border-dark border-4" id="from"/>
+                        </div>
+                        <div class="form-group text-center w-100">
+                            <label class="form-label text-dark">TO</label>
+                            <input type="date" class="text-center form-control border border-dark border-4" id="to"/>
+                        </div>
+                    </div>
                     <table class="table text-center table-striped table-hover" id="patients_accommodated">
                         <thead>
                             <tr>

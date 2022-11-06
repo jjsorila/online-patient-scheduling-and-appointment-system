@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('../templates/header.ejs') %>
+    <link rel="stylesheet" href="/css/admin/reports_scheduled.css"/>
+    <link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+    <script type="application/javascript"
+        src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script type="application/javascript" src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+    <script type="application/javascript" src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.print.min.js"></script>
+</head>
+
+<body class="bg-dark text-light">
+    <div class="content d-flex">
+        <%- include('../templates/sidebar.ejs') %>
+        <div class="main">
+            <%- include('../templates/admin-navbar.ejs', { content: "Scheduled Patients" }) %>
+            <div class="container mb-4">
+                <div class="container border border-light border-2 rounded p-3 bg-light">
+                    <div class="form-group text-center text-dark mb-3">
+                        <label for="status" class="form-label w-100">SORT STATUS</label>
+                        <select class="form-select w-100 text-center border border-dark border-4" id="status">
+                            <option selected value="All">All</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Approved">Approved</option>
+                            <option value="Done">Done</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="form-group w-100 d-flex flex-column flex-md-row justify-content-center gap-2 mb-4">
+                        <div class="form-group text-center text-dark w-100">
+                            <label for="from" class="form-label w-100">FROM</label>
+                            <input type="date" class="form-control text-center border border-dark border-4" id="from"/>
+                        </div>
+                        <div class="form-group text-center text-dark w-100">
+                            <label for="to" class="form-label w-100">TO</label>
+                            <input type="date" class="form-control text-center border border-dark border-4" id="to"/>
+                        </div>
+                    </div>
+                    <table class="table text-center table-striped table-hover" id="scheduled_patients">
+                        <thead>
+                            <tr>
+                                <th class="text-center">PATIENT'S NAME</th>
+                                <th class="text-center">ADDRESS</th>
+                                <th class="text-center">CONTACT</th>
+                                <th class="text-center">PATIENT TYPE</th>
+                                <th class="text-center">CHECK-UP DATE</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../templates/loading.ejs') %>
+    <%- include('../templates/toast.ejs') %>
+
+    <script type="application/javascript" src="/js/admin/reports_scheduled.js"></script>
+</body>
+
+</html>

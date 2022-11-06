@@ -24,7 +24,7 @@ $(document).ready(function (e) {
                 "color": "black"
             })
 
-            $(el).tooltip({
+            el.tooltip({
                 title: event.status,
                 placement: "left",
                 trigger: "hover",

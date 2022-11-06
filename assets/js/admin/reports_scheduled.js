@@ -1,10 +1,10 @@
 $(document).ready(function(e) {
+    const status = $("#status")
     const from = $("#from")
     const to = $("#to")
 
-    //PATIENTS' ACCOMMODATED
-    $("#patients_accommodated").DataTable({
-        ajax: `/reports/scheduled/done`,
+    $("#scheduled_patients").DataTable({
+        ajax: `/reports/scheduled/all`,
         dom: 'lBfrtip',
         buttons: [
             {
@@ -14,7 +14,8 @@ $(document).ready(function(e) {
             }
         ],
         columnDefs: [
-            { className: "dt-center", targets: "_all" }
+            { className: "dt-center", targets: "_all" },
+            { className: "text-break", targets: 1 }
         ],
         lengthMenu: [[10, 20, 30, 50, -1], [10, 20, 30, 50, "All"]],
         order: [[0, 'asc']],
@@ -28,25 +29,27 @@ $(document).ready(function(e) {
                 }
             },
             {
-                data: "ailment",
-                orderable: false,
-                render: ({ diagnosis }) => (diagnosis)
+                data: "address",
+                orderable: false
+            },
+            {
+                data: "contact",
+                orderable: false
             },
             {
                 data: "patient_type",
                 orderable: false
             },
             {
-                data: "date_created",
+                data: "schedule",
                 orderable: false
             }
         ]
     })
 
-    //CHANGE RANGE OF DATE
-    $("#from,#to").change(function(e) {
-        $("#patients_accommodated").DataTable({
-            ajax: `/reports/scheduled/done?from=${from.val()}&to=${to.val()}`,
+    $("#from,#to,#status").change(function(e) {
+        $("#scheduled_patients").DataTable({
+            ajax: `/reports/scheduled/all?status=${status.val()}&from=${from.val()}&to=${to.val()}`,
             dom: 'lBfrtip',
             buttons: [
                 {
@@ -56,7 +59,8 @@ $(document).ready(function(e) {
                 }
             ],
             columnDefs: [
-                { className: "dt-center", targets: "_all" }
+                { className: "dt-center", targets: "_all" },
+                { className: "text-break", targets: 1 }
             ],
             lengthMenu: [[10, 20, 30, 50, -1], [10, 20, 30, 50, "All"]],
             order: [[0, 'asc']],
@@ -70,16 +74,19 @@ $(document).ready(function(e) {
                     }
                 },
                 {
-                    data: "ailment",
-                    orderable: false,
-                    render: ({ diagnosis }) => (diagnosis)
+                    data: "address",
+                    orderable: false
+                },
+                {
+                    data: "contact",
+                    orderable: false
                 },
                 {
                     data: "patient_type",
                     orderable: false
                 },
                 {
-                    data: "date_created",
+                    data: "schedule",
                     orderable: false
                 }
             ],
