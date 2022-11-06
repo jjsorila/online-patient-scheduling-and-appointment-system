@@ -16,17 +16,20 @@
         <%- include('../../templates/sidebar.ejs') %>
         <div class="main">
             <%- include('../../templates/admin-navbar.ejs', { content: "Scheduled Patients" }) %>
-            <div class="container w-100 m-md-2 p-4 border border-light border-3 rounded bg-light">
-                <table class="table text-center table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th class="text-center">PATIENT ID</th>
-                            <th class="text-center">PATIENT'S NAME</th>
-                            <th class="text-center">PATIENT TYPE</th>
-                            <th class="text-center">ACTION</th>
-                        </tr>
-                    </thead>
-                </table>
+
+            <div class="container">
+                <div class="container rounded p-3 bg-light">
+                    <table class="table text-center table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="text-center">PATIENT ID</th>
+                                <th class="text-center">PATIENT'S NAME</th>
+                                <th class="text-center">PATIENT TYPE</th>
+                                <th class="text-center">ACTION</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

@@ -17,23 +17,24 @@
         <%- include('../../templates/sidebar.ejs') %>
         <div class="main">
             <%- include('../../templates/admin-navbar.ejs', { content: "Doctors' List" }) %>
-            <div class="form-group mb-4 d-flex justify-content-center">
-                <button class="btn bg-dark text-light border border-light border-5 rounded" id="showForm">NEW DOCTOR</button>
+            <div class="container">
+                <div class="form-group mb-4 d-flex justify-content-center">
+                    <button class="btn bg-dark text-light border border-light border-5 rounded" id="showForm">NEW DOCTOR</button>
+                </div>
+                <section class="container bg-light text-dark p-4 rounded">
+                    <table class="table text-center table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="text-center">DOCTOR'S NAME</th>
+                                <th class="text-center">LICENSE NUMBER</th>
+                                <th class="text-center">SPECIALTY</th>
+                                <th class="text-center">ACTION</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </section>
+                <input type="hidden" id="doctor-id" />
             </div>
-
-            <section class="container w-100 m-md-2 bg-light text-dark p-4 border border-light border-5 rounded">
-                <table class="table text-center table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th class="text-center">DOCTOR'S NAME</th>
-                            <th class="text-center">LICENSE NUMBER</th>
-                            <th class="text-center">SPECIALTY</th>
-                            <th class="text-center">ACTION</th>
-                        </tr>
-                    </thead>
-                </table>
-            </section>
-            <input type="hidden" id="doctor-id" />
         </div>
     </div>
 
