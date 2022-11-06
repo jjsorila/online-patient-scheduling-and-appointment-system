@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('../templates/header.ejs') %>
+        <link rel="stylesheet" href="/css/admin/dashboard.css" />
+        <link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+        <script type="application/javascript"
+            src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+</head>
+
+<body class="bg-dark text-light">
+    <div class="content d-flex">
+        <%- include('../templates/sidebar.ejs') %>
+        <div class="main">
+            <%- include('../templates/admin-navbar.ejs', { content: "Dashboard" }) %>
+            <div class="container">
+                <div class="d-flex flex-column flex-md-row justify-content-around">
+                    <div class="card-container doctor d-flex align-items-center p-2" style="background-color: #00897B;">
+                        <img class="img d-block" src="/doctor-icon.png"/>
+                        <div class="form-group mx-auto">
+                            <label class="form-label text-center w-100"><h5><%= data.doctors %></h5></label>
+                            <h5 class="text-center">DOCTORS</h5>
+                        </div>
+                    </div>
+                    <div class="card-container patient bg-warning d-flex align-items-center p-2">
+                        <img class="img d-block" src="/patient-icon.png"/>
+                        <div class="form-group mx-auto">
+                            <label class="form-label text-center w-100"><h5><%= data.patients %></h5></label>
+                            <h5 class="text-center">PATIENTS</h5>
+                        </div>
+                    </div>
+                    <div class="card-container scheduled bg-danger d-flex align-items-center p-2">
+                        <img class="img d-block" src="/scheduled-icon.png"/>
+                        <div class="form-group mx-auto">
+                            <label class="form-label text-center w-100"><h5><%= data.scheduled %></h5></label>
+                            <h5 class="text-center">SCHEDULED PATIENTS</h5>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container bg-light p-4 mt-5 w-75 rounded">
+                    <div id="calendar" class="text-dark"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../templates/toast.ejs') %>
+    <%- include('../templates/loading.ejs') %>
+    <script type="application/javascript" src="/js/admin/dashboard.js"></script>
+</body>
+
+</html>

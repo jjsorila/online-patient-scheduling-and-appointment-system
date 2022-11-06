@@ -1,0 +1,27 @@
+.img {
+    width: 35%;
+    height: 80%;
+}
+
+.card-container {
+    height: 150px;
+    width: 300px;
+    border-radius: 20px;
+    transition: transform .1s linear;
+    cursor: pointer;
+    position: relative;
+    color: black !important;
+}
+
+.fc-today {
+    background-color: gray !important;
+}
+
+.card-container:hover {
+    transform: scale(1.1);
+    z-index: 10;
+}
+
+.card-container:active {
+    transform: scale(0.9);
+}

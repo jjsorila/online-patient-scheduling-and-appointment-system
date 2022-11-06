@@ -8,6 +8,27 @@ const uuid = require("uuid");
 
 //================================================================================================================================
 
+//ADMIN DASHBOARD
+router.get('/dashboard', protected, (req, res) => {
+    db.query(`
+        SELECT COUNT(id) AS total_patients FROM patient_accounts;
+        SELECT COUNT(admin_id) AS total_doctors FROM admin_accounts;
+        SELECT COUNT(apt_id) AS total_scheduled FROM appointments WHERE status='Approved' AND (DATE(schedule)=CURDATE() OR DATE(date_created_walk_in)=CURDATE());
+    `, (err, result) => {
+        if(err) throw err;
+
+        res.render('admin/dashboard.ejs', {
+            admin: { ...req.session.admin },
+            data: {
+                patients: result[0][0].total_patients,
+                doctors: (result[1][0].total_doctors - 1),
+                scheduled: result[2][0].total_scheduled
+            }
+        })
+    })
+
+})
+
 //ADMIN LOGIN PAGE
 router.get('/login', login, (req, res) => {
     res.render('admin/login.ejs')
