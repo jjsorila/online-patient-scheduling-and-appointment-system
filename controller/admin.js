@@ -68,7 +68,7 @@ router.get('/patients/:patient_id', protected, (req, res) => {
 router.get('/patients/:patient_id/:mr_id', protected, (req, res) => {
     const { patient_id, mr_id } = req.params
 
-    const pa = `pa.fullname AS fullname,pa.age AS age,pa.birthdate AS birthdate,pa.contact AS contact,pa.address AS address,pa.gender AS gender,pa.patient_history AS patient_history,pa.guardian AS guardian`
+    const pa = `pa.picture AS picture,pa.fullname AS fullname,pa.age AS age,pa.birthdate AS birthdate,pa.contact AS contact,pa.address AS address,pa.gender AS gender,pa.patient_history AS patient_history,pa.guardian AS guardian`
     const apt = `apt.patient_type AS patient_type,apt.med_complain AS med_complain`
     const mr = `mr.temperature AS temperature,mr.bp AS bp,mr.weight AS weight,mr.height AS height,mr.ailment AS ailment`
 

@@ -27,18 +27,11 @@ $(document).ready(function (e) {
         $(".toast").toast("show")
     }
 
-    //DETECT CHANGES
-    $("input, textarea").on("change keyup paste", function(e) {
-        $(window).on('beforeunload', function(e) {
-            return "You have unsaved changes"
-        });
-    })
-
     //UPDATE MEDICAL RECORD
     $("#save").click(function (e) {
         $(".confirmation-shadow").toggleClass("d-none")
     })
-    $("#yes").click(function(e) {
+    $("#yes").click(function (e) {
         $(".loading").css("display", "block")
 
         $.ajax({
@@ -60,10 +53,19 @@ $(document).ready(function (e) {
                 }
             }),
             success: (res) => {
-                if(!res.operation) return showToast("❌ Something went wrong")
+                if (!res.operation) return showToast("❌ Something went wrong")
                 showToast("✅ Updated Successfully")
                 $(".confirmation-shadow").toggleClass("d-none")
                 $(window).off('beforeunload');
+                patient_history.prop("disabled", !patient_history.prop("disabled"))
+                temperature.prop("disabled", !temperature.prop("disabled"))
+                bp.prop("disabled", !bp.prop("disabled"))
+                height.prop("disabled", !height.prop("disabled"))
+                weight.prop("disabled", !weight.prop("disabled"))
+                diagnosis.prop("disabled", !diagnosis.prop("disabled"))
+                description.prop("disabled", !description.prop("disabled"))
+                $("#edit").toggleClass("d-none")
+                $("#save").toggleClass("d-none")
             },
             error: (err) => {
                 console.log(err)
@@ -74,17 +76,33 @@ $(document).ready(function (e) {
             }
         })
     })
-    $("#no").click(function(e) {
+    $("#no").click(function (e) {
         $(".confirmation-shadow").toggleClass("d-none")
     })
 
+    //ENABLE EDIT MODE
+    $("#edit").click(function (e) {
+        patient_history.prop("disabled", !patient_history.prop("disabled"))
+        temperature.prop("disabled", !temperature.prop("disabled"))
+        bp.prop("disabled", !bp.prop("disabled"))
+        height.prop("disabled", !height.prop("disabled"))
+        weight.prop("disabled", !weight.prop("disabled"))
+        diagnosis.prop("disabled", !diagnosis.prop("disabled"))
+        description.prop("disabled", !description.prop("disabled"))
+        $(this).toggleClass("d-none")
+        $("#save").toggleClass("d-none")
+        $(window).on('beforeunload', function (e) {
+            return "You have unsaved changes"
+        });
+    })
+
     //PRINT MEDICAL RECORD
-    $("#print").click(function(e) {
+    $("#print").click(function (e) {
         $(".patient-history").text(`History: ${patient_history.val()}`)
         $(".patient-weight").text(`Weight: ${weight.val()}`)
         $(".patient-height").text(`Height: ${height.val()}`)
         $(".patient-temp").text(`Temeprature: ${temperature.val()}`)
-        $(".patient-bp").text(`Blood Pressure ${bp.val()}`)
+        $(".patient-bp").text(`Blood Pressure: ${bp.val()}`)
 
         $(".diagnosis-title").text(diagnosis.val())
         $(".diagnosis-description").text(description.val())

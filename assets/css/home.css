@@ -3,8 +3,8 @@
 }
 
 .showcase {
-    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("/bg-showcase.jpg") no-repeat;
-    background-size: 100% 200%;
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("/admin-bg.png") no-repeat;
+    background-size: 100% 175%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -16,8 +16,81 @@
     -moz-box-shadow: 0px 14px 9px 3px rgba(0, 0, 0, 0.76);
 }
 
-.showcase > .button-container {
+.showcase>.button-container {
     display: flex;
     justify-content: center;
     gap: 20px;
+}
+
+.button-container>a {
+    background-color: #00897B;
+    color: white;
+}
+
+.button-container>a:hover {
+    border-color: black !important;
+}
+
+.mission-card {
+    border-radius: 20px !important;
+}
+
+.mission-card h5 {
+    line-height: 30px;
+}
+
+.service-card ul {
+    list-style: none;
+}
+
+.service-card li {
+    line-height: 30px;
+    font-size: clamp(20px, 25px, 1.5vw);
+}
+
+.service-card {
+    background-color: #00897B;
+    box-shadow: 0px 14px 9px 3px rgba(0, 0, 0, 0.76);
+    -webkit-box-shadow: 0px 14px 9px 3px rgba(0, 0, 0, 0.76);
+    -moz-box-shadow: 0px 14px 9px 3px rgba(0, 0, 0, 0.76);
+    border-radius: 20px !important;
+}
+
+.info h5 {
+    line-height: 30px;
+}
+
+.employee {
+    border-radius: 20px;
+    width: 25% !important;
+    height: 200px !important;
+}
+
+.employee>ul {
+    list-style: none;
+}
+
+.employee li {
+    font-size: clamp(20px, 25px, 1.5vw);
+}
+
+section#mission .mission-card, section#about .employee, .my-header, .info {
+    box-shadow: 0px 14px 9px 3px rgba(0, 0, 0, 0.76);
+    -webkit-box-shadow: 0px 14px 9px 3px rgba(0, 0, 0, 0.76);
+    -moz-box-shadow: 0px 14px 9px 3px rgba(0, 0, 0, 0.76);
+    background-color: #00897B;
+}
+
+#services h1{
+    background-color: #00897B;
+}
+
+#about .info {
+    border-radius: 20px;
+}
+
+@media screen and (max-width: 992px) {
+    .employee {
+        width: 50% !important;
+    }
 }

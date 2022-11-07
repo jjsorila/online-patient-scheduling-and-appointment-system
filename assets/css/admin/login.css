@@ -7,7 +7,12 @@
     overflow: hidden;
 }
 
-.button:hover {
-    color: #292b2c;
-    background: #f7f7f7;
+/* .button:hover {
+    color:  #f7f7f7;
+    background: #292b2c;
+} */
+
+body {
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("/admin-bg.png") no-repeat;
+    background-size: 100% 100%;
 }

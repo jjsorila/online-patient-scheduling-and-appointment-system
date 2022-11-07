@@ -9,6 +9,9 @@ $(document).ready(function (e) {
         events: '/client/appointments/calendar',
         displayEventTime: false,
         eventRender: (event, el) => {
+            el.css({
+                "border": "3px solid black"
+            })
             if(event.status == "Cancelled") el.css({
                 "background-color": "red"
             })

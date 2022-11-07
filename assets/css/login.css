@@ -51,14 +51,26 @@ a {
 
 .login-form {
     display: grid;
+    background-color: #00897B !important;
     align-items: center;
     grid-auto-rows: auto;
     transition: all .5s ease-in-out;
 }
 
+.login-form .login-btn:hover {
+    border-color: black !important;
+    color: black !important;
+}
+
+.reg-form .reg-btn:hover {
+    border-color: black !important;
+    color: black !important;
+}
+
 .reg-form {
     display: grid;
     align-items: center;
+    background-color: #00897B !important;
     grid-auto-rows: auto;
     transition: all .5s ease-in-out;
 }

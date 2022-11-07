@@ -12,23 +12,22 @@
     <script type="application/javascript" src="//cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 </head>
 
-<body class="bg-dark text-light">
-    <a class="btn btn-info position-fixed top-0 left-0" href="/admin/patients"><i class="bi bi-box-arrow-left me-3"></i>BACK</a>
-    <h1 class="text-center text-light my-4">Patient Information</h1>
+<body class="bg-light text-dark">
+    <a class="btn bg-light text-dark position-fixed top-0 ms-2" style="font-size: 3vw;" href="/admin/patients"><i class="bi bi-box-arrow-left me-3"></i></a>
+    <h1 class="text-center my-4">Patient Information</h1>
 
-    <div class="container border border-light rounded border-5 text-dark bg-light text-center w-75 mb-5 position-relative d-flex flex-column gap-4 p-4 pt-5">
-        <h5 class="unsaved-changes text-danger text-center position-absolute">You have unsaved changes</h5>
+    <div class="container border border-dark rounded border-5 text-dark bg-light text-center w-75 mb-5 position-relative d-flex flex-column gap-4 p-4 pt-5">
 
-        <div class="form-group w-100 d-flex justify-content-around align-items-center">
+        <div class="form-group w-75 mx-auto d-flex gap-3 justify-content-around align-items-center">
 
             <div class="form-group d-flex flex-column gap-3 align-items-center">
                 <div class="img-container border border-dark border-4 rounded mx-auto">
                     <img id="img" class="img-fluid" src="<%= user.picture %>"/>
                 </div>
 
-                <div class="form-group w-100">
+                <div class="form-group w-100 mt-4">
                     <label class="form-label" for="gender">Gender*</label>
-                    <select class="form-select border border-dark rounded border-4 text-center" id="gender">
+                    <select disabled class="form-select border border-dark rounded border-4 text-center" id="gender">
                         <% if(user.gender) { %>
                             <option value="<%= user.gender %>" hidden><%= user.gender %></option>
                         <% } else { %>
@@ -43,72 +42,79 @@
             <div class="form-group d-flex flex-column gap-5 justify-content-center">
                 <div class="form-group">
                     <label class="form-label" for="fname">First Name*</label>
-                    <input value="<%= user.fullname?.fname %>" type="text" class="form-control border border-dark rounded border-4 text-center" id="fname" />
+                    <input disabled value="<%= user.fullname?.fname %>" type="text" class="form-control border border-dark rounded border-4 text-center" id="fname" />
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="mi">M.I.*</label>
-                    <input value="<%= user.fullname?.mi %>" type="text" class="form-control border border-dark rounded border-4 text-center" id="mi" />
+                    <input disabled value="<%= user.fullname?.mi %>" type="text" class="form-control border border-dark rounded border-4 text-center" id="mi" />
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="lname">Last Name*</label>
-                    <input value="<%= user.fullname?.lname %>" type="text" class="form-control border border-dark rounded border-4 text-center" id="lname" />
+                    <input disabled value="<%= user.fullname?.lname %>" type="text" class="form-control border border-dark rounded border-4 text-center" id="lname" />
                 </div>
             </div>
 
             <div class="form-group d-flex flex-column gap-5 justify-content-center">
                 <div class="form-group">
                     <label class="form-label" for="birthdate">Birthdate*</label>
-                    <input value="<%= user.birthdate %>" type="date" class="form-control text-center border border-dark rounded border-4" id="birthdate" />
+                    <input disabled value="<%= user.birthdate %>" type="date" class="form-control text-center border border-dark rounded border-4" id="birthdate" />
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="age">Age*</label>
-                    <input value="<%= user.age %>" type="number" class="form-control border border-dark rounded border-4 text-center" id="age" />
+                    <input disabled value="<%= user.age %>" type="number" class="form-control border border-dark rounded border-4 text-center" id="age" />
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="contact">Contact*</label>
-                    <input value="<%= user.contact %>" type="number" class="form-control border border-dark rounded border-4 text-center" id="contact" />
+                    <input disabled value="<%= user.contact %>" type="number" class="form-control border border-dark rounded border-4 text-center" id="contact" />
                 </div>
             </div>
         </div>
 
-        <div class="form-group w-100">
+        <div class="form-group w-75 mx-auto">
             <label class="form-label" for="address">Patient's Address*</label>
-            <textarea class="form-control border border-dark border-4 text-center" id="address"
+            <textarea disabled class="form-control border border-dark border-4 text-center" id="address"
                 rows="3"><%= user.address %></textarea>
         </div>
-        <div class="form-group w-100">
+        <div class="form-group w-75 mx-auto">
             <label class="form-label" for="patient_history">Patient History</label>
-            <textarea class="form-control border border-dark border-4 text-center" id="patient_history"
+            <textarea disabled class="form-control border border-dark border-4 text-center" id="patient_history"
                 rows="3"><%= user.patient_history %></textarea>
         </div>
-        <div class="form-group w-100">
-            <label class="form-label" for="g-name">Guardian's Name</label>
-            <input value="<%= user.guardian?.name %>" class="form-control w-100 border border-dark border-4 text-center" type="text" id="g-name" />
+        <div class="form-group w-75 d-flex mx-auto gap-4">
+            <div class="form-group w-100 d-flex align-items-center gap-3 flex-column">
+                <div class="form-group w-100 mx-auto">
+                    <label class="form-label" for="g-name">Guardian's Name</label>
+                    <input disabled value="<%= user.guardian?.name %>" class="form-control w-100 border border-dark border-4 text-center" type="text" id="g-name" />
+                </div>
+                <div class="form-group w-100 mx-auto">
+                    <label class="form-label" for="g-contact">Guardian's Contact</label>
+                    <input disabled value="<%= user.guardian?.contact %>" class="form-control w-100 border border-dark border-4 text-center" type="number" id="g-contact" />
+                </div>
+                <div class="form-group w-100 mx-auto">
+                    <label class="form-label" for="g-relationship">Relationship to Patient</label>
+                    <input disabled value="<%= user.guardian?.relationship %>" class="form-control w-100 border border-dark border-4 text-center" type="text" id="g-relationship" />
+                </div>
+            </div>
+            <div class="form-group w-100">
+                <div class="form-group w-100 mx-auto">
+                    <label class="form-label" for="g-address">Guardian's Address</label>
+                    <textarea disabled rows="9" class="form-control w-100 border border-dark border-4 text-center" id="g-address"><%= user.guardian?.address %></textarea>
+                </div>
+            </div>
         </div>
-        <div class="form-group w-100">
-            <label class="form-label" for="g-address">Guardian's Address</label>
-            <textarea rows="3" class="form-control w-100 border border-dark border-4 text-center" id="g-address"><%= user.guardian?.address %></textarea>
-        </div>
-        <div class="form-group w-100">
-            <label class="form-label" for="g-contact">Guardian's Contact</label>
-            <input value="<%= user.guardian?.contact %>" class="form-control w-100 border border-dark border-4 text-center" type="number" id="g-contact" />
-        </div>
-        <div class="form-group w-100">
-            <label class="form-label" for="g-relationship">Relationship to Patient</label>
-            <input value="<%= user.guardian?.relationship %>" class="form-control w-100 border border-dark border-4 text-center" type="text" id="g-relationship" />
-        </div>
-        <div class="form-group d-flex flex-column flex-md-row gap-5 justify-content-center p-4 w-100">
-            <button disabled class="btn border border-dark border-5 w-25" id="save">SAVE</button>
+        <div class="action-btn form-group d-flex flex-column flex-md-row gap-5 justify-content-center p-4 w-75 mx-auto">
+            <button class="btn btn-success border border-dark border-5 d-none" id="save">SAVE INFORMATION</button>
+            <button class="btn btn-primary border border-dark border-5" id="edit">EDIT INFORMATION</button>
         </div>
     </div>
 
-    <h1 class="text-center text-light">Medical Records</h1>
-    <div class="container border border-light rounded border-5 text-center p-3 w-75 bg-light text-dark">
+    <h1 class="text-center">Medical Records</h1>
+    <div class="container border border-dark rounded border-5 text-center p-3 w-75 bg-light text-dark">
         <table>
             <thead>
                 <tr>
                     <th class="text-center">DIAGNOSIS</th>
-                    <th class="text-center">DATE CREATED</th>
+                    <th class="text-center">CHECK-UP DATE</th>
                     <th class="text-center">ACTION</th>
                 </tr>
             </thead>

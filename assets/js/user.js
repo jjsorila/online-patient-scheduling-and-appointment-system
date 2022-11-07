@@ -9,10 +9,10 @@ $(document).ready(function (e) {
         id = $("meta[name=id]").attr("content"),
         age = $("#age");
 
-        const gName = $("#g-name")
-        const gContact = $("#g-contact")
-        const gAddress = $("#g-address")
-        const gRelationship = $("#g-relationship")
+    const gName = $("#g-name")
+    const gContact = $("#g-contact")
+    const gAddress = $("#g-address")
+    const gRelationship = $("#g-relationship")
 
     const toBase64 = (file) => new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -27,11 +27,11 @@ $(document).ready(function (e) {
     }
 
     //UPLOAD NEW PICTURE
-    $("#myFile").on("change", function(e) {
+    $("#myFile").on("change", function (e) {
         const file = document.getElementById("myFile").files[0]
 
         $(".loading").css("display", "block")
-        if(file.size > 1000000) {
+        if (file.size > 1000000) {
             showToast("❌ File size should be below 1MB")
             $(this).val("")
             return $(".loading").css("display", "none")
@@ -50,7 +50,7 @@ $(document).ready(function (e) {
             timeout: 600000,
             data: data,
             success: (res) => {
-                if(!res.operation) return showToast("❌ Something went wrong")
+                if (!res.operation) return showToast("❌ Something went wrong")
                 showToast("✅ Profile picture updated")
                 toBase64(file).then((res) => {
                     $("#img").attr("src", res)
@@ -92,7 +92,7 @@ $(document).ready(function (e) {
     })
 
     //OPEN MEDICAL RECORD
-    $("table").on("click", "input[type=submit]", function(e) {
+    $("table").on("click", "input[type=submit]", function (e) {
         const mr_id = $(this).attr("data-id")
         location.href = `/client/view/med-record/${mr_id}`
     })
@@ -126,7 +126,7 @@ $(document).ready(function (e) {
 
         $(".confirmation-shadow").toggleClass("d-none")
     })
-    $("#yes").click(function(e) {
+    $("#yes").click(function (e) {
         $(".loading").css("display", "block")
 
         $.ajax({
@@ -156,7 +156,21 @@ $(document).ready(function (e) {
             success: (res) => {
                 if (!res.operation) return showToast("❌ Something went wrong")
                 $(".confirmation-shadow").toggleClass("d-none")
-                $("#save").attr("disabled", true)
+                $(window).off('beforeunload');
+                fname.prop("disabled", !fname.prop("disabled"))
+                mi.prop("disabled", !mi.prop("disabled"))
+                lname.prop("disabled", !lname.prop("disabled"))
+                birthdate.prop("disabled", !birthdate.prop("disabled"))
+                age.prop("disabled", !age.prop("disabled"))
+                contact.prop("disabled", !contact.prop("disabled"))
+                address.prop("disabled", !address.prop("disabled"))
+                gName.prop("disabled", !gName.prop("disabled"))
+                gContact.prop("disabled", !gContact.prop("disabled"))
+                gAddress.prop("disabled", !gAddress.prop("disabled"))
+                gRelationship.prop("disabled", !gRelationship.prop("disabled"))
+                gender.prop("disabled", !gender.prop("disabled"))
+                $("#edit").toggleClass("d-none")
+                $("#save").toggleClass("d-none")
                 showToast("✅ User updated!")
             },
             error: (err) => {
@@ -168,7 +182,28 @@ $(document).ready(function (e) {
             }
         })
     })
-    $("#no").click(function(e) {
+    $("#no").click(function (e) {
         $(".confirmation-shadow").toggleClass("d-none")
+    })
+
+    //ENABLE EDIT MODE
+    $("#edit").click(function (e) {
+        $(window).on('beforeunload', function (e) {
+            return "You have unsaved changes"
+        });
+        fname.prop("disabled", !fname.prop("disabled"))
+        mi.prop("disabled", !mi.prop("disabled"))
+        gender.prop("disabled", !gender.prop("disabled"))
+        lname.prop("disabled", !lname.prop("disabled"))
+        birthdate.prop("disabled", !birthdate.prop("disabled"))
+        age.prop("disabled", !age.prop("disabled"))
+        contact.prop("disabled", !contact.prop("disabled"))
+        address.prop("disabled", !address.prop("disabled"))
+        gName.prop("disabled", !gName.prop("disabled"))
+        gContact.prop("disabled", !gContact.prop("disabled"))
+        gAddress.prop("disabled", !gAddress.prop("disabled"))
+        gRelationship.prop("disabled", !gRelationship.prop("disabled"))
+        $("#edit").toggleClass("d-none")
+        $("#save").toggleClass("d-none")
     })
 })

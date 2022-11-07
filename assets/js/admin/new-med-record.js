@@ -13,6 +13,13 @@ $(document).ready(function (e) {
         return Math.floor(ageInMilliseconds / 1000 / 60 / 60 / 24 / 365);
     }
 
+    //DETECT CHANGES
+    $("input, textarea").on("change keyup paste", function(e) {
+        $(window).on('beforeunload', function(e) {
+            return "You have unsaved changes"
+        });
+    })
+
     //SHOW TOAST
     function showToast(text) {
         $(".toast-body").text(text)
@@ -46,6 +53,7 @@ $(document).ready(function (e) {
             success: (res) => {
                 if(!res.operation) return showToast("❌ Something went wrong")
                 showToast("✅ Record Added Successfully")
+                $(window).off('beforeunload')
                 $(".confirmation-shadow").toggleClass("d-none")
                 location.href = "/admin/scheduled"
             },

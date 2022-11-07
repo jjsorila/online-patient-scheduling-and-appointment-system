@@ -11,15 +11,14 @@
     <link rel="stylesheet" href="/css/admin/new-med-record.css"/>
 </head>
 
-<body class="bg-dark text-light">
-    <a class="btn btn-info position-fixed top-0 left-0" href="/admin/scheduled"><i class="bi bi-box-arrow-left me-3"></i>BACK</a>
-    <h1 class="text-center mb-3 mt-4">Schedule</h1>
-    <h1 class="text-center mb-3">#<%= apt_id %></h1>
+<body class="bg-light text-dark">
+    <a class="btn bg-light text-dark position-fixed top-0 ms-2" style="font-size: 3vw;" href="/admin/scheduled"><i class="bi bi-box-arrow-left me-3"></i></a>
+    <h1 class="text-center mb-3 mt-4">Schedule Record</h1>
+    <h1 class="text-center mb-3">#<%= apt_id.split('-')[0] %></h1>
 
-    <div
-        class="container border border-light rounded border-5 text-dark bg-light text-center w-75 mb-5 position-relative p-4 d-flex flex-column gap-3">
-
-        <div class="form-group w-100 d-flex justify-content-around align-items-center">
+    <div class="container border border-dark rounded border-5 text-dark bg-light text-center w-75 mb-5 position-relative p-4 d-flex flex-column gap-3">
+        <h5 class="text-center pb-3 border-bottom border-dark border-4">Patient Information</h5>
+        <div class="form-group w-75 mx-auto gap-4 d-flex justify-content-center align-items-center">
 
             <div class="form-group d-flex flex-column align-items-center">
                 <div class="img-container border border-dark border-4 rounded mx-auto">
@@ -65,13 +64,12 @@
                     <input disabled class="form-control border border-dark border-4 text-center text-center" value="<%= user.patient_type %>" id="patient_type">
                 </div>
             </div>
-
         </div>
-        <div class="form-group w-100">
+        <div class="form-group w-75 mx-auto">
             <label class="form-label" for="address">Address</label>
             <textarea disabled class="form-control border border-dark border-4 text-center" id="address" rows="3"><%= user.address %></textarea>
         </div>
-        <% if(user.guardian?.name && user.guardian?.address && user.guardian?.contact && user.guardian?.relationship) { %>
+        <!-- <% if(user.guardian?.name) { %>
             <div class="form-group w-100">
                 <label class="form-label" for="g-name">Guardian's Name</label>
                 <input disabled value="<%= user.guardian?.name %>" class="form-control w-100 border border-dark border-4 text-center" type="text" id="g-name" />
@@ -88,56 +86,66 @@
                 <label class="form-label" for="g-relationship">Relationship to Patient</label>
                 <input disabled value="<%= user.guardian?.relationship %>" class="form-control w-100 border border-dark border-4 text-center" type="text" id="g-relationship" />
             </div>
-        <% } %>
-        <% if(user.med_complain) { %>
-            <div class="form-group w-100">
-                <label class="form-label" for="med_complain">Medical Complain</label>
-                <textarea disabled class="form-control w-100 border border-dark border-4 text-center" id="med_complain" ><%= user.med_complain %></textarea>
-            </div>
-        <% } %>
+        <% } %> -->
 
         <!-- MEDICAL RECORD -->
-        <div class="form-group w-100">
-            <label class="form-label" for="patient_history">Patient History</label>
-            <textarea class="form-control border border-dark border-4 text-center" id="patient_history" rows="3"><%= user.patient_history %></textarea>
-        </div>
-        <div class="form-group d-flex flex-column flex-md-row gap-5 justify-content-center">
-            <div class="form-group">
-                <label class="form-label" for="temperature">Temperature</label>
-                <input value="" type="text" class="form-control border border-dark rounded border-4 text-center"
-                    id="temperature" />
+        <h5 class="text-center py-3 border-bottom border-top border-dark border-4 mt-4">Medical Record</h5>
+        <div class="form-group d-flex gap-5 w-75 mx-auto">
+            <div class="form-group d-flex w-100 flex-column gap-1 align-items-center">
+                <div class="form-group w-100">
+                    <label class="form-label mb-0" for="temperature">Temperature</label>
+                    <input value="" type="text" class="form-control border border-dark rounded border-4 text-center"
+                        id="temperature" />
+                </div>
+                <div class="form-group w-100">
+                    <label class="form-label mb-0" for="bp">Blood Pressure</label>
+                    <input value="" type="text" class="form-control border border-dark rounded border-4 text-center" id="bp" />
+                </div>
+                <div class="form-group w-100">
+                    <label class="form-label mb-0" for="weight">Weight</label>
+                    <input value="" type="text" class="form-control border border-dark rounded border-4 text-center" id="weight" />
+                </div>
+                <div class="form-group w-100">
+                    <label class="form-label mb-0" for="height">Height</label>
+                    <input value="" type="text" class="form-control border border-dark rounded border-4 text-center" id="height" />
+                </div>
             </div>
-            <div class="form-group">
-                <label class="form-label" for="bp">Blood Pressure</label>
-                <input value="" type="text" class="form-control border border-dark rounded border-4 text-center" id="bp" />
+            <div class="form-group w-100 d-flex flex-column gap-1 justify-content-center align-items-center">
+                <% if(user.med_complain) { %>
+                    <div class="form-group w-100">
+                        <label class="form-label" for="med_complain">Medical Complain</label>
+                        <textarea disabled class="form-control w-100 border border-dark border-4 text-center" rows="3" id="med_complain" ><%= user.med_complain %></textarea>
+                    </div>
+                <% } %>
+                <div class="form-group w-100 h-100">
+                    <label class="form-label" for="patient_history">Patient History</label>
+                    <textarea class="form-control border border-dark border-4 text-center h-75" id="patient_history" rows="3"><%= user.patient_history %></textarea>
+                </div>
             </div>
-            <div class="form-group">
-                <label class="form-label" for="weight">Weight</label>
-                <input value="" type="text" class="form-control border border-dark rounded border-4 text-center" id="weight" />
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="height">Height</label>
-                <input value="" type="text" class="form-control border border-dark rounded border-4 text-center" id="height" />
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="form-label" for="diagnosis">Diagnosis</label>
-            <input value="" type="text" class="form-control border border-dark rounded border-4 text-center text-center" id="diagnosis" />
-        </div>
-        <div class="form-group">
-            <label class="form-label" for="description">Description</label>
-            <textarea class="form-control border border-dark border-4 text-center" id="description" rows="3"></textarea>
         </div>
 
-        <div class="form-group">
-            <button class="btn btn-success" id="save">SAVE RECORD</button>
+        <!-- MEDICAL RESULTS -->
+        <h5 class="text-center py-3 border-bottom border-top border-dark border-4 mt-4">Medical Results</h5>
+        <div class="form-group w-75 d-flex mx-auto gap-4 justify-content-center">
+            <div class="form-group w-100">
+                <label class="form-label" for="diagnosis">Diagnosis</label>
+                <textarea class="form-control border border-dark border-4 h-100 text-center" id="diagnosis" rows="5"></textarea>
+            </div>
+            <div class="form-group w-100">
+                <label class="form-label" for="description">Description</label>
+                <textarea class="form-control border border-dark border-4 h-100 text-center" id="description" rows="5"></textarea>
+            </div>
+        </div>
+
+        <div class="form-group mt-5">
+            <button class="btn btn-success border border-dark border-4" id="save">SAVE RECORD</button>
         </div>
     </div>
 
     <%- include('../../templates/confirmation.ejs') %>
     <%- include('../../templates/loading.ejs') %>
-        <%- include('../../templates/toast.ejs') %>
-            <script type="application/javascript" src="/js/admin/new-med-record.js"></script>
+    <%- include('../../templates/toast.ejs') %>
+    <script type="application/javascript" src="/js/admin/new-med-record.js"></script>
 </body>
 
 </html>

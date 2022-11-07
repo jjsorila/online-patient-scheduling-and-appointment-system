@@ -10,23 +10,23 @@
 </head>
 
 <body>
-    <div class="form-container w-50 text-center align-middle bg-dark text-light border border-info border-5">
+    <div class="form-container w-50 text-center align-middle text-light border border-light border-5">
         <form class="login-form" method="post" action="/client/login" enctype="application/x-www-form-urlencoded"
             autocomplete="off">
             <h1 class="my-0">LOGIN</h1>
             <div class="form-group w-50 mx-auto">
                 <label for="exampleInputEmail1">Email</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" name="email"
+                <input type="email" class="form-control rounded" id="exampleInputEmail1" name="email"
                     aria-describedby="emailHelp" />
             </div>
             <div class="form-group w-50 mx-auto">
                 <label for="exampleInputPassword1">Password</label>
-                <input type="password" class="form-control" name="password" id="exampleInputPassword1" />
+                <input type="password" class="form-control rounded" name="password" id="exampleInputPassword1" />
             </div>
-            <button type="submit" class="btn btn-info w-50 h-50 mx-auto">LOGIN</button>
+            <button class="btn login-btn w-50 h-50 mx-auto border border-light text-light border-4">LOGIN</button>
             <div class="h-100 w-100 d-flex justify-content-around align-items-center flex-column flex-md-row">
-                <a class="link pe-auto" id="reset-pwd">RESET PASSWORD</a>
-                <a class="link pe-auto" id="slide">REGISTER<i class="bi bi-caret-right-fill"></i></a>
+                <a class="link text-light" id="reset-pwd">RESET PASSWORD</a>
+                <a class="link text-light" id="slide">REGISTER<i class="bi bi-caret-right-fill"></i></a>
             </div>
         </form>
 
@@ -34,18 +34,18 @@
             <h1 class="my-0">REGISTER</h1>
             <div class="form-group w-50 mx-auto">
                 <label for="exampleInputEmail2">Email</label>
-                <input type="email" class="form-control" id="exampleInputEmail2" aria-describedby="emailHelp" />
+                <input type="email" class="form-control rounded" id="exampleInputEmail2" aria-describedby="emailHelp" />
             </div>
             <div class="form-group w-50 mx-auto">
                 <label for="exampleInputPassword2">Password</label>
-                <input type="password" class="form-control" id="exampleInputPassword2" />
+                <input type="password" class="form-control rounded" id="exampleInputPassword2" />
             </div>
             <div class="form-group w-50 mx-auto">
                 <label for="confirmPassword">Confirm Password</label>
-                <input type="password" class="form-control" id="confirmPassword" />
+                <input type="password" class="form-control rounded" id="confirmPassword" />
             </div>
-            <button type="submit" class="btn btn-info w-50 h-50 mx-auto">REGISTER</button>
-            <a class="link pe-auto mx-auto" id="slide"><i class="bi bi-caret-left-fill"></i>LOGIN</a>
+            <button class="btn reg-btn w-50 h-50 mx-auto border border-light text-light border-4">REGISTER</button>
+            <a class="link mx-auto text-light" id="slide"><i class="bi bi-caret-left-fill"></i>LOGIN</a>
         </form>
 
         <!-- FALLBACK LOADING -->

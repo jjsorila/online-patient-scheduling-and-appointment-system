@@ -8,11 +8,6 @@ body {
     overflow: hidden;
 }
 
-#save:hover {
-    background: #292b2c;
-    color: white;
-}
-
 h5.text-center {
     display: none;
     position: absolute;

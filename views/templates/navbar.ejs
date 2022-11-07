@@ -1,15 +1,21 @@
-<%
-  let border = user ? "border-bottom border-light border-4 rounded-bottom" : ""
-%>
+<style>
+  .my-navbar {
+    z-index: 11 !important;
+  }
 
-<nav class="navbar navbar-expand-lg bg-dark navbar-dark <%= border %> py-3">
+  nav {
+    background-color: #00897B !important;
+  }
+</style>
+
+<nav class="my-navbar navbar navbar-expand-lg navbar-dark sticky-top border-bottom border-light border-4 rounded-bottom py-3">
   <div class="container">
 
     <a href="/" class="navbar-brand">
       <div style="width: 40px; height: 40px; overflow: hidden;" class="d-inline-block">
-        <img src="/favicon.ico" class="rounded-circle w-100 h-100 img-thumbnail" />
+        <img src="/favicon.ico" class="rounded-circle w-100 h-100" style="height: 100%; width: 100%;" />
       </div>
-      <a href="/" class="navbar-brand">OPIS</a>
+      <a href="/" class="navbar-brand">RMCC</a>
     </a>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
@@ -20,13 +26,15 @@
       <ul class="navbar-nav ms-auto">
         <li class="nav-item text-center d-flex flex-column flex-lg-row gap-1 gap-lg-5">
           <% if(user) { %>
-            <a class="nav-link" href="/client/dashboard" style="cursor: pointer;">DASHBOARD</a>
-            <a class="nav-link" href="/client/user" style="cursor: pointer;">PROFILE</a>
-            <a class="nav-link" href="/client/appointments" style="cursor: pointer;">APPOINTMENTS</a>
-            <a class="nav-link logout" style="cursor: pointer;">LOGOUT</a>
+            <a class="nav-link text-light" href="/client/dashboard" style="cursor: pointer;">DASHBOARD</a>
+            <a class="nav-link text-light" href="/client/user" style="cursor: pointer;">PROFILE</a>
+            <a class="nav-link text-light" href="/client/appointments" style="cursor: pointer;">APPOINTMENTS</a>
+            <a class="nav-link logout text-light" style="cursor: pointer;">LOGOUT</a>
             <% } else { %>
-              <a href="#about" class="nav-link" style="cursor: pointer;">ABOUT</a>
-              <% } %>
+              <a href="#mission" class="nav-link text-light" style="cursor: pointer;">MISSION</a>
+              <a href="#services" class="nav-link text-light" style="cursor: pointer;">SERVICES</a>
+              <a href="#about" class="nav-link text-light" style="cursor: pointer;">ABOUT</a>
+            <% } %>
         </li>
       </ul>
     </div>

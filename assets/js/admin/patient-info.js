@@ -24,12 +24,6 @@ $(document).ready(function (e) {
         $(".toast").toast("show")
     }
 
-    //DETECT CHANGES
-    $("input, textarea, select").on("change paste keyup", function (e) {
-        $("#save").attr("disabled", false)
-        $(".unsaved-changes").css("display", "block")
-    })
-
     //AUTO CALCULATE AGE
     birthdate.on("change", function (e) {
         age.val(getAge(birthdate.val()))
@@ -62,7 +56,7 @@ $(document).ready(function (e) {
         if (!fname.val() || !mi.val() || !lname.val() || !contact.val() || !address.val() || !birthdate.val() || !age.val()) return showToast("❌ Complete required fields")
         $(".confirmation-shadow").toggleClass("d-none")
     })
-    $("#yes").click(function(e) {
+    $("#yes").click(function (e) {
         $(".loading").css("display", "block")
 
         $.ajax({
@@ -94,6 +88,22 @@ $(document).ready(function (e) {
             success: (res) => {
                 if (!res.operation) return showToast("❌ Something went wrong")
                 showToast("✅ Updated Successfully")
+                $(window).off('beforeunload');
+                gender.prop("disabled", !gender.prop("disabled"))
+                fname.prop("disabled", !fname.prop("disabled"))
+                lname.prop("disabled", !lname.prop("disabled"))
+                mi.prop("disabled", !mi.prop("disabled"))
+                contact.prop("disabled", !contact.prop("disabled"))
+                address.prop("disabled", !address.prop("disabled"))
+                birthdate.prop("disabled", !birthdate.prop("disabled"))
+                age.prop("disabled", !age.prop("disabled"))
+                patient_history.prop("disabled", !patient_history.prop("disabled"))
+                gName.prop("disabled", !gName.prop("disabled"))
+                gContact.prop("disabled", !gContact.prop("disabled"))
+                gRelationship.prop("disabled", !gRelationship.prop("disabled"))
+                gAddress.prop("disabled", !gAddress.prop("disabled"))
+                $("#edit").toggleClass("d-none")
+                $("#save").toggleClass("d-none")
             },
             error: (err) => {
                 showToast("❌ Server error")
@@ -101,14 +111,36 @@ $(document).ready(function (e) {
             },
             complete: () => {
                 $(".confirmation-shadow").toggleClass("d-none")
-                $("#save").attr("disabled", true)
                 $(".loading").css("display", "none")
                 $(".unsaved-changes").css("display", "none")
             }
         })
     })
-    $("#no").click(function(e) {
+    $("#no").click(function (e) {
         $(".confirmation-shadow").toggleClass("d-none")
+    })
+
+
+    //ENABLE EDIT MODE
+    $("#edit").click(function (e) {
+        gender.prop("disabled", !gender.prop("disabled"))
+        fname.prop("disabled", !fname.prop("disabled"))
+        lname.prop("disabled", !lname.prop("disabled"))
+        mi.prop("disabled", !mi.prop("disabled"))
+        contact.prop("disabled", !contact.prop("disabled"))
+        address.prop("disabled", !address.prop("disabled"))
+        birthdate.prop("disabled", !birthdate.prop("disabled"))
+        age.prop("disabled", !age.prop("disabled"))
+        patient_history.prop("disabled", !patient_history.prop("disabled"))
+        gName.prop("disabled", !gName.prop("disabled"))
+        gContact.prop("disabled", !gContact.prop("disabled"))
+        gRelationship.prop("disabled", !gRelationship.prop("disabled"))
+        gAddress.prop("disabled", !gAddress.prop("disabled"))
+        $("#edit").toggleClass("d-none")
+        $("#save").toggleClass("d-none")
+        $(window).on('beforeunload', function (e) {
+            return "You have unsaved changes"
+        });
     })
 
     //OPEN MEDICAL RECORD

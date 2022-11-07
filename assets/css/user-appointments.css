@@ -5,6 +5,7 @@
     left: 0;
     right: 0;
     background: rgba(0, 0, 0, 0.6);
+    z-index: 20 !important;
 }
 
 #close {
@@ -17,11 +18,11 @@
 }
 
 #sched:hover {
-    color: #292b2c !important;
-    background: white !important;
+    color: white !important;
+    background: #00897B !important;
 }
 
 #submit-sched:hover {
-    background: #292b2c;
+    background: #00897B;
     color: white;
 }

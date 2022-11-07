@@ -12,24 +12,100 @@
 <body>
     <%- include('./templates/navbar.ejs') %>
         <section class="h-75 w-100 showcase text-center px-5 mt-3 mb-5">
-            <h1>Online Patient Information System</h1>
+            <h1>Rodis Maternal and Childcare Clinic</h1>
             <div class="container w-50 button-container">
-                <a href="/client/login" class="btn btn-info">LOGIN / REGISTER</a>
+                <a href="/client/login" class="btn border border-light border-3">LOGIN / REGISTER</a>
             </div>
         </section>
 
-        <section class="text-center w-100 h-75 p-4" id="about">
-            <h1 class="mb-4">About Us</h1>
-            <div class="container p-1">
-                <p class="lead">Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis impedit doloribus
-                    obcaecati nemo animi quidem repellat rerum quasi ad atque at, exercitationem saepe. Autem at
-                    consequuntur aliquam facilis libero assumenda ullam laudantium asperiores omnis officiis,
-                    praesentium atque non aperiam perspiciatis delectus odio, commodi, expedita labore cum deleniti
-                    explicabo nisi fugit! Mollitia ab impedit consequatur quaerat praesentium tenetur laboriosam rem in
-                    possimus aspernatur cupiditate reprehenderit assumenda rerum, nihil eum omnis voluptatibus suscipit
-                    sit ducimus doloribus modi soluta minus nam velit? Quia, rerum accusantium quis magnam incidunt
-                    nobis labore ex corporis accusamus amet odio sed molestias vero. Dolor dignissimos accusamus at
-                    molestiae?</p>
+        <section class="text-center text-light w-100 py-4 mb-5" id="mission">
+            <h1 class="my-header mb-4 py-3 border-bottom border-light border-4 mb-5">Mission<i class="bi bi-book-fill ms-3"></i></h1>
+            <div class="container d-flex flex-column flex-lg-row gap-5">
+                <div class="mission-card w-100 border border-light border-4 p-5">
+                    <h5>To establish a CHRIST centered BIRTHING HOME which will promote women and childhood wellness.
+                        Vision</h5>
+                </div>
+                <div class="mission-card w-100 border border-light border-4 p-5">
+                    <h5>
+                        RODIS MATERNAL AND CHILDCARE CLINIC is a developed CHRIST centered institution commited to
+                        provide quality, comprehensive, preventive and curative health care services for women and
+                        children of cavite.
+                    </h5>
+                </div>
+            </div>
+        </section>
+
+        <section class="text-center text-light w-100 py-4 mb-5" id="services">
+            <h1 class="my-header border-top border-bottom py-3 mb-5 border-light border-4">Services<i class="bi bi-gear-fill ms-3"></i></h1>
+            <div class="container d-flex flex-column flex-lg-row gap-5 justify-content-between p-0">
+                <div class="service-card w-100 border border-light border-4 p-5">
+                    <ul>
+                        <li>Medical Checkup</li>
+                        <li>Prenatal & Post Patent Care</li>
+                        <li>Family planning service</li>
+                        <li>Pap smear</li>
+                    </ul>
+                </div>
+                <div class="service-card w-100 border border-light border-4 p-5">
+                    <ul>
+                        <li>Pregnancy Test</li>
+                        <li>Toxiod Vaccine</li>
+                        <li>Anti Cervical Cancer</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="text-center text-light w-100 py-4 mb-5" id="about">
+            <h1 class="my-header border-top border-bottom py-3 mb-5 border-light border-4">About Us<i class="bi bi-info-circle-fill ms-3"></i></h1>
+            <h3 class="my-header border w-75 mx-auto py-3 mb-5 border-white border-4">Employees<i class="bi bi-people-fill ms-3"></i></h3>
+            <div class="employees-container">
+                <div
+                    class="employees w-100 d-flex flex-wrap-reverse justify-content-evenly align-items-center align-items-lg-stretch gap-3">
+                    <div class="employee text-center border border-light border-4 p-2 mb-5">
+                        <h4 class="border-light border-bottom border-4 py-4">Midwife</h4>
+                        <ul class="m-0 p-0 pt-4">
+                            <li>Ms. Mary Ann Añonuevo</li>
+                        </ul>
+                    </div>
+                    <div class="employee text-center border border-light border-4 p-2 mb-5">
+                        <h4 class="border-light border-bottom border-4 py-4">Nurse</h4>
+                        <ul class="m-0 p-0 pt-4">
+                            <li>Ms. Margie Mojica</li>
+                        </ul>
+                    </div>
+                    <div class="employee text-center border border-light border-4 p-2 mb-5">
+                        <h4 class="border-light border-bottom border-4 py-4">Medical Secretary</h4>
+                        <ul class="m-0 p-0 pt-4">
+                            <li>Ms. Antonina Matilla</li>
+                        </ul>
+                    </div>
+                    <div class="employee text-center border border-light border-4 p-2 mb-5">
+                        <h4 class="border-light border-bottom border-4 py-4">Pediatrician</h4>
+                        <ul class="m-0 p-0 pt-4">
+                            <li>Dr. Melacio Rodis Jr.</li>
+                        </ul>
+                    </div>
+                    <div class="employee text-center border border-light border-4 p-2 mb-5">
+                        <h4 class="border-light border-bottom border-4 py-4">OB-GYNE</h4>
+                        <ul class="m-0 p-0 pt-4">
+                            <li>Dra. Baby Corinne S. Rodis</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="my-header border w-75 mx-auto py-3 my-5 border-white border-4">Location & Contact<i class="bi bi-info-circle-fill ms-3"></i></h3>
+
+            <div class="container d-flex flex-column flex-lg-row gap-5 text-center mb-5">
+                <div class="info w-100 border border-light border-4">
+                    <h3 class="border-bottom border-light border-4 py-4">Physical Location<i class="bi bi-geo-alt-fill ms-3"></i></h3>
+                    <h5 class="p-4">#64 Rizal St. Brgy 3. Alfonso Cavite, Philippines 4123</h5>
+                </div>
+                <div class="info w-100 border border-light border-4">
+                    <h3 class="border-bottom border-light border-4 py-4">Contact Information<i class="bi bi-telegram ms-3"></i></h3>
+                    <h5 class="p-4">Mobile: 09328812380<br/>Email: corinnerodismd2015@gmail.com</h5>
+                </div>
             </div>
         </section>
 </body>

@@ -5,11 +5,6 @@
     display: none;
 }
 
- button#save:hover {
-    background: #292b2c;
-    color: white;
-}
-
 .img-container {
     height: 200px;
     width: 200px;
