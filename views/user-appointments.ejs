@@ -62,19 +62,22 @@
                 <h5
                     class="text-center border-bottom border-dark border-3 w-100 text-dark d-block py-3 mt-2 position-relative">
                     Make an Appointment</h5>
-                <div class="w-100 d-flex flex-column gap-3 position-relative align-items-center">
-                    <div class="form-group text-center w-50">
-                        <label for="date-sched" class="form-label">Date</label>
-                        <input type="datetime-local" class="text-center form-control border border-dark border-4 w-100 mx-auto mb-3"
-                            id="date-sched">
-                    </div>
-                    <div class="form-group text-center w-50">
-                        <label for="patient_type" class="form-label">Patient Type</label>
-                        <select id="patient_type" class="text-center form-select border border-dark border-4">
-                            <option selected hidden disabled>Choose</option>
-                            <option value="Pedia">Pedia</option>
-                            <option value="OB">OB</option>
-                        </select>
+                <div class="w-100 d-flex flex-column gap-5 position-relative align-items-center">
+                    <h5 class="text-danger position-absolute invalid">Chosen TIME is UNAVAILABLE</h5>
+                    <h5 class="text-success position-absolute valid">Chosen TIME is AVAILABLE</h5>
+                    <div class="form-group w-75 d-flex flex-column flex-md-row gap-3">
+                        <div class="form-group text-center w-100">
+                            <label for="patient_type" class="form-label">Patient Type</label>
+                            <select id="patient_type" class="text-center form-select border border-dark border-4">
+                                <option selected hidden disabled>Choose</option>
+                                <option value="Pedia">Pedia</option>
+                                <option value="OB">OB</option>
+                            </select>
+                        </div>
+                        <div class="form-group text-center w-100 d-none" id="dateSched-container">
+                            <label class="form-label">Date</label>
+                            <input type="text" class="text-center form-control border border-dark border-4 w-100 mx-auto mb-3" id="date-sched"/>
+                        </div>
                     </div>
                     <div class="form-group text-center w-50">
                         <label for="med-complain" class="form-label">Medical Complain</label>

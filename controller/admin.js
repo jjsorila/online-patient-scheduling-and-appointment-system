@@ -383,5 +383,31 @@ router.post("/doctors", protected, onlyAdmin, (req, res) => {
         })
 })
 
+//CHECK IF DATES ARE FULL OF APPOINTMENTS
+router.get("/schedule_count", (req, res) => {
+    const { patient_type } = req.query
+    db.query(`SELECT COUNT(DATE(schedule)) AS schedule_count,DATE(schedule) AS schedule FROM appointments WHERE NOT schedule IS NULL AND patient_type=${db.escape(patient_type)} GROUP BY DATE(schedule) HAVING COUNT(DATE(schedule))>=6;`,
+    (err, result) => {
+        if(err) throw err;
+        const unavailable_dates = result.map((schedule) => dayjs(schedule.schedule).format("YYYY-MM-DD"))
+        res.json(unavailable_dates)
+    })
+})
+
+//CHECK IF TIME IS AVAILABLE
+router.post("/time_check", (req, res) => {
+    const { chosenTime, patient_type } = req.body
+    db.query(`
+    SELECT * FROM appointments WHERE schedule=${db.escape(chosenTime)} AND patient_type=${db.escape(patient_type)};
+    `,
+    (err, result) => {
+        if(err) throw err;
+
+        if(result.length >= 1) return res.json(false)
+
+        return res.json(true)
+    })
+})
+
 //EXPORT
 module.exports = router;

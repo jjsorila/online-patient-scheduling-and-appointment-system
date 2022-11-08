@@ -26,3 +26,13 @@
     background: #00897B;
     color: white;
 }
+
+.invalid {
+    top: -40px;
+    display: none;
+}
+
+.valid {
+    top: -40px;
+    display: none;
+}
