@@ -103,7 +103,8 @@ $(document).ready(function (e) {
     })
 
     //CHECK IF TIME IS VALID
-    dateSched.change(function (e) {
+    $("#patient_type,#date-sched").change(function (e) {
+        if(!dateSched.val()) return null
         $.ajax({
             url: '/admin/time_check',
             type: 'POST',
