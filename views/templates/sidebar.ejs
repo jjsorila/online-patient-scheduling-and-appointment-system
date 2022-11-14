@@ -192,7 +192,7 @@ hr.h-color {
                 type: 'POST',
                 success: (res) => {
                     if (!res.operation) return showToast("❌ Something went wrong")
-                    location.replace('/admin/login')
+                    location.replace('/login')
                 },
                 error: (err) => {
                     console.log(err)

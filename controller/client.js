@@ -2,7 +2,7 @@ require("dotenv").config({ path: `${process.cwd()}/.env` })
 const express = require('express'),
     router = express.Router(),
     db = require('../db/db'),
-    { protected, login, getResetPasswordToken } = require('../middlewares/client'),
+    { protected, getResetPasswordToken } = require('../middlewares/client'),
     jwt = require("jsonwebtoken"),
     nodemailer = require('nodemailer'),
     dayjs = require('dayjs'),
@@ -35,9 +35,9 @@ function getAge(dateString) {
 //==================================================================================================================================================================================================
 
 //CLIENT LOGIN PAGE
-router.get('/login', login, (req, res) => {
-    res.render('login.ejs')
-})
+// router.get('/login', login, (req, res) => {
+//     res.render('login.ejs')
+// })
 
 //DASHBOARD PAGE
 router.get('/dashboard', protected, (req ,res) => {
@@ -48,7 +48,7 @@ router.get('/dashboard', protected, (req ,res) => {
 router.get('/user', protected, (req, res) => {
 
     db.query(`
-        SELECT picture,fullname,contact,gender,address,birthdate,age,guardian FROM patient_accounts WHERE id=${db.escape(req.session.user.id)};`,
+        SELECT picture,fullname,contact,gender,address,birthdate,age,guardian,email FROM patient_accounts WHERE id=${db.escape(req.session.user.id)};`,
         (err, result) => {
             if (err) throw err;
 
@@ -116,29 +116,29 @@ router.get('/reset', getResetPasswordToken, (req, res) => {
 //==================================================================================================================================================================================================
 
 //LOGIN ACCOUNT
-router.post('/login', (req, res) => {
-    let { email, password } = req.body;
+// router.post('/login', (req, res) => {
+//     let { email, password } = req.body;
 
-    db.query(`SELECT id,email,password FROM patient_accounts WHERE email=${db.escape(email)}`,
-        (err, result) => {
-            if (err) throw err;
+//     db.query(`SELECT id,email,password FROM patient_accounts WHERE email=${db.escape(email)}`,
+//         (err, result) => {
+//             if (err) throw err;
 
-            if (result.length == 0) return res.json({ operation: false })
+//             if (result.length == 0) return res.json({ operation: false })
 
-            const user = { ...result[0] }
+//             const user = { ...result[0] }
 
-            //DECRYPT & COMPARE PASSWORD
-            const isMatch = password == CryptoJS.AES.decrypt(user.password, process.env.SECRET).toString(CryptoJS.enc.Utf8);
+//             //DECRYPT & COMPARE PASSWORD
+//             const isMatch = password == CryptoJS.AES.decrypt(user.password, process.env.SECRET).toString(CryptoJS.enc.Utf8);
 
-            if (!isMatch) return res.json({ operation: false })
+//             if (!isMatch) return res.json({ operation: false })
 
-            req.session.user = {
-                id: user.id,
-                email: user.email
-            };
-            res.json({ operation: true })
-        })
-})
+//             req.session.user = {
+//                 id: user.id,
+//                 email: user.email
+//             };
+//             res.json({ operation: true })
+//         })
+// })
 
 //LOGOUT ACCOUNT
 router.post('/logout', (req, res) => {
@@ -154,19 +154,29 @@ router.post('/logout', (req, res) => {
 //REGISTER CLIENT ACCOUNT
 router.post('/register', (req, res) => {
 
-    let { email, password } = req.body
+    let { email, username, password } = req.body
 
-    db.query(`SELECT email FROM patient_accounts WHERE email=${db.escape(email)}`, (err, results) => {
+    db.query(`
+    SELECT email FROM patient_accounts WHERE email=${db.escape(email)};
+    SELECT username FROM patient_accounts WHERE username=${db.escape(username)};
+    SELECT username FROM admin_accounts WHERE username=${db.escape(username)};
+    `,
+    (err, results) => {
         if (err) throw err;
 
-        if (results.length > 0) return res.json({ operation: false })
+        const emailPatient = results[0]
+        const usernamePatient = results[1]
+        const usernameAdmin = results[2]
+
+        if(emailPatient.length >= 1) return res.json({ operation: false, msg: "Email already exists" })
+        if(usernameAdmin.length >= 1 || usernamePatient.length >= 1) return res.json({ operation: false, msg: "Username already exists" })
 
         //ENCRYPT PASSWORD
         password = CryptoJS.AES.encrypt(password, process.env.SECRET).toString();
 
         //INSERT ACCOUNT TO DATABASE
-        db.query(`INSERT INTO patient_accounts(email,password) VALUES(${db.escape(email)},${db.escape(password)})`, (err, result) => {
-            if (err) throw err;
+        db.query(`INSERT INTO patient_accounts(email,password,username) VALUES(${db.escape(email)},${db.escape(password)},${db.escape(username)})`, (err1) => {
+            if (err1) throw err1;
         })
 
         //SEND EMAIL VERIFICATION

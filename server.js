@@ -23,6 +23,9 @@ app.use(cookieSession({
 //HOME
 app.get('/', (req, res) => res.render('home.ejs', { user: null }))
 
+//LOGIN
+app.use('/login', require('./controller/login'))
+
 //CLIENT
 app.use('/client', require('./controller/client'))
 

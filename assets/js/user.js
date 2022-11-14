@@ -7,7 +7,8 @@ $(document).ready(function (e) {
         gender = $("#gender"),
         address = $("#address"),
         id = $("meta[name=id]").attr("content"),
-        age = $("#age");
+        age = $("#age"),
+        email = $("#email");
 
     const gName = $("#g-name")
     const gContact = $("#g-contact")
@@ -157,18 +158,19 @@ $(document).ready(function (e) {
                 if (!res.operation) return showToast("❌ Something went wrong")
                 $(".confirmation-shadow").toggleClass("d-none")
                 $(window).off('beforeunload');
-                fname.prop("disabled", !fname.prop("disabled"))
-                mi.prop("disabled", !mi.prop("disabled"))
-                lname.prop("disabled", !lname.prop("disabled"))
-                birthdate.prop("disabled", !birthdate.prop("disabled"))
-                age.prop("disabled", !age.prop("disabled"))
-                contact.prop("disabled", !contact.prop("disabled"))
-                address.prop("disabled", !address.prop("disabled"))
-                gName.prop("disabled", !gName.prop("disabled"))
-                gContact.prop("disabled", !gContact.prop("disabled"))
-                gAddress.prop("disabled", !gAddress.prop("disabled"))
-                gRelationship.prop("disabled", !gRelationship.prop("disabled"))
-                gender.prop("disabled", !gender.prop("disabled"))
+                // fname.prop("disabled", !fname.prop("disabled"))
+                // mi.prop("disabled", !mi.prop("disabled"))
+                // lname.prop("disabled", !lname.prop("disabled"))
+                // birthdate.prop("disabled", !birthdate.prop("disabled"))
+                // age.prop("disabled", !age.prop("disabled"))
+                // contact.prop("disabled", !contact.prop("disabled"))
+                // address.prop("disabled", !address.prop("disabled"))
+                // gName.prop("disabled", !gName.prop("disabled"))
+                // gContact.prop("disabled", !gContact.prop("disabled"))
+                // gAddress.prop("disabled", !gAddress.prop("disabled"))
+                // gRelationship.prop("disabled", !gRelationship.prop("disabled"))
+                // gender.prop("disabled", !gender.prop("disabled"))
+                $("input:not(#email),textarea,select").prop("disabled", true)
                 $("#edit").toggleClass("d-none")
                 $("#save").toggleClass("d-none")
                 showToast("✅ User updated!")
@@ -191,18 +193,19 @@ $(document).ready(function (e) {
         $(window).on('beforeunload', function (e) {
             return "You have unsaved changes"
         });
-        fname.prop("disabled", !fname.prop("disabled"))
-        mi.prop("disabled", !mi.prop("disabled"))
-        gender.prop("disabled", !gender.prop("disabled"))
-        lname.prop("disabled", !lname.prop("disabled"))
-        birthdate.prop("disabled", !birthdate.prop("disabled"))
-        age.prop("disabled", !age.prop("disabled"))
-        contact.prop("disabled", !contact.prop("disabled"))
-        address.prop("disabled", !address.prop("disabled"))
-        gName.prop("disabled", !gName.prop("disabled"))
-        gContact.prop("disabled", !gContact.prop("disabled"))
-        gAddress.prop("disabled", !gAddress.prop("disabled"))
-        gRelationship.prop("disabled", !gRelationship.prop("disabled"))
+        // fname.prop("disabled", !fname.prop("disabled"))
+        // mi.prop("disabled", !mi.prop("disabled"))
+        // gender.prop("disabled", !gender.prop("disabled"))
+        // lname.prop("disabled", !lname.prop("disabled"))
+        // birthdate.prop("disabled", !birthdate.prop("disabled"))
+        // age.prop("disabled", !age.prop("disabled"))
+        // contact.prop("disabled", !contact.prop("disabled"))
+        // address.prop("disabled", !address.prop("disabled"))
+        // gName.prop("disabled", !gName.prop("disabled"))
+        // gContact.prop("disabled", !gContact.prop("disabled"))
+        // gAddress.prop("disabled", !gAddress.prop("disabled"))
+        // gRelationship.prop("disabled", !gRelationship.prop("disabled"))
+        $("input:not(#email),textarea,select").prop("disabled", false)
         $("#edit").toggleClass("d-none")
         $("#save").toggleClass("d-none")
     })

@@ -1,7 +1,7 @@
 require("dotenv").config({ path: `${process.cwd()}/.env` })
 const express = require('express');
 const router = express.Router();
-const { protected, login, onlyAdmin } = require('../middlewares/admin');
+const { protected, onlyAdmin } = require('../middlewares/admin');
 const db = require('../db/db')
 const dayjs = require('dayjs');
 const uuid = require("uuid");
@@ -30,9 +30,9 @@ router.get('/dashboard', protected, (req, res) => {
 })
 
 //ADMIN LOGIN PAGE
-router.get('/login', login, (req, res) => {
-    res.render('admin/login.ejs')
-})
+// router.get('/login', login, (req, res) => {
+//     res.render('admin/login.ejs')
+// })
 
 //ADMIN ACCOUNT PAGE
 router.get('/accounts', protected, onlyAdmin, (req, res) => {
@@ -126,26 +126,26 @@ router.get('/scheduled/:apt_id', protected, (req, res) => {
 //================================================================================================================================
 
 //LOGIN ACCOUNT
-router.post('/login', (req, res) => {
-    let { username, password } = req.body
+// router.post('/login', (req, res) => {
+//     let { username, password } = req.body
 
-    db.query(`SELECT admin_id,username,password,specialty,fullname FROM admin_accounts WHERE username=${db.escape(username)}`,
-        (err, result) => {
-            if (err) throw err;
+//     db.query(`SELECT admin_id,username,password,specialty,fullname FROM admin_accounts WHERE username=${db.escape(username)}`,
+//         (err, result) => {
+//             if (err) throw err;
 
-            const user = { ...result[0] }
+//             const user = { ...result[0] }
 
-            if (password != user.password || result.length <= 0) return res.json({ operation: false })
+//             if (password != user.password || result.length <= 0) return res.json({ operation: false })
 
-            req.session.admin = {
-                id: user.admin_id,
-                specialty: user.specialty,
-                fullname: user.fullname
-            }
+//             req.session.admin = {
+//                 id: user.admin_id,
+//                 specialty: user.specialty,
+//                 fullname: user.fullname
+//             }
 
-            res.json({ operation: true })
-        })
-})
+//             res.json({ operation: true })
+//         })
+// })
 
 //LOGOUT ACCOUNT
 router.post('/logout', (req, res) => {
@@ -369,11 +369,17 @@ router.post("/doctors", protected, onlyAdmin, (req, res) => {
     const { fullname, license_number, username, specialty, password } = req.body
 
     let values = `${db.escape(specialty)},${db.escape(username)},${db.escape(password)},${db.escape(fullname)},${db.escape(license_number)}`
-    db.query(`SELECT username FROM admin_accounts WHERE username=${db.escape(username)};`,
+    db.query(`
+    SELECT username FROM admin_accounts WHERE username=${db.escape(username)};
+    SELECT username FROM patient_accounts WHERE username=${db.escape(username)};
+    `,
         (errMatch, checkMatch) => {
             if (errMatch) throw errMatch;
 
-            if (checkMatch.length >= 1) return res.json({ operation: false })
+            const usernameAdmin = checkMatch[0];
+            const usernamePatient = checkMatch[1];
+
+            if (usernameAdmin.length >= 1 || usernamePatient.length >= 1) return res.json({ operation: false })
 
             db.query(`INSERT INTO admin_accounts(specialty,username,password,fullname,license_number) VALUES(${values})`,
             (err, result) => {

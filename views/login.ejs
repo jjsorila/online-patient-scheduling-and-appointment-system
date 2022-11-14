@@ -15,13 +15,12 @@
             autocomplete="off">
             <h1 class="my-0">LOGIN</h1>
             <div class="form-group w-50 mx-auto">
-                <label for="exampleInputEmail1">Email</label>
-                <input type="email" class="form-control rounded" id="exampleInputEmail1" name="email"
-                    aria-describedby="emailHelp" />
+                <label for="exampleInputEmail1">Username</label>
+                <input type="text" class="text-center form-control rounded" id="email" aria-describedby="emailHelp" />
             </div>
             <div class="form-group w-50 mx-auto">
                 <label for="exampleInputPassword1">Password</label>
-                <input type="password" class="form-control rounded" name="password" id="exampleInputPassword1" />
+                <input type="password" class="text-center form-control rounded" name="password" id="exampleInputPassword1" />
             </div>
             <button class="btn login-btn w-50 h-50 mx-auto border border-light text-light border-4">LOGIN</button>
             <div class="h-100 w-100 d-flex justify-content-around align-items-center flex-column flex-md-row">
@@ -30,21 +29,29 @@
             </div>
         </form>
 
-        <form class="reg-form" autocomplete="off">
+        <form class="reg-form py-0" autocomplete="off">
             <h1 class="my-0">REGISTER</h1>
-            <div class="form-group w-50 mx-auto">
-                <label for="exampleInputEmail2">Email</label>
-                <input type="email" class="form-control rounded" id="exampleInputEmail2" aria-describedby="emailHelp" />
+            <div class="d-flex gap-5 px-5">
+                <div class="form-group w-100 mx-auto">
+                    <label for="exampleInputEmail2">Email</label>
+                    <input type="email" class="text-center form-control rounded" id="exampleInputEmail2" aria-describedby="emailHelp" />
+                </div>
+                <div class="form-group w-100 mx-auto">
+                    <label for="exampleInputEmail2">Username</label>
+                    <input type="text" class="text-center form-control rounded" id="username" aria-describedby="emailHelp" />
+                </div>
             </div>
-            <div class="form-group w-50 mx-auto">
-                <label for="exampleInputPassword2">Password</label>
-                <input type="password" class="form-control rounded" id="exampleInputPassword2" />
+            <div class="d-flex gap-5 px-5">
+                <div class="form-group w-100 mx-auto">
+                    <label for="exampleInputPassword2">Password</label>
+                    <input type="password" class="text-center form-control rounded" id="exampleInputPassword2" />
+                </div>
+                <div class="form-group w-100 mx-auto">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" class="text-center form-control rounded" id="confirmPassword" />
+                </div>
             </div>
-            <div class="form-group w-50 mx-auto">
-                <label for="confirmPassword">Confirm Password</label>
-                <input type="password" class="form-control rounded" id="confirmPassword" />
-            </div>
-            <button class="btn reg-btn w-50 h-50 mx-auto border border-light text-light border-4">REGISTER</button>
+            <button class="btn reg-btn w-50 h-50 mx-auto border border-light text-light border-4 p-0">REGISTER</button>
             <a class="link mx-auto text-light" id="slide"><i class="bi bi-caret-left-fill"></i>LOGIN</a>
         </form>
 

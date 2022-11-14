@@ -21,16 +21,57 @@
             class="w-75 container border border-dark border-5 rounded bg-light user-info p-5 d-flex flex-column gap-4 align-items-center">
             <h5 class="text-center text-danger">You have unsaved changes</h5>
 
-            <div class="form-group d-flex flex-column flex-md-row gap-5">
+            <div class="form-group d-flex flex-column justify-content-center gap-3 w-75">
 
                 <!-- PROFILE IMAGE -->
-                <div class="form-group d-flex flex-column align-items-center gap-2">
+                <div class="form-group d-flex flex-column align-items-center gap-3">
                     <div class="img-container border border-dark border-4 rounded">
                         <img id="img" class="img-fluid" src="<%= user.picture %>"/>
                     </div>
                     <label class="btn btn-outline-primary border border-primary border-3" for="myFile">CHANGE</label>
                     <input type="file" class="d-none" id="myFile"/>
-                    <div class="form-group text-center w-100">
+                </div>
+
+                <!-- PROFILE INFO -->
+                <div class="form-group text-center">
+                    <label for="fname">Email</label>
+                    <input disabled value="<%= user.email %>" type="email"
+                        class="form-control border border-dark border-4 text-center" id="email" />
+                </div>
+
+                <div class="form-group d-flex align-items-center gap-3">
+                    <div class="form-group w-100 text-center">
+                        <label for="fname">First Name*</label>
+                        <input disabled value="<%= user.fullname?.fname %>" type="text"
+                            class="form-control border border-dark border-4 text-center" id="fname" />
+                    </div>
+                    <div class="form-group w-100 text-center">
+                        <label for="mi">M.I.*</label>
+                        <input disabled value="<%= user.fullname?.mi %>" type="text"
+                            class="text-center form-control border border-dark border-4" id="mi" />
+                    </div>
+                    <div class="form-group w-100 text-center">
+                        <label for="lname">Last Name*</label>
+                        <input disabled value="<%= user.fullname?.lname %>" type="text"
+                            class="form-control border border-dark border-4 text-center" id="lname" />
+                    </div>
+                </div>
+
+                <div class="form-group d-flex align-items-center gap-3">
+                    <div class="form-group w-100 text-center">
+                        <label for="birthdate">Birthdate*</label>
+                        <input disabled value="<%= user.birthdate %>" type="date"
+                            class="text-center form-control border border-dark border-4" id="birthdate" name="birthdate" />
+                    </div>
+                    <div class="form-group w-100 text-center">
+                        <label for="age" class="control-label">Age*</label>
+                        <input disabled type="number" value="<%= user.age %>"
+                            class="text-center form-control border border-dark border-4" id="age" />
+                    </div>
+                </div>
+
+                <div class="form-group d-flex align-items-center gap-3">
+                    <div class="form-group w-100 text-center">
                         <label for="gender">Gender*</label>
                         <select disabled type="text" class="form-select border border-dark border-4 d-block text-center" id="gender"
                             name="gender">
@@ -45,39 +86,7 @@
                                         <option>Female</option>
                         </select>
                     </div>
-                </div>
-
-                <!-- PROFILE INFO -->
-                <div class="form-group d-flex flex-column justify-content-start align-items-center gap-5">
-                    <div class="form-group text-center">
-                        <label for="fname">First Name*</label>
-                        <input disabled value="<%= user.fullname?.fname %>" type="text"
-                            class="form-control border border-dark border-4 text-center" id="fname" />
-                    </div>
-                    <div class="form-group text-center">
-                        <label for="mi">M.I.*</label>
-                        <input disabled value="<%= user.fullname?.mi %>" type="text"
-                            class="text-center form-control border border-dark border-4" id="mi" />
-                    </div>
-                    <div class="form-group text-center">
-                        <label for="lname">Last Name*</label>
-                        <input disabled value="<%= user.fullname?.lname %>" type="text"
-                            class="form-control border border-dark border-4 text-center" id="lname" />
-                    </div>
-                </div>
-
-                <div class="form-group d-flex flex-column justify-content-start align-items-center gap-5">
                     <div class="form-group w-100 text-center">
-                        <label for="birthdate">Birthdate*</label>
-                        <input disabled value="<%= user.birthdate %>" type="date"
-                            class="text-center w-100 form-control border border-dark border-4" id="birthdate" name="birthdate" />
-                    </div>
-                    <div class="form-group text-center">
-                        <label for="age" class="control-label">Age*</label>
-                        <input disabled type="number" value="<%= user.age %>"
-                            class="text-center form-control border border-dark border-4" id="age" />
-                    </div>
-                    <div class="form-group text-center">
                         <label for="contact">Contact*</label>
                         <input disabled value="<%= user.contact %>" type="text"
                             class="text-center form-control border border-dark border-4" id="contact" name="contact" />
@@ -85,13 +94,12 @@
                 </div>
             </div>
 
-
-            <div class="form-group text-center w-100">
+            <div class="form-group text-center w-75">
                 <label for="address">Patient's Address*</label>
                 <textarea disabled class="form-control border border-dark border-4 text-center" id="address"
                     rows="3"><%= user.address %></textarea>
             </div>
-            <div class="form-group w-100 d-flex justify-content-center gap-4">
+            <div class="form-group d-flex justify-content-center gap-4 w-75">
                 <div class="form-group w-100 d-flex align-items-center flex-column gap-1">
                     <div class="form-group text-center w-100">
                         <label for="g-name" class="control-label">Guardian's Name</label>

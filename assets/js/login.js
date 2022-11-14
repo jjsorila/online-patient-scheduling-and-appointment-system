@@ -18,14 +18,15 @@ $(document).ready(function (e) {
         return {
             email: $("form.reg-form input[type=email]").val(),
             password: $("form.reg-form input[type=password]").val(),
-            cPassword: $("form.reg-form #confirmPassword").val()
+            cPassword: $("form.reg-form #confirmPassword").val(),
+            username: $("form.reg-form #username").val()
         }
     }
 
     //GET INPUT LOGIN
     function getInputLogin() {
         return {
-            email: $("form.login-form input[type=email]").val(),
+            email: $("form.login-form #email").val(),
             password: $("form.login-form input[type=password]").val()
         }
     }
@@ -46,18 +47,18 @@ $(document).ready(function (e) {
         $(".loading").css("display", "block")
 
         $.ajax({
-            url: "/client/login",
+            url: "/login",
             type: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             data: JSON.stringify({
-                email,
+                username: email,
                 password
             }),
             success: (res) => {
                 if (!res.operation) return showToast("❌ Invalid Credentials")
-                location.href = "/client/dashboard"
+                location.href = `/${res.goTo}/dashboard`
             },
             error: (err) => {
                 console.log(err)
@@ -72,9 +73,9 @@ $(document).ready(function (e) {
     $("form.reg-form").submit(function (e) {
         e.preventDefault();
 
-        const { email, password, cPassword } = getInputRegister()
+        const { email, password, cPassword, username } = getInputRegister()
 
-        if (!email || !password || !cPassword) return showToast("❌ Complete all fields")
+        if (!email || !password || !cPassword || !username) return showToast("❌ Complete all fields")
 
         if (password != cPassword) return showToast("❌ Password not matched")
 
@@ -88,10 +89,11 @@ $(document).ready(function (e) {
             },
             data: JSON.stringify({
                 email,
-                password
+                password,
+                username
             }),
             success: (res) => {
-                if (!res.operation) return showToast("❌ Email already exist")
+                if (!res.operation) return showToast(`❌ ${res.msg}`)
                 $("form").toggleClass("slide")
                 showToast("✅ Registered Successfully. Check your Mail or Spam to verify your Email Address")
                 clearInput()
