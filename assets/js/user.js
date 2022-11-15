@@ -21,7 +21,7 @@ $(document).ready(function (e) {
         dropdownCssClass: 'text-center',
         placeholder: 'Select'
     })
-    $("span.select2").addClass("border border-4 border-dark rounded text-center")
+    $("span.select2").addClass("w-100 border border-4 border-dark rounded text-center")
 
     const toBase64 = (file) => new Promise((resolve, reject) => {
         const reader = new FileReader();
