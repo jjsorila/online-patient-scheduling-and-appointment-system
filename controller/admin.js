@@ -50,7 +50,7 @@ router.get('/patients', protected, (req, res) => {
 router.get('/patients/:patient_id', protected, (req, res) => {
     const { patient_id } = req.params
 
-    db.query(`SELECT picture,fullname,contact,gender,birthdate,age,address,patient_history,guardian FROM patient_accounts WHERE id=${db.escape(patient_id)}`,
+    db.query(`SELECT username,email,picture,fullname,contact,gender,birthdate,age,address,patient_history,guardian FROM patient_accounts WHERE id=${db.escape(patient_id)}`,
         (err, result) => {
             if (err) throw err;
 

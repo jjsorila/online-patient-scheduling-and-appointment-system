@@ -18,16 +18,66 @@
 
     <div class="container border border-dark rounded border-5 text-dark bg-light text-center w-75 mb-5 position-relative d-flex flex-column gap-4 p-4 pt-5">
 
-        <div class="form-group w-75 mx-auto d-flex gap-3 justify-content-around align-items-center">
+        <div class="container d-flex flex-column justify-content-center gap-3 w-75">
 
-            <div class="form-group d-flex flex-column gap-3 align-items-center">
-                <div class="img-container border border-dark border-4 rounded mx-auto">
+            <!-- PROFILE IMAGE -->
+            <div class="form-group d-flex flex-column align-items-center gap-3">
+                <div class="img-container border border-dark border-4 rounded">
                     <img id="img" class="img-fluid" src="<%= user.picture %>"/>
                 </div>
+            </div>
 
-                <div class="form-group w-100 mt-4">
-                    <label class="form-label" for="gender">Gender*</label>
-                    <select disabled class="form-select border border-dark rounded border-4 text-center" id="gender">
+            <!-- PROFILE INFO -->
+            <% if(user.email || user.username) { %>
+                <div class="form-group d-flex gap-3 justify-content-center">
+                    <div class="form-group w-100 text-center">
+                        <label for="fname">Email</label>
+                        <input disabled value="<%= user.email %>" type="email"
+                            class="form-control border border-dark border-4 text-center" id="email" />
+                    </div>
+                    <div class="form-group w-100 text-center">
+                        <label for="fname">Username</label>
+                        <input disabled value="<%= user.username %>" type="text"
+                            class="form-control border border-dark border-4 text-center" id="username" />
+                    </div>
+                </div>
+            <% } %>
+
+            <div class="form-group d-flex align-items-center gap-3">
+                <div class="form-group w-100 text-center">
+                    <label for="fname">First Name*</label>
+                    <input disabled value="<%= user.fullname?.fname %>" type="text"
+                        class="form-control border border-dark border-4 text-center" id="fname" />
+                </div>
+                <div class="form-group w-100 text-center">
+                    <label for="mi">M.I.*</label>
+                    <input disabled value="<%= user.fullname?.mi %>" type="text"
+                        class="text-center form-control border border-dark border-4" id="mi" />
+                </div>
+                <div class="form-group w-100 text-center">
+                    <label for="lname">Last Name*</label>
+                    <input disabled value="<%= user.fullname?.lname %>" type="text"
+                        class="form-control border border-dark border-4 text-center" id="lname" />
+                </div>
+            </div>
+
+            <div class="form-group d-flex align-items-center gap-3">
+                <div class="form-group w-100 text-center">
+                    <label for="birthdate">Birthdate*</label>
+                    <input disabled value="<%= user.birthdate %>" type="date"
+                        class="text-center form-control border border-dark border-4" id="birthdate" name="birthdate" />
+                </div>
+                <div class="form-group w-100 text-center">
+                    <label for="age" class="control-label">Age*</label>
+                    <input disabled type="number" value="<%= user.age %>"
+                        class="text-center form-control border border-dark border-4" id="age" />
+                </div>
+            </div>
+
+            <div class="form-group d-flex align-items-center gap-3">
+                <div class="form-group w-100 text-center">
+                    <label for="gender">Gender*</label>
+                    <select disabled class="form-select border border-dark border-4 d-block text-center" id="gender">
                         <% if(user.gender && user.gender == "Male") { %>
                             <option data-selected>Male</option>
                             <option>Female</option>
@@ -40,35 +90,10 @@
                         <% } %>
                     </select>
                 </div>
-            </div>
-
-            <div class="form-group d-flex flex-column gap-5 justify-content-center">
-                <div class="form-group">
-                    <label class="form-label" for="fname">First Name*</label>
-                    <input disabled value="<%= user.fullname?.fname %>" type="text" class="form-control border border-dark rounded border-4 text-center" id="fname" />
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="mi">M.I.*</label>
-                    <input disabled value="<%= user.fullname?.mi %>" type="text" class="form-control border border-dark rounded border-4 text-center" id="mi" />
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="lname">Last Name*</label>
-                    <input disabled value="<%= user.fullname?.lname %>" type="text" class="form-control border border-dark rounded border-4 text-center" id="lname" />
-                </div>
-            </div>
-
-            <div class="form-group d-flex flex-column gap-5 justify-content-center">
-                <div class="form-group">
-                    <label class="form-label" for="birthdate">Birthdate*</label>
-                    <input disabled value="<%= user.birthdate %>" type="date" class="form-control text-center border border-dark rounded border-4" id="birthdate" />
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="age">Age*</label>
-                    <input disabled value="<%= user.age %>" type="number" class="form-control border border-dark rounded border-4 text-center" id="age" />
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="contact">Contact*</label>
-                    <input disabled value="<%= user.contact %>" type="number" class="form-control border border-dark rounded border-4 text-center" id="contact" />
+                <div class="form-group w-100 text-center">
+                    <label for="contact">Contact*</label>
+                    <input disabled value="<%= user.contact %>" type="text"
+                        class="text-center form-control border border-dark border-4" id="contact" name="contact" />
                 </div>
             </div>
         </div>

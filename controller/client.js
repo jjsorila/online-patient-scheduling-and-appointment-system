@@ -48,7 +48,7 @@ router.get('/dashboard', protected, (req ,res) => {
 router.get('/user', protected, (req, res) => {
 
     db.query(`
-        SELECT picture,fullname,contact,gender,address,birthdate,age,guardian,email FROM patient_accounts WHERE id=${db.escape(req.session.user.id)};`,
+        SELECT picture,fullname,contact,gender,address,birthdate,age,guardian,email,username FROM patient_accounts WHERE id=${db.escape(req.session.user.id)};`,
         (err, result) => {
             if (err) throw err;
 
