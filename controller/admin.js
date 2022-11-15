@@ -11,7 +11,7 @@ const uuid = require("uuid");
 //ADMIN DASHBOARD
 router.get('/dashboard', protected, (req, res) => {
     db.query(`
-        SELECT COUNT(id) AS total_patients FROM patient_accounts;
+        SELECT COUNT(id) AS total_patients FROM patient_accounts WHERE NOT fullname IS NULL;
         SELECT COUNT(admin_id) AS total_doctors FROM admin_accounts;
         SELECT COUNT(apt_id) AS total_scheduled FROM appointments WHERE status='Approved' AND (DATE(schedule)=CURDATE() OR DATE(date_created_walk_in)=CURDATE());
         SELECT COUNT(staff_id) AS total_staffs FROM staff_list;
