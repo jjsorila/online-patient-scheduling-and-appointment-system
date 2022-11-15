@@ -3,6 +3,12 @@ $(document).ready(function(e) {
     const from = $("#from")
     const to = $("#to")
 
+    status.select2({
+        minimumResultsForSearch: -1,
+        dropdownCssClass: 'text-center'
+    })
+    $("span.select2").addClass("border border-4 border-dark rounded text-center")
+
     $("#scheduled_patients").DataTable({
         ajax: `/reports/scheduled/all`,
         dom: 'lBfrtip',
@@ -88,7 +94,7 @@ $(document).ready(function(e) {
                 {
                     data: "schedule",
                     orderable: false
-                    
+
                 }
             ],
             destroy: true

@@ -6,11 +6,16 @@ $(document).ready(function (e) {
     const dPassword = $("#dPassword")
     const doctorId = $("#doctor-id")
 
+    dSpecialty.select2({
+        minimumResultsForSearch: -1,
+        dropdownCssClass: 'text-center'
+    })
+    $("span.select2").addClass("border border-4 border-dark rounded text-center w-100")
+
     //CLEAR INPUT
     function clearInput() {
         dName.val("")
         dLicense.val("")
-        dSpecialty.val("Choose")
         dUsername.val("")
         dPassword.val("")
     }

@@ -6,6 +6,12 @@ $(document).ready(function (e) {
     const showDate = $("#show");
     const medComplain = $("#med-complain");
 
+    $("#show,#sort").select2({
+        minimumResultsForSearch: -1,
+        dropdownCssClass: 'text-center'
+    })
+    $("span.select2").addClass("border border-4 border-dark rounded text-center")
+
     $(window).on("unload", function(){
         localStorage.clear()
     });

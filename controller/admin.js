@@ -14,6 +14,7 @@ router.get('/dashboard', protected, (req, res) => {
         SELECT COUNT(id) AS total_patients FROM patient_accounts;
         SELECT COUNT(admin_id) AS total_doctors FROM admin_accounts;
         SELECT COUNT(apt_id) AS total_scheduled FROM appointments WHERE status='Approved' AND (DATE(schedule)=CURDATE() OR DATE(date_created_walk_in)=CURDATE());
+        SELECT COUNT(staff_id) AS total_staffs FROM staff_list;
     `, (err, result) => {
         if(err) throw err;
 
@@ -22,7 +23,8 @@ router.get('/dashboard', protected, (req, res) => {
             data: {
                 patients: result[0][0].total_patients,
                 doctors: (result[1][0].total_doctors - 1),
-                scheduled: result[2][0].total_scheduled
+                scheduled: result[2][0].total_scheduled,
+                staffs: result[3][0].total_staffs
             }
         })
     })
@@ -121,6 +123,11 @@ router.get('/scheduled/:apt_id', protected, (req, res) => {
                 }
             })
         })
+})
+
+//STAFFS PAGE
+router.get('/staffs', protected, onlyAdmin, (req, res) => {
+    res.render('admin/staffs/staffs.ejs', { admin: { ...req.session.admin } })
 })
 
 //================================================================================================================================
@@ -353,6 +360,18 @@ router.get("/doctors", protected, onlyAdmin, (req, res) => {
         })
 })
 
+//GET ALL STAFFS
+router.get('/staffs/list', (req, res) => {
+    db.query(`SELECT * FROM staff_list;`,
+    (err, result) => {
+        if(err) throw err;
+
+        res.json({
+            data: result
+        })
+    })
+})
+
 //DELETE DOCTOR ACCOUNT
 router.delete("/doctors", protected, onlyAdmin, (req, res) => {
     const { admin_id } = req.body;
@@ -387,6 +406,51 @@ router.post("/doctors", protected, onlyAdmin, (req, res) => {
                 res.json({ operation: true })
             })
         })
+})
+
+//ADD STAFF
+router.post('/staffs', (req, res) => {
+    let { fullname, role } = req.body
+
+    db.query(`INSERT INTO staff_list(fullname,role) VALUES(${db.escape(fullname)},${db.escape(role)})`,
+    (err, result) => {
+        if(err) throw err;
+
+        res.json({ operation: true })
+    })
+})
+
+//DELETE STAFF
+router.delete('/staffs', (req, res) => {
+    let { staff_id } = req.query
+
+    db.query(`DELETE FROM staff_list WHERE staff_id=${db.escape(staff_id)}`,
+    (err, result) => {
+        if(err) throw err;
+        res.json({ operation: true })
+    })
+})
+
+//UPDATE STAFF
+router.put('/staffs', (req ,res) => {
+    const { staff_id, fullname, role } = req.body
+    db.query(`UPDATE staff_list SET fullname=${db.escape(fullname)},role=${db.escape(role)} WHERE staff_id=${db.escape(staff_id)}`,
+    (err, result) => {
+        if(err) throw err;
+
+        return res.json({ operation: true })
+    })
+})
+
+//GET INFO STAFF
+router.get('/getinfostaff', (req, res) => {
+    const { staff_id } = req.query
+
+    db.query(`SELECT * FROM staff_list WHERE staff_id=${db.escape(staff_id)}`,
+    (err, result) => {
+        if(err) throw err;
+        return res.json({ ...result[0] })
+    })
 })
 
 //CHECK IF DATES ARE FULL OF APPOINTMENTS

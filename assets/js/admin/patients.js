@@ -14,6 +14,12 @@ $(document).ready(function (e) {
         patient_type = $("#patient_type"),
         hiddenPatientId = $("#hidden-patient-id");
 
+    patient_type.select2({
+        minimumResultsForSearch: -1,
+        dropdownCssClass: 'text-center'
+    })
+    $("span.select2").addClass("border border-4 border-dark rounded text-center w-100")
+
     setInterval(() => {
         $("table").DataTable().ajax.reload()
     }, 5000)

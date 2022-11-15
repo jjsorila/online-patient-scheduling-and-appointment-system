@@ -12,6 +12,10 @@ $(document).ready(function(e) {
         location.href = "/admin/scheduled"
     })
 
+    $("div.staffs").click(function(e) {
+        location.href = "/admin/staffs"
+    })
+
     $("#calendar").fullCalendar({
         editable: false,
         header: {

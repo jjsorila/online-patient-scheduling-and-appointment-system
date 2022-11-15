@@ -18,6 +18,13 @@ $(document).ready(function (e) {
         return Math.floor(ageInMilliseconds / 1000 / 60 / 60 / 24 / 365);
     }
 
+    gender.select2({
+        minimumResultsForSearch: -1,
+        dropdownCssClass: 'text-center',
+        placeholder: 'Select'
+    })
+    $("span.select2").addClass("border border-4 border-dark rounded text-center")
+
     //SHOW TOAST
     function showToast(text) {
         $(".toast-body").text(text)

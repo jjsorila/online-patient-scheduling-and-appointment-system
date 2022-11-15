@@ -1,6 +1,11 @@
 $(document).ready(function (e) {
     const selectedSort = $("select")
 
+    selectedSort.select2({
+        minimumResultsForSearch: -1,
+        dropdownCssClass: 'text-center'
+    })
+    $("span.select2").addClass("border border-4 border-dark rounded text-center")
 
     //AUTO RELOAD
     setInterval(() => {

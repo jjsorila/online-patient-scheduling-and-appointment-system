@@ -16,7 +16,7 @@
     <div class="content d-flex">
         <%- include('../../templates/sidebar.ejs') %>
         <div class="main">
-            <%- include('../../templates/admin-navbar.ejs', { content: "Patients' List" }) %>
+            <%- include('../../templates/admin-navbar.ejs', { content: "Patients" }) %>
             <div class="form-group d-flex justify-content-center mb-4">
                 <button id="add-patient" class="btn bg-light text-dark border border-dark border-5">NEW PATIENT</button>
             </div>
@@ -112,9 +112,8 @@
             <div class="form-group w-75 mx-auto">
                 <label class="form-label" for="patient_type">Patient Type</label>
                 <select type="text" class="form-select d-block w-100 text-center" id="patient_type">
-                    <option selected disabled hidden>Choose</option>
+                    <option data-selected value="Pedia">Pedia</option>
                     <option value="OB">OB</option>
-                    <option value="Pedia">Pedia</option>
                 </select>
             </div>
             <div class="form-group w-50 mx-auto pt-3">

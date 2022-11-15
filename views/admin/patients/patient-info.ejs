@@ -28,13 +28,16 @@
                 <div class="form-group w-100 mt-4">
                     <label class="form-label" for="gender">Gender*</label>
                     <select disabled class="form-select border border-dark rounded border-4 text-center" id="gender">
-                        <% if(user.gender) { %>
-                            <option value="<%= user.gender %>" hidden><%= user.gender %></option>
-                        <% } else { %>
-                            <option selected disabled hidden>Choose</option>
+                        <% if(user.gender && user.gender == "Male") { %>
+                            <option data-selected>Male</option>
+                            <option>Female</option>
+                        <% }else if(user.gender && user.gender == "Female") { %>
+                            <option>Male</option>
+                            <option data-selected>Female</option>
+                        <% }else{ %>
+                            <option>Male</option>
+                            <option>Female</option>
                         <% } %>
-                        <option value="Female">Female</option>
-                        <option value="Male">Male</option>
                     </select>
                 </div>
             </div>

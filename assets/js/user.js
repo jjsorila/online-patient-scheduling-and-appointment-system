@@ -15,6 +15,14 @@ $(document).ready(function (e) {
     const gAddress = $("#g-address")
     const gRelationship = $("#g-relationship")
 
+    //CUSTOM DROPDOWN
+    gender.select2({
+        minimumResultsForSearch: -1,
+        dropdownCssClass: 'text-center',
+        placeholder: 'Select'
+    })
+    $("span.select2").addClass("border border-4 border-dark rounded text-center")
+
     const toBase64 = (file) => new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
