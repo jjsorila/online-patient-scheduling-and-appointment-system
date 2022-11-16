@@ -62,37 +62,24 @@
             <h3 class="my-header border w-75 mx-auto py-3 mb-5 border-white border-4">Employees<i class="bi bi-people-fill ms-3"></i></h3>
             <div class="employees-container">
                 <div
-                    class="employees w-100 d-flex flex-wrap-reverse justify-content-evenly align-items-center align-items-lg-stretch gap-3">
-                    <div class="employee text-center border border-light border-4 p-2 mb-5">
-                        <h4 class="border-light border-bottom border-4 py-4">Midwife</h4>
-                        <ul class="m-0 p-0 pt-4">
-                            <li>Ms. Mary Ann Añonuevo</li>
-                        </ul>
-                    </div>
-                    <div class="employee text-center border border-light border-4 p-2 mb-5">
-                        <h4 class="border-light border-bottom border-4 py-4">Nurse</h4>
-                        <ul class="m-0 p-0 pt-4">
-                            <li>Ms. Margie Mojica</li>
-                        </ul>
-                    </div>
-                    <div class="employee text-center border border-light border-4 p-2 mb-5">
-                        <h4 class="border-light border-bottom border-4 py-4">Medical Secretary</h4>
-                        <ul class="m-0 p-0 pt-4">
-                            <li>Ms. Antonina Matilla</li>
-                        </ul>
-                    </div>
-                    <div class="employee text-center border border-light border-4 p-2 mb-5">
-                        <h4 class="border-light border-bottom border-4 py-4">Pediatrician</h4>
-                        <ul class="m-0 p-0 pt-4">
-                            <li>Dr. Melacio Rodis Jr.</li>
-                        </ul>
-                    </div>
-                    <div class="employee text-center border border-light border-4 p-2 mb-5">
-                        <h4 class="border-light border-bottom border-4 py-4">OB-GYNE</h4>
-                        <ul class="m-0 p-0 pt-4">
-                            <li>Dra. Baby Corinne S. Rodis</li>
-                        </ul>
-                    </div>
+                    class="employees w-100 d-flex flex-wrap justify-content-center align-items-center align-items-lg-stretch gap-5">
+                    <% doctors.forEach((doc) => { %>
+                        <div class="employee text-center border border-light border-4 p-2 mb-5">
+                            <h4 class="border-light border-bottom border-4 py-4"><%= doc.specialty %></h4>
+                            <ul class="m-0 p-0 pt-4">
+                                <li><%= doc.fullname %></li>
+                            </ul>
+                        </div>
+                    <% }); %>
+
+                    <% staffs.forEach((staff) => { %>
+                        <div class="employee text-center border border-light border-4 p-2 mb-5">
+                            <h4 class="border-light border-bottom border-4 py-4"><%= staff.role %></h4>
+                            <ul class="m-0 p-0 pt-4">
+                                <li><%= staff.fullname %></li>
+                            </ul>
+                        </div>
+                    <% }); %>
                 </div>
             </div>
 

@@ -41,10 +41,17 @@
     <div class="bg-shadow d-flex justify-content-center align-items-center d-none" style="overflow-y: auto;">
         <div
             class="add-account-form h-75 w-75 border bg-dark text-light border-light border-5 rounded d-flex flex-column align-items-center gap-4 py-4">
-            <div class="form-group w-50 mt-5">
+            <div class="form-group w-50 mt-3">
                 <label class="form-label text-center d-block" for="dName">Staff's Name</label>
                 <input type="text" class="form-control border border-light border-5 rounded text-center"
                     id="sFullname" placeholder="Lastname, Firstname M.I."/>
+            </div>
+            <div class="form-group w-50">
+                <label class="form-label text-center d-block" for="sGender">Gender</label>
+                <select class="form-select w-100 rounded text-center" id="sGender">
+                    <option selected value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
             </div>
             <div class="form-group w-50">
                 <label class="form-label text-center d-block" for="dLicense">Role</label>
@@ -62,10 +69,17 @@
     <div class="edit-shadow d-flex justify-content-center align-items-center d-none" style="overflow-y: auto;">
         <div
             class="add-account-form h-75 w-75 border bg-dark text-light border-light border-5 rounded d-flex flex-column align-items-center gap-4 py-4">
-            <div class="form-group w-50 mt-5">
+            <div class="form-group w-50 mt-3">
                 <label class="form-label text-center d-block" for="dName">Staff's Name</label>
                 <input type="text" class="form-control border border-light border-5 rounded text-center"
                     id="eFullname" placeholder="Lastname, Firstname M.I."/>
+            </div>
+            <div class="form-group w-50">
+                <label class="form-label text-center d-block" for="eGender">Gender</label>
+                <select class="form-select w-100 rounded text-center" id="eGender">
+                    <option id="Male" value="Male">Male</option>
+                    <option id="Female" value="Female">Female</option>
+                </select>
             </div>
             <div class="form-group w-50">
                 <label class="form-label text-center d-block" for="dLicense">Role</label>

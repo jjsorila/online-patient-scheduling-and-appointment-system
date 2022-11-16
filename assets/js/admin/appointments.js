@@ -5,7 +5,7 @@ $(document).ready(function (e) {
         minimumResultsForSearch: -1,
         dropdownCssClass: 'text-center'
     })
-    $("span.select2").addClass("border border-4 border-dark rounded text-center")
+    $("span.select2").addClass("border border-4 border-dark rounded text-center w-100")
 
     //AUTO RELOAD
     setInterval(() => {

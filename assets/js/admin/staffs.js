@@ -4,6 +4,19 @@ $(document).ready(function(e) {
     const sRole = $("#sRole")
     const eRole = $("#eRole");
     const eFullname = $("#eFullname");
+    const eGender = $("#eGender");
+    const sGender = $("#sGender");
+
+    // sGender.select2({
+    //     minimumResultsForSearch: -1,
+    //     dropdownCssClass: 'text-center'
+    // })
+    // $("span.select2").addClass("border border-4 border-dark rounded text-center w-100")
+    // eGender.select2({
+    //     minimumResultsForSearch: -1,
+    //     dropdownCssClass: 'text-center'
+    // })
+    // $("span.select2").addClass("border border-4 border-dark rounded text-center w-100")
 
     //SHOW TOAST
     function showToast(text) {
@@ -74,7 +87,8 @@ $(document).ready(function(e) {
             },
             data: JSON.stringify({
                 fullname: sFullname.val(),
-                role: sRole.val()
+                role: sRole.val(),
+                gender: sGender.val()
             }),
             success: (res) => {
                 if(!res.operation) return showToast("❌ Something went wrong")
@@ -142,6 +156,7 @@ $(document).ready(function(e) {
             success: (res) => {
                 eFullname.val(res.fullname)
                 eRole.val(res.role)
+                $(`#eGender option#${res.gender}`).attr("selected", true)
                 $(".edit-shadow").toggleClass("d-none")
             },
             error: (err) => {
@@ -168,7 +183,8 @@ $(document).ready(function(e) {
             data: JSON.stringify({
                 staff_id: staff_id.val(),
                 fullname: eFullname.val(),
-                role: eRole.val()
+                role: eRole.val(),
+                gender: eGender.val()
             }),
             success: (res) => {
                 if(!res.operation) return showToast("❌ Something went wrong")

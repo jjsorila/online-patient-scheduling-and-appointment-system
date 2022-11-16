@@ -5,6 +5,13 @@ $(document).ready(function (e) {
     const dUsername = $("#dUsername")
     const dPassword = $("#dPassword")
     const doctorId = $("#doctor-id")
+    const dGender = $("#dGender")
+
+    dGender.select2({
+        minimumResultsForSearch: -1,
+        dropdownCssClass: 'text-center'
+    })
+    $("span.select2").addClass("border border-4 border-dark rounded text-center w-100")
 
     dSpecialty.select2({
         minimumResultsForSearch: -1,
@@ -123,7 +130,8 @@ $(document).ready(function (e) {
                 specialty: dSpecialty.val(),
                 license_number: dLicense.val(),
                 username: dUsername.val(),
-                password: dPassword.val()
+                password: dPassword.val(),
+                gender: dGender.val()
             }),
             success: (res) => {
                 if (!res.operation) return showToast("❌ Username already exist")

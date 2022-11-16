@@ -385,9 +385,9 @@ router.delete("/doctors", protected, onlyAdmin, (req, res) => {
 
 //ADD DOCTOR ACCOUNT
 router.post("/doctors", protected, onlyAdmin, (req, res) => {
-    const { fullname, license_number, username, specialty, password } = req.body
+    const { fullname, license_number, username, specialty, password, gender } = req.body
 
-    let values = `${db.escape(specialty)},${db.escape(username)},${db.escape(password)},${db.escape(fullname)},${db.escape(license_number)}`
+    let values = `${db.escape(specialty)},${db.escape(username)},${db.escape(password)},${db.escape(fullname)},${db.escape(license_number)},${db.escape(gender)}`
     db.query(`
     SELECT username FROM admin_accounts WHERE username=${db.escape(username)};
     SELECT username FROM patient_accounts WHERE username=${db.escape(username)};
@@ -400,7 +400,7 @@ router.post("/doctors", protected, onlyAdmin, (req, res) => {
 
             if (usernameAdmin.length >= 1 || usernamePatient.length >= 1) return res.json({ operation: false })
 
-            db.query(`INSERT INTO admin_accounts(specialty,username,password,fullname,license_number) VALUES(${values})`,
+            db.query(`INSERT INTO admin_accounts(specialty,username,password,fullname,license_number,gender) VALUES(${values})`,
             (err, result) => {
                 if (err) throw err;
                 res.json({ operation: true })
@@ -410,9 +410,11 @@ router.post("/doctors", protected, onlyAdmin, (req, res) => {
 
 //ADD STAFF
 router.post('/staffs', (req, res) => {
-    let { fullname, role } = req.body
+    let { fullname, role, gender } = req.body
 
-    db.query(`INSERT INTO staff_list(fullname,role) VALUES(${db.escape(fullname)},${db.escape(role)})`,
+    console.log(req.body)
+
+    db.query(`INSERT INTO staff_list(fullname,role,gender) VALUES(${db.escape(fullname)},${db.escape(role)},${db.escape(gender)})`,
     (err, result) => {
         if(err) throw err;
 
@@ -433,8 +435,8 @@ router.delete('/staffs', (req, res) => {
 
 //UPDATE STAFF
 router.put('/staffs', (req ,res) => {
-    const { staff_id, fullname, role } = req.body
-    db.query(`UPDATE staff_list SET fullname=${db.escape(fullname)},role=${db.escape(role)} WHERE staff_id=${db.escape(staff_id)}`,
+    const { staff_id, fullname, role, gender } = req.body
+    db.query(`UPDATE staff_list SET gender=${db.escape(gender)},fullname=${db.escape(fullname)},role=${db.escape(role)} WHERE staff_id=${db.escape(staff_id)}`,
     (err, result) => {
         if(err) throw err;
 

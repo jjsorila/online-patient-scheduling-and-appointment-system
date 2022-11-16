@@ -21,7 +21,33 @@ app.use(cookieSession({
 //ROUTES =============================================================
 
 //HOME
-app.get('/', (req, res) => res.render('home.ejs', { user: null }))
+app.get('/', (req, res) => {
+    db.query(`
+    SELECT * FROM admin_accounts WHERE NOT gender IS NULL;
+    SELECT * FROM staff_list;
+    `,
+    (err, result) => {
+        if(err) throw err;
+
+        const d = result[0].map((doc) => {
+            return ({
+                ...doc,
+                fullname: `${doc.gender == "Male" ? "Dr." : "Dra."} ${doc.fullname}`,
+                specialty: doc.specialty == "Pedia" ? "Pediatrician" : "OB-GYNE"
+            })
+        });
+        const s = result[1].map((staff) => ({
+            ...staff,
+            fullname: `${staff.gender == "Male" ? "Mr." : "Ms."} ${staff.fullname}`
+        }));
+
+        res.render('home.ejs', {
+            user: null,
+            doctors: d,
+            staffs: s
+        })
+    })
+})
 
 //LOGIN
 app.use('/login', require('./controller/login'))

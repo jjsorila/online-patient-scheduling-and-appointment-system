@@ -82,11 +82,11 @@
                         <label for="gender">Gender*</label>
                         <select disabled class="form-select border border-dark border-4 d-block text-center" id="gender">
                             <% if(user.gender && user.gender == "Male") { %>
-                                <option data-selected>Male</option>
+                                <option selected>Male</option>
                                 <option>Female</option>
                             <% }else if(user.gender && user.gender == "Female") { %>
                                 <option>Male</option>
-                                <option data-selected>Female</option>
+                                <option selected>Female</option>
                             <% }else{ %>
                                 <option>Male</option>
                                 <option>Female</option>
