@@ -6,6 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="apt_id" content="<%= apt_id %>">
     <meta name="patient_id" content="<%= user.patient_id %>">
+    <meta name="status" content="<%= user.status %>">
+    <meta name="link_to" content="<%= user.link_to %>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%- include('../../templates/header.ejs') %>
     <link rel="stylesheet" href="/css/admin/new-med-record.css"/>
@@ -137,8 +139,35 @@
             </div>
         </div>
 
-        <div class="form-group mt-5">
-            <button class="btn btn-success border border-dark border-4" id="save">SAVE RECORD</button>
+        <div class="btn-group w-50 mx-auto border border-dark mt-5 border-2 rounded">
+            <button class="btn btn-success" id="save">SAVE RECORD</button>
+            <button class="btn btn-warning" id="follow_up">FOLLOW UP</button>
+        </div>
+    </div>
+
+    <!-- <h1 class="text-center mt-5">LINKED CHECK-UPS</h1>
+    <div class="border border-dark border-4 container mt-2 w-75">
+        <table class="table text-center table-striped table-hover" id="linked_checkup">
+            <thead>
+                <tr>
+                    <th class="text-center">DIAGNOSIS</th>
+                    <th class="text-center">CHECK-UP DATE</th>
+                </tr>
+            </thead>
+        </table>
+    </div> -->
+
+    <div class="d-none follow_up_shadow d-flex justify-content-center align-items-center">
+        <div class="w-75 h-75 follow_up_form position-relative bg-light rounded d-flex flex-column pt-5">
+            <h5 class="text-danger position-absolute invalid">Chosen TIME is UNAVAILABLE</h5>
+            <h5 class="text-success position-absolute valid">Chosen TIME is AVAILABLE</h5>
+            <div class="form-group text-center w-50 mx-auto mt-5" id="dateSched-container">
+                <label class="form-label">Date & Time</label>
+                <input type="text" class="text-center form-control border border-dark border-4 w-100 mx-auto mb-3" id="date-sched"/>
+            </div>
+            <div class="form-group d-flex justify-content-center align-items-center mt-5">
+                <button class="btn btn-primary border border-dark border-4" id="submit_follow_up">SUBMIT</button>
+            </div>
         </div>
     </div>
 

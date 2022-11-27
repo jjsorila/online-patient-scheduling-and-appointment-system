@@ -107,7 +107,7 @@ router.get('/scheduled/:apt_id', protected, (req, res) => {
     const { apt_id } = req.params
 
     const pa = `pa.id AS patient_id,pa.fullname AS fullname,pa.age AS age,pa.birthdate AS birthdate,pa.contact AS contact,pa.address AS address,pa.gender AS gender,pa.patient_history AS patient_history,pa.guardian AS guardian,pa.picture AS picture`
-    const apt = `apt.patient_type AS patient_type,apt.med_complain AS med_complain`
+    const apt = `apt.patient_type AS patient_type,apt.med_complain AS med_complain,apt.status AS status,apt.link_to AS link_to`
 
     db.query(`SELECT ${pa},${apt} FROM patient_accounts AS pa INNER JOIN appointments AS apt ON pa.id=apt.id WHERE apt.apt_id=${db.escape(apt_id)}`,
         (err, result) => {
@@ -277,7 +277,7 @@ router.put("/patient/update", (req, res) => {
 router.get('/schedule/list', (req, res) => {
 
     db.query(`
-        SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE DATE(apt.schedule)=CURDATE() AND apt.apt_type='Online' AND apt.status='Approved' ORDER BY apt.schedule;
+        SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE DATE(apt.schedule)=CURDATE() AND apt.apt_type='Online' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.schedule;
         SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE DATE(apt.date_created_walk_in)=CURDATE() AND apt.apt_type='Walk-in' AND apt.status='Approved' ORDER BY apt.date_created_walk_in;
         `,
         (err, result) => {
@@ -310,12 +310,33 @@ router.post('/med-record/add/:apt_id', (req, res) => {
     db.query(`
         UPDATE appointments SET status='Done' WHERE apt_id=${db.escape(apt_id)};
         UPDATE patient_accounts SET patient_history=${db.escape(patient_history)} WHERE id=${db.escape(patient_id)};
-        INSERT INTO medical_records VALUES(${db.escape(apt_id)},${db.escape(patient_id)},${db.escape(temperature)},${db.escape(bp)},${db.escape(weight)},${db.escape(height)},${db.escape(ailment)},${db.escape(patientMedicalRecordDate)},NULL);
+        INSERT INTO medical_records(mr_id,id,temperature,bp,weight,height,ailment,date_created) VALUES(${db.escape(apt_id)},${db.escape(patient_id)},${db.escape(temperature)},${db.escape(bp)},${db.escape(weight)},${db.escape(height)},${db.escape(ailment)},${db.escape(patientMedicalRecordDate)});
     `,
         (err, result) => {
             if (err) throw err;
             res.json({ operation: true })
         })
+})
+
+//SUBMIT FOLLOW UP
+router.post('/follow-up', (req, res) => {
+    const follow_up_id = uuid.v4()
+
+    const {
+        patient_id,
+        patient_type,
+        med_complain,
+        link_to,
+        apt_id,
+        sched,
+    } = req.body
+
+    db.query(`
+        UPDATE appointments SET status='Done' WHERE apt_id=${db.escape(apt_id)};
+        INSERT INTO appointments(apt_id,id,link_to,schedule,status,apt_type,patient_type,med_complain) VALUES(${db.escape(follow_up_id)},${db.escape(patient_id)},${db.escape(link_to || apt_id)},${db.escape(sched)},'Follow-up','Online',${db.escape(patient_type)},${db.escape(med_complain)});
+    `,(err, result) => {
+        res.json({ operation: true })
+    })
 })
 
 //UPDATE MEDICAL RECORD
@@ -336,7 +357,8 @@ router.put('/med-record/update/:mr_id', (req, res) => {
 
     db.query(`
         UPDATE patient_accounts SET patient_history=${db.escape(patient_history)} WHERE id=${db.escape(patient_id)};
-        UPDATE medical_records SET temperature=${db.escape(temperature)},bp=${db.escape(bp)},height=${db.escape(height)},weight=${db.escape(weight)},ailment=${db.escape(ailment)},date_updated=${db.escape(patientMedicalRecordDate)} WHERE mr_id=${db.escape(mr_id)};
+        UPDATE appointments SET status='Done' WHERE mr_id=${db.escape(mr_id)};
+        UPDATE medical_records SET status='Done',temperature=${db.escape(temperature)},bp=${db.escape(bp)},height=${db.escape(height)},weight=${db.escape(weight)},ailment=${db.escape(ailment)},date_updated=${db.escape(patientMedicalRecordDate)} WHERE mr_id=${db.escape(mr_id)};
     `,
         (err, result) => {
             if (err) throw err;
@@ -479,6 +501,15 @@ router.post("/time_check", (req, res) => {
 
         return res.json(true)
     })
+})
+
+//GET LINKED CHECK UPS
+router.get("/linked-checkup", (req, res) => {
+    const { apt_id } = req.query;
+
+    db.query(`
+        SELECT mr.ailment AS ailment,mr.date_created AS date_created FROM medical_records AS mr INNER JOIN appointments AS apt ON apt.apt_id=mr.mr_id WHERE (apt.link_to=${db.escape(apt_id)} OR apt.apt_id=${db.escape(apt_id)}) AND apt.status='Done' ORDER BY mr.date_created DESC;
+    `)
 })
 
 //EXPORT
