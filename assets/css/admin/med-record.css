@@ -29,4 +29,26 @@ div.hr {
         gap: 20px;
         color: black;
     }
+
+    .bg-logo {
+        height: 100px;
+        width: 100px;
+        position: absolute;
+        right: 15px;
+        top: 2px;
+    }
+
+    .rmcc {
+        position: absolute;
+        left: 35px;
+        top: 30px;
+        font-size: 4vw;
+    }
+
+    .rmcc-label {
+        position: absolute;
+        left: 35px;
+        top: 70px;
+        font-size: 2vw;
+    }
 }

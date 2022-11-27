@@ -11,6 +11,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%- include('../../templates/header.ejs') %>
     <link rel="stylesheet" href="/css/admin/new-med-record.css"/>
+    <link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+    <script type="application/javascript" src="//cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 </head>
 
 <body class="bg-light text-dark">
@@ -145,20 +147,23 @@
         </div>
     </div>
 
-    <!-- <h1 class="text-center mt-5">LINKED CHECK-UPS</h1>
-    <div class="border border-dark border-4 container mt-2 w-75">
-        <table class="table text-center table-striped table-hover" id="linked_checkup">
-            <thead>
-                <tr>
-                    <th class="text-center">DIAGNOSIS</th>
-                    <th class="text-center">CHECK-UP DATE</th>
-                </tr>
-            </thead>
-        </table>
-    </div> -->
+    <% if(user.link_to) { %>
+        <h1 class="text-center mt-5">Linked Check-ups</h1>
+        <div class="border border-dark border-4 container mt-2 w-75 p-4 rounded">
+            <table class="table text-center table-striped table-hover" id="linked_checkup">
+                <thead>
+                    <tr>
+                        <th class="text-center">DIAGNOSIS</th>
+                        <th class="text-center">CHECK-UP DATE</th>
+                        <th class="text-center">ACTION</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    <% } %>
 
     <div class="d-none follow_up_shadow d-flex justify-content-center align-items-center">
-        <div class="w-75 h-75 follow_up_form position-relative bg-light rounded d-flex flex-column pt-5">
+        <div class="w-75 h-75 follow_up_form position-relative bg-light rounded d-flex flex-column pt-5 border border-dark border-5">
             <h5 class="text-danger position-absolute invalid">Chosen TIME is UNAVAILABLE</h5>
             <h5 class="text-success position-absolute valid">Chosen TIME is AVAILABLE</h5>
             <div class="form-group text-center w-50 mx-auto mt-5" id="dateSched-container">

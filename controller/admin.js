@@ -13,7 +13,7 @@ router.get('/dashboard', protected, (req, res) => {
     db.query(`
         SELECT COUNT(id) AS total_patients FROM patient_accounts WHERE NOT fullname IS NULL;
         SELECT COUNT(admin_id) AS total_doctors FROM admin_accounts;
-        SELECT COUNT(apt_id) AS total_scheduled FROM appointments WHERE status='Approved' AND (DATE(schedule)=CURDATE() OR DATE(date_created_walk_in)=CURDATE());
+        SELECT COUNT(apt_id) AS total_scheduled FROM appointments WHERE (status='Approved' OR status='Follow-up') AND (DATE(schedule)=CURDATE() OR DATE(date_created_walk_in)=CURDATE());
         SELECT COUNT(staff_id) AS total_staffs FROM staff_list;
     `, (err, result) => {
         if(err) throw err;
@@ -335,6 +335,7 @@ router.post('/follow-up', (req, res) => {
         UPDATE appointments SET status='Done' WHERE apt_id=${db.escape(apt_id)};
         INSERT INTO appointments(apt_id,id,link_to,schedule,status,apt_type,patient_type,med_complain) VALUES(${db.escape(follow_up_id)},${db.escape(patient_id)},${db.escape(link_to || apt_id)},${db.escape(sched)},'Follow-up','Online',${db.escape(patient_type)},${db.escape(med_complain)});
     `,(err, result) => {
+        if(err) throw err;
         res.json({ operation: true })
     })
 })
@@ -357,8 +358,7 @@ router.put('/med-record/update/:mr_id', (req, res) => {
 
     db.query(`
         UPDATE patient_accounts SET patient_history=${db.escape(patient_history)} WHERE id=${db.escape(patient_id)};
-        UPDATE appointments SET status='Done' WHERE mr_id=${db.escape(mr_id)};
-        UPDATE medical_records SET status='Done',temperature=${db.escape(temperature)},bp=${db.escape(bp)},height=${db.escape(height)},weight=${db.escape(weight)},ailment=${db.escape(ailment)},date_updated=${db.escape(patientMedicalRecordDate)} WHERE mr_id=${db.escape(mr_id)};
+        UPDATE medical_records SET temperature=${db.escape(temperature)},bp=${db.escape(bp)},height=${db.escape(height)},weight=${db.escape(weight)},ailment=${db.escape(ailment)},date_updated=${db.escape(patientMedicalRecordDate)} WHERE mr_id=${db.escape(mr_id)};
     `,
         (err, result) => {
             if (err) throw err;
@@ -508,8 +508,18 @@ router.get("/linked-checkup", (req, res) => {
     const { apt_id } = req.query;
 
     db.query(`
-        SELECT mr.ailment AS ailment,mr.date_created AS date_created FROM medical_records AS mr INNER JOIN appointments AS apt ON apt.apt_id=mr.mr_id WHERE (apt.link_to=${db.escape(apt_id)} OR apt.apt_id=${db.escape(apt_id)}) AND apt.status='Done' ORDER BY mr.date_created DESC;
-    `)
+        SELECT mr.mr_id AS mr_id,mr.ailment AS ailment,mr.date_created AS date_created FROM medical_records AS mr INNER JOIN appointments AS apt ON apt.apt_id=mr.mr_id WHERE (apt.link_to=${db.escape(apt_id)} OR mr.mr_id=${db.escape(apt_id)}) AND apt.status='Done' ORDER BY mr.date_created DESC;
+    `,(err, result) => {
+        if(err) throw err;
+
+        res.json({
+            data: result.map((apt) => ({
+                ...apt,
+                ailment: JSON.parse(apt.ailment),
+                date_created: dayjs(apt.date_created).format("MMM DD, YYYY hh:mm A")
+            }))
+        })
+    })
 })
 
 //EXPORT

@@ -19,9 +19,34 @@ $(document).ready(function (e) {
         return Math.floor(ageInMilliseconds / 1000 / 60 / 60 / 24 / 365);
     }
 
-    // $("#linked_checkup").DataTable({
+    $("#linked_checkup").DataTable({
+        ajax: `/admin/linked-checkup?apt_id=${link_to}`,
+        lengthMenu: [[10, 20, 30, 50, -1], [10, 20, 30, 50, "All"]],
+        columns: [
+            {
+                data: "ailment",
+                render: ({ diagnosis, description }) => {
+                    return `${diagnosis}`
+                }
+            },
+            {
+                data: "date_created"
+            },
+            {
+                data: "mr_id",
+                render: (id) => {
+                    return `<button class="btn btn-primary border border-dark border-2 rounded" data-id="${id}" id="open_record">Open</button>`
+                }
+            }
+        ],
+        ordering: false
+    })
 
-    // })
+    //OPEN RECORD
+    $("#linked_checkup").on("click", "#open_record", function(e) {
+        const data_id = $(this).attr("data-id")
+        window.open(`/admin/patients/${patient_id}/${data_id}`)
+    })
 
     //CLEAR LOCAL STORAGE
     $(window).on("unload", function(){

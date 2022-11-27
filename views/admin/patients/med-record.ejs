@@ -12,7 +12,7 @@
 </head>
 
 <body class="bg-light text-dark">
-    <a class="btn bg-light text-dark position-fixed top-0 ms-2" style="font-size: 3vw;" href="/admin/patients/<%= patient_id %>"><i class="bi bi-box-arrow-left me-3"></i></a>
+    <a class="btn bg-light text-dark position-fixed top-0 ms-2" style="font-size: 3vw;" id="back"><i class="bi bi-box-arrow-left me-3"></i></a>
     <h1 class="text-center mb-3 mt-4">Medical Record</h1>
     <h1 class="text-center mb-3">#<%= mr_id.split('-')[0] %></h1>
 
@@ -148,8 +148,13 @@
         <%
             const { fname, mi, lname } = user.fullname
         %>
-        <h4 class="pb-3 border-bottom border-dark border-4">Medical Record #<%= mr_id.split('-')[0] %></h4>
-        <div class="d-flex justify-content-between text-break border-bottom border-dark border-4 pb-3">
+        <!-- <h4 class="pb-3 border-bottom border-dark border-4">Medical Record # mr_id.split('-')[0] %></h4> -->
+        <div class="border-bottom border-dark border-4 p-3 pb-5 mt-5 gap-3">
+            <label class="rmcc-label">#64 Rizal St. Brgy 3. Alfonso Cavite, Philippines 4123</label>
+            <h4 class="rmcc">Rodis Maternal and Childcare Clinic</h4>
+            <img class="bg-logo" src="/favicon.ico"/>
+        </div>
+        <div class="d-flex justify-content-between position-relative text-break border-bottom border-dark border-4 pb-3">
             <div class="form-group d-flex flex-column w-50">
                 <h4 class="mb-3">PATIENT:</h4>
                 <label class="form-label">Patient Type: <%= user.patient_type %></label>
@@ -162,9 +167,8 @@
                 <label class="form-label patient-height"></label>
                 <label class="form-label patient-temp"></label>
                 <label class="form-label patient-bp"></label>
-                <label class="form-label patient-history"></label>
             </div>
-            <% if(user.guardian?.name) { %>
+            <!-- <% if(user.guardian?.name) { %>
                 <div class="form-group d-flex flex-column w-50">
                     <h4 class="mb-3">GUARDIAN:</h4>
                     <label class="form-label">Name: <%= user.guardian?.name %></label>
@@ -172,7 +176,11 @@
                     <label class="form-label">Contact: <%= user.guardian?.contact || "Not Set" %></label>
                     <label class="form-label">Relationship: <%= user.guardian?.relationship || "Not Set" %></label>
                 </div>
-            <% } %>
+            <% } %> -->
+            <div class="form-group d-flex flex-column w-50">
+                <h4 class="mb-3">PATIENT HISTORY:</h4>
+                <label class="form-label patient-history"></label>
+            </div>
         </div>
         <% if(user.ailment?.diagnosis) { %>
             <div class="d-flex text-break h-50 justify-content-between">

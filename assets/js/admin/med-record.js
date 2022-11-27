@@ -15,6 +15,14 @@ $(document).ready(function (e) {
         return Math.floor(ageInMilliseconds / 1000 / 60 / 60 / 24 / 365);
     }
 
+    $("#back").click(function(e) {
+        const previousPage = document.referrer.split('/')
+        if(previousPage.indexOf("patients") <= -1){
+            return window.close()
+        }
+
+        return location.href = `/admin/patients/${patient_id}`
+    })
 
     //AUTO CALCULATE AGE
     birthdate.on("change", function (e) {
@@ -98,7 +106,7 @@ $(document).ready(function (e) {
 
     //PRINT MEDICAL RECORD
     $("#print").click(function (e) {
-        $(".patient-history").text(`History: ${patient_history.val()}`)
+        $(".patient-history").text(`${patient_history.val()}`)
         $(".patient-weight").text(`Weight: ${weight.val()}`)
         $(".patient-height").text(`Height: ${height.val()}`)
         $(".patient-temp").text(`Temeprature: ${temperature.val()}`)
