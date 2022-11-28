@@ -17,9 +17,9 @@ const express = require('express'),
                 pass: process.env.PASSWORD
             }
         }).sendMail({
-            from: `"OPIS" <${process.env.EMAIL}>`,
+            from: `"RMCC" <${process.env.EMAIL}>`,
             to: email,
-            subject: `Online Patient Information System`,
+            subject: `Rodis Maternal and Childcare Clinic`,
             html: body
         })
     },
