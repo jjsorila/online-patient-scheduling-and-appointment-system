@@ -10,38 +10,16 @@ $(document).ready(function(e) {
             {
                 extend: 'print',
                 title: '',
-                customize: function(win) {
-                    $(win.document.body).prepend(`
-                    <style>
-                        .bg-logo {
-                            height: 100px;
-                            width: 100px;
-                            position: absolute;
-                            right: 15px;
-                            top: 2px;
-                        }
-
-                        .rmcc {
-                            position: absolute;
-                            left: 35px;
-                            top: 30px;
-                            font-size: 4vw;
-                        }
-
-                        .rmcc-label {
-                            position: absolute;
-                            left: 35px;
-                            top: 70px;
-                            font-size: 2vw;
-                        }
-                    </style>
-
-                    <div class="border-bottom border-dark border-4 p-3 pb-5 mt-5 gap-3">
-                        <label class="rmcc-label">#64 Rizal St. Brgy 3. Alfonso Cavite, Philippines 4123</label>
-                        <h4 class="rmcc">Rodis Maternal and Childcare Clinic</h4>
-                        <img class="bg-logo" src="https://live.staticflickr.com/65535/52528780717_e7d152ec00_o.png"/>
+                repeatingHead: {
+                    title: `
+                    <div class="header-container m-0 d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="rmcc">Rodis Maternal and Childcare Clinic</h4>
+                            <label class="rmcc-label">#64 Rizal St. Brgy 3. Alfonso Cavite, Philippines 4123</label>
+                        </div>
+                        <img class="bg-logo" height="100px" width="100px" src="https://live.staticflickr.com/65535/52528780717_e7d152ec00_o.png"/>
                     </div>
-                    `)
+                    `
                 },
                 className: 'btn btn-outline-dark text-uppercase',
             }
@@ -85,38 +63,16 @@ $(document).ready(function(e) {
                 {
                     extend: 'print',
                     title: '',
-                    customize: function(win) {
-                        $(win.document.body).prepend(`
-                        <style>
-                            .bg-logo {
-                                height: 100px;
-                                width: 100px;
-                                position: absolute;
-                                right: 15px;
-                                top: 2px;
-                            }
-
-                            .rmcc {
-                                position: absolute;
-                                left: 35px;
-                                top: 30px;
-                                font-size: 4vw;
-                            }
-
-                            .rmcc-label {
-                                position: absolute;
-                                left: 35px;
-                                top: 70px;
-                                font-size: 2vw;
-                            }
-                        </style>
-
-                        <div class="border-bottom border-dark border-4 p-3 pb-5 mt-5 gap-3">
-                            <label class="rmcc-label">#64 Rizal St. Brgy 3. Alfonso Cavite, Philippines 4123</label>
-                            <h4 class="rmcc">Rodis Maternal and Childcare Clinic</h4>
-                            <img class="bg-logo" src="https://live.staticflickr.com/65535/52528780717_e7d152ec00_o.png"/>
+                    repeatingHead: {
+                        title: `
+                        <div class="header-container m-0 d-flex justify-content-between align-items-center">
+                            <div>
+                                <h4 class="rmcc">Rodis Maternal and Childcare Clinic</h4>
+                                <label class="rmcc-label">#64 Rizal St. Brgy 3. Alfonso Cavite, Philippines 4123</label>
+                            </div>
+                            <img class="bg-logo" height="100px" width="100px" src="https://live.staticflickr.com/65535/52528780717_e7d152ec00_o.png"/>
                         </div>
-                        `)
+                        `
                     },
                     className: 'btn btn-outline-dark text-uppercase',
                 }
