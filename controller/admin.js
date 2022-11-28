@@ -275,10 +275,10 @@ router.put("/patient/update", (req, res) => {
 
 //GET SCHEDULED PATIENT TODAY
 router.get('/schedule/list', (req, res) => {
-
+    const { sort } = req.query
     db.query(`
-        SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE DATE(apt.schedule)=CURDATE() AND apt.apt_type='Online' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.schedule;
-        SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE DATE(apt.date_created_walk_in)=CURDATE() AND apt.apt_type='Walk-in' AND apt.status='Approved' ORDER BY apt.date_created_walk_in;
+        SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${sort}(apt.schedule)=${sort}(CURDATE()) AND apt.apt_type='Online' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.schedule;
+        SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE YEAR(apt.date_created_walk_in)=YEAR(CURDATE()) AND apt.apt_type='Walk-in' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.date_created_walk_in;
         `,
         (err, result) => {
             if (err) throw err;
