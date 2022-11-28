@@ -13,7 +13,7 @@ router.get('/dashboard', protected, (req, res) => {
     db.query(`
         SELECT COUNT(id) AS total_patients FROM patient_accounts WHERE NOT fullname IS NULL;
         SELECT COUNT(admin_id) AS total_doctors FROM admin_accounts;
-        SELECT COUNT(apt_id) AS total_scheduled FROM appointments WHERE (status='Approved' OR status='Follow-up') AND (DATE(schedule)=CURDATE() OR DATE(date_created_walk_in)=CURDATE());
+        SELECT COUNT(apt_id) AS total_scheduled FROM appointments WHERE (status='Approved' OR status='Follow-up') AND (DAY(schedule)=DAY(CURDATE()) OR DAY(date_created_walk_in)=DAY(CURDATE()));
         SELECT COUNT(staff_id) AS total_staffs FROM staff_list;
     `, (err, result) => {
         if(err) throw err;
@@ -276,10 +276,38 @@ router.put("/patient/update", (req, res) => {
 //GET SCHEDULED PATIENT TODAY
 router.get('/schedule/list', (req, res) => {
     const { sort } = req.query
-    db.query(`
-        SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${sort}(apt.schedule)=${sort}(CURDATE()) AND apt.apt_type='Online' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.schedule;
+
+    let myquery;
+
+    if(sort == "DAY" || sort == "DATE" || !sort){
+        myquery = `
+        SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE DAY(apt.schedule)=DAY(CURDATE()) AND apt.apt_type='Online' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.schedule;
+        SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE DAY(apt.date_created_walk_in)=DAY(CURDATE()) AND apt.apt_type='Walk-in' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.date_created_walk_in;
+        `
+    }
+
+    if(sort == "WEEK"){
+        myquery = `
+        SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE WEEK(apt.schedule)=WEEK(CURDATE()) AND apt.apt_type='Online' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.schedule;
+        SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE WEEK(apt.date_created_walk_in)=WEEK(CURDATE()) AND apt.apt_type='Walk-in' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.date_created_walk_in;
+        `
+    }
+
+    if(sort == "MONTH"){
+        myquery = `
+        SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE MONTH(apt.schedule)=MONTH(CURDATE()) AND apt.apt_type='Online' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.schedule;
+        SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE MONTH(apt.date_created_walk_in)=MONTH(CURDATE()) AND apt.apt_type='Walk-in' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.date_created_walk_in;
+        `
+    }
+
+    if(sort == "YEAR"){
+        myquery = `
+        SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE YEAR(apt.schedule)=YEAR(CURDATE()) AND apt.apt_type='Online' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.schedule;
         SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE YEAR(apt.date_created_walk_in)=YEAR(CURDATE()) AND apt.apt_type='Walk-in' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.date_created_walk_in;
-        `,
+        `
+    }
+
+    db.query(myquery,
         (err, result) => {
             if (err) throw err;
 
