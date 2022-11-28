@@ -13,21 +13,20 @@ $(document).ready(function() {
             lengthMenu: [[10, 20, 30, 50, -1], [10, 20, 30, 50, "All"]],
             columns: [
                 {
-                    data: "id",
-                    orderable: false,
+                    data: "id"
                 },
                 {
                     data: "fullname",
-                    orderable: false,
                     render: ({ fname, lname, mi }) => (`${lname}, ${fname} ${mi}.`)
                 },
                 {
-                    data: "patient_type",
-                    orderable: false,
+                    data: "patient_type"
+                },
+                {
+                    data: "schedule"
                 },
                 {
                     data: "apt_id",
-                    orderable: false,
                     render: (apt_id) => (`<input type="submit" class="btn btn-success" data-apt-id=${apt_id} id="open-record" value="Open"/>`)
                 }
             ],
@@ -53,21 +52,20 @@ $(document).ready(function() {
         lengthMenu: [[10, 20, 30, 50, -1], [10, 20, 30, 50, "All"]],
         columns: [
             {
-                data: "id",
-                orderable: false,
+                data: "id"
             },
             {
                 data: "fullname",
-                orderable: false,
                 render: ({ fname, lname, mi }) => (`${lname}, ${fname} ${mi}.`)
             },
             {
-                data: "patient_type",
-                orderable: false,
+                data: "patient_type"
+            },
+            {
+                data: "schedule"
             },
             {
                 data: "apt_id",
-                orderable: false,
                 render: (apt_id) => (`<input type="submit" class="btn btn-success" data-apt-id=${apt_id} id="open-record" value="Open"/>`)
             }
         ],
