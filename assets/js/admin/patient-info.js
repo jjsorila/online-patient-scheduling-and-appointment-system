@@ -96,7 +96,7 @@ $(document).ready(function (e) {
                 if (!res.operation) return showToast("❌ Something went wrong")
                 showToast("✅ Updated Successfully")
                 $(window).off('beforeunload');
-                $("input:not(#email):not(#username),textarea,select").prop("disabled", true)
+                $("input:not(#email):not(#username):not([type=submit]#open-record),textarea,select").prop("disabled", true)
                 $("#edit").toggleClass("d-none")
                 $("#save").toggleClass("d-none")
             },

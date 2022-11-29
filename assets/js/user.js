@@ -94,7 +94,7 @@ $(document).ready(function (e) {
             {
                 data: "mr_id",
                 render: (mr_id) => (`
-                    <input type="submit" value="View" data-id=${mr_id} class="btn btn-success" />
+                    <input type="submit" id="view" value="View" data-id=${mr_id} class="btn btn-success" />
                 `)
             }
         ]
@@ -166,7 +166,7 @@ $(document).ready(function (e) {
                 if (!res.operation) return showToast("❌ Something went wrong")
                 $(".confirmation-shadow").toggleClass("d-none")
                 $(window).off('beforeunload');
-                $("input:not(#email):not(#username),textarea,select").prop("disabled", true)
+                $("input:not(#email):not(#username):not([type=file]):not([type=submit]#view),textarea,select").prop("disabled", true)
                 $("#edit").toggleClass("d-none")
                 $("#save").toggleClass("d-none")
                 showToast("✅ User updated!")
