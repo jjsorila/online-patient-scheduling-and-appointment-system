@@ -27,7 +27,7 @@ $(document).ready(function (e) {
             }),
             success: (res) => {
                 if (!res.operation) return showToast("❌ Old password matched")
-                location.href = "/client/login"
+                location.replace("/login")
             },
             error: (err) => {
                 alert(err)

@@ -6,7 +6,7 @@ const express = require('express'),
     jwt = require("jsonwebtoken"),
     nodemailer = require('nodemailer'),
     dayjs = require('dayjs'),
-    CryptoJS = require("crypto-js"),
+    bcrypt = require("bcryptjs"),
     transporter = (email, body) => {
         return nodemailer.createTransport({
             host: "smtp.gmail.com",
@@ -172,7 +172,7 @@ router.post('/register', (req, res) => {
         if(usernameAdmin.length >= 1 || usernamePatient.length >= 1) return res.json({ operation: false, msg: "Username already exists" })
 
         //ENCRYPT PASSWORD
-        password = CryptoJS.AES.encrypt(password, process.env.SECRET).toString();
+        password = bcrypt.hashSync(password, 10)
 
         //INSERT ACCOUNT TO DATABASE
         db.query(`INSERT INTO patient_accounts(email,password,username) VALUES(${db.escape(email)},${db.escape(password)},${db.escape(username)})`, (err1) => {
@@ -242,10 +242,10 @@ router.put("/reset", (req, res) => {
 
             const user = { ...result[0] }
 
-            if (newPassword == CryptoJS.AES.decrypt(user.password, process.env.SECRET).toString(CryptoJS.enc.Utf8)) return res.json({ operation: false })
+            if (bcrypt.compareSync(newPassword, user.password)) return res.json({ operation: false })
 
             //ENCRYPT NEW PASSWORD
-            newPassword = CryptoJS.AES.encrypt(newPassword, process.env.SECRET).toString();
+            newPassword = bcrypt.hashSync(newPassword, 10);
 
             //CHANGE PASSWORD
             db.query(`UPDATE patient_accounts SET password=${db.escape(newPassword)} WHERE email=${db.escape(email)}`,

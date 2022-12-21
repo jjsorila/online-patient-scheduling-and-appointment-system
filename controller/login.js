@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const { login } = require('../middlewares/login');
 const db = require('../db/db')
-const CryptoJS = require("crypto-js")
+const bcrypt = require("bcryptjs")
 
 router.get('/', login, (req, res) => {
     res.render('login.ejs')
@@ -43,7 +43,7 @@ router.post('/', (req, res) => {
             let creds = { ...user[0] }
 
             //DECRYPT & COMPARE PASSWORD
-            const isMatch = password == CryptoJS.AES.decrypt(creds.password, process.env.SECRET).toString(CryptoJS.enc.Utf8);
+            const isMatch = bcrypt.compareSync(password, creds.password)
             if (!isMatch) return res.json({ operation: false })
 
             req.session.user = {
