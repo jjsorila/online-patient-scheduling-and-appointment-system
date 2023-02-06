@@ -95,7 +95,7 @@ $(document).ready(function (e) {
             success: (res) => {
                 if (!res.operation) return showToast(`❌ ${res.msg}`)
                 $("form").toggleClass("slide")
-                showToast("✅ Registered Successfully. Check your Mail or Spam to verify your Email Address")
+                showToast("✅ Registered Successfully")
                 clearInput()
             },
             error: (err) => {
