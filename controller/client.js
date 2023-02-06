@@ -177,19 +177,21 @@ router.post('/register', (req, res) => {
         //INSERT ACCOUNT TO DATABASE
         db.query(`INSERT INTO patient_accounts(email,password,username) VALUES(${db.escape(email)},${db.escape(password)},${db.escape(username)})`, (err1) => {
             if (err1) throw err1;
+
+            return res.json({ operation: true })
         })
 
         //SEND EMAIL VERIFICATION
-        try {
-            const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: '365d' })
+        // try {
+        //     const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: '365d' })
 
-            transporter(email, `<b>Click this <a href="http://${req.header('host')}/client/verify?token=${token}" >link</a> to verify your account.</b>`)
-                .then((result) => {
-                    return res.json({ operation: true, msg: result.response })
-                })
-        } catch (err) {
-            res.status(500).json({ msg: "Server Error" })
-        }
+        //     transporter(email, `<b>Click this <a href="http://${req.header('host')}/client/verify?token=${token}" >link</a> to verify your account.</b>`)
+        //         .then((result) => {
+        //             return res.json({ operation: true, msg: result.response })
+        //         })
+        // } catch (err) {
+        //     res.status(500).json({ msg: "Server Error" })
+        // }
     })
 })
 

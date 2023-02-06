@@ -109,6 +109,7 @@ $(document).ready(function (e) {
 
     //SHOW RESET PASSWORD FORM
     $("#reset-pwd").click(function (e) {
+        return showToast("❌ Mail server trial expired")
         $(".forgot-password").dimBackground()
         $(".forgot-password").css("display", "flex")
     })
@@ -121,6 +122,7 @@ $(document).ready(function (e) {
 
     //SEND RESET PASSWORD LINK
     $(".forgot-password #btn-send-reset").click(function (e) {
+        return showToast("❌ Mail server trial expired")
         const email = $(".forgot-password input")
         if (!email.val()) return showToast("❌ Email Required")
 
