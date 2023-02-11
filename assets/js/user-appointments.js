@@ -147,20 +147,25 @@ $(document).ready(function (e) {
         $.ajax({
             url: `/admin/schedule_count?patient_type=${patient_type.val()}`,
             type: 'GET',
-            success: (disabledDates) => {
+            success: ([ scheduledTime ]) => {
                 dateSched.flatpickr({
                     enableTime: true,
-                    minTime: "14:00",
-                    maxTime: "16:30",
-                    minuteIncrement: 30,
-                    defaultHour: 14,
-                    defaultMinute: 00,
+                    minTime: scheduledTime.startTime,
+                    maxTime: scheduledTime.endTime,
+                    minuteIncrement: 15,
+                    defaultHour: Number(scheduledTime.startTime.split(":")[0]),
+                    defaultMinute: Number(scheduledTime.startTime.split(":")[1]),
                     minDate: "today",
-                    disable: [
+                    // disable: [
+                    //     function(date) {
+                    //         return (date.getDay() === 0 || (date.getDay() == (scheduledTime.startDay-1) && date.getDay() == (scheduledTime.endDay-1)));
+                    //     },
+                    //     // ...disabledDates
+                    // ],
+                    enable: [
                         function(date) {
-                            return (date.getDay() === 0);
-                        },
-                        ...disabledDates
+                            return (date.getDay() >= scheduledTime.startDay && date.getDay() <= scheduledTime.endDay)
+                        }
                     ],
                     altInput: true,
                     altFormat: "m/d/Y G:i K"

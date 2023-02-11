@@ -497,14 +497,39 @@ router.get('/getinfostaff', (req, res) => {
     })
 })
 
-//CHECK IF DATES ARE FULL OF APPOINTMENTS
+//CHECK THE CURRENT TIMESLOT SCHEDULE
 router.get("/schedule_count", (req, res) => {
-    const { patient_type } = req.query
-    db.query(`SELECT COUNT(DATE(schedule)) AS schedule_count,DATE(schedule) AS schedule FROM appointments WHERE NOT schedule IS NULL AND patient_type=${db.escape(patient_type)} GROUP BY DATE(schedule) HAVING COUNT(DATE(schedule))>=6;`,
-    (err, result) => {
+    // const { patient_type } = req.query
+    // db.query(`SELECT COUNT(DATE(schedule)) AS schedule_count,DATE(schedule) AS schedule FROM appointments WHERE NOT schedule IS NULL AND patient_type=${db.escape(patient_type)} GROUP BY DATE(schedule) HAVING COUNT(DATE(schedule))>=6;`,
+    // (err, result) => {
+    //     if(err) throw err;
+    //     const unavailable_dates = result.map((schedule) => dayjs(schedule.schedule).format("YYYY-MM-DD"))
+    //     res.json(unavailable_dates)
+    // })
+    db.query(`SELECT * FROM schedule`, (err, result) => {
         if(err) throw err;
-        const unavailable_dates = result.map((schedule) => dayjs(schedule.schedule).format("YYYY-MM-DD"))
-        res.json(unavailable_dates)
+        res.json(result)
+    })
+})
+
+//GET CURRENT TIMESLOT
+router.get("/timeslot", (req, res) => {
+    db.query(`SELECT * FROM schedule`, (err,[ schedule ]) => {
+        if(err) throw err;
+        res.json(schedule)
+    })
+})
+
+//UPDATE CURRENT TIMESLOT
+router.put("/timeslot", (req, res) => {
+    const { startDay, endDay, startTime, endTime } = req;
+
+    db.query(`UPDATE schedule SET startDay=${db.escape(startDay)},endDay=${db.escape(endDay)},startTime=${db.escape(startTime)},endTime=${db.escape(endTime)}`, (err, result) => {
+        if(err) throw err;
+        res.json({
+            msg: "Successfully updated!",
+            operation: true
+        })
     })
 })
 
