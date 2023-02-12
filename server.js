@@ -3,6 +3,8 @@ const express = require('express');
 const app = express();
 const cookieSession = require('cookie-session');
 const db = require('./db/db');
+const dayjs = require("dayjs");
+const customParseFormat = require("dayjs/plugin/customParseFormat")
 
 //VIEW ENGINE
 app.set("view engine", "ejs");
@@ -25,6 +27,7 @@ app.get('/', (req, res) => {
     db.query(`
     SELECT * FROM admin_accounts WHERE NOT gender IS NULL;
     SELECT * FROM staff_list;
+    SELECT * FROM schedule;
     `,
     (err, result) => {
         if(err) throw err;
@@ -44,7 +47,12 @@ app.get('/', (req, res) => {
         res.render('home.ejs', {
             user: null,
             doctors: d,
-            staffs: s
+            staffs: s,
+            schedule: {
+                ...result[2][0],
+                startTime: dayjs(`1991/01/01 ${result[2][0].startTime}`).format("h:mm A"),
+                endTime: dayjs(`1991/01/01 ${result[2][0].endTime}`).format("h:mm A")
+            }
         })
     })
 })

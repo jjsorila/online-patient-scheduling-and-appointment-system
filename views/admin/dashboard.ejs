@@ -53,8 +53,52 @@
                     </div>
                 </div>
 
-                <div class="container p-2 border border-dark border-4 bg-light p-4 mt-5 w-75 rounded">
-                    <div id="calendar" class="text-dark"></div>
+
+                <div class="container border border-dark border-4 c-box d-flex mt-5 p-2 gap-2 rounded">
+                    <div class="w-50 d-flex flex-column justify-content-around h-100 p-4">
+                        <h3 class="text-center m-0">Time Schedule</h3>
+                        <div class="rounded d-flex gap-3">
+                            <div class="w-50 d-flex justify-content-center align-items-center flex-column gap-3">
+                                <label class="text-center w-100">Start Day</label>
+                                <select disabled id="startDay" class="border border-dark border-3 text-center rounded form-select">
+                                    <% ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"].forEach((v, i) => { %>
+                                        <% if(i == data?.schedule?.startDay) { %>
+                                            <option value="<%= i %>" selected><%= v %></option>
+                                        <% }else{ %>
+                                            <option value="<%= i %>"><%= v %></option>
+                                        <% } %>
+                                    <% }) %>
+                                </select>
+                            </div>
+                            <div class="w-50 d-flex justify-content-center align-items-center flex-column gap-3">
+                                <label class="text-center w-100">End Day</label>
+                                <select disabled id="endDay" class="border border-dark border-3 text-center rounded form-select">
+                                    <% ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"].forEach((v, i) => { %>
+                                        <% if(i == data?.schedule?.endDay) { %>
+                                            <option value="<%= i %>" selected><%= v %></option>
+                                        <% }else{ %>
+                                            <option value="<%= i %>"><%= v %></option>
+                                        <% } %>
+                                    <% }) %>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="rounded d-flex gap-3">
+                            <div class="w-50 d-flex justify-content-center align-items-center flex-column gap-3">
+                                <label class="text-center w-100">Start Time</label>
+                                <input disabled type="time" value="<%= data?.schedule?.startTime %>" class="form-control text-center border border-dark border-3" id="startTime">
+                            </div>
+                            <div class="w-50 d-flex justify-content-center align-items-center flex-column gap-3">
+                                <label class="text-center w-100">End Time</label>
+                                <input disabled type="time" value="<%= data?.schedule?.endTime %>" class="form-control text-center border border-dark border-3" id="endTime">
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" id="edit">EDIT</button>
+                        <button class="btn btn-success d-none" id="save">SAVE</button>
+                    </div>
+                    <div class="bg-light p-4 w-50 h-100 d-flex flex-column justify-content-around">
+                        <div id="calendar" class="text-dark"></div>
+                    </div>
                 </div>
             </div>
         </div>

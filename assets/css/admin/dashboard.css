@@ -25,3 +25,8 @@
 .card-container:active {
     transform: scale(0.9);
 }
+
+.c-box {
+    width: 95%;
+    height: 80vh;
+}

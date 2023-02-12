@@ -15,6 +15,7 @@ router.get('/dashboard', protected, (req, res) => {
         SELECT COUNT(admin_id) AS total_doctors FROM admin_accounts;
         SELECT COUNT(apt_id) AS total_scheduled FROM appointments WHERE (status='Approved' OR status='Follow-up') AND (DAY(schedule)=DAY(CURDATE()) OR DAY(date_created_walk_in)=DAY(CURDATE()));
         SELECT COUNT(staff_id) AS total_staffs FROM staff_list;
+        SELECT * FROM schedule;
     `, (err, result) => {
         if(err) throw err;
 
@@ -24,7 +25,8 @@ router.get('/dashboard', protected, (req, res) => {
                 patients: result[0][0].total_patients,
                 doctors: (result[1][0].total_doctors - 1),
                 scheduled: result[2][0].total_scheduled,
-                staffs: result[3][0].total_staffs
+                staffs: result[3][0].total_staffs,
+                schedule: result[4][0]
             }
         })
     })
@@ -522,7 +524,7 @@ router.get("/timeslot", (req, res) => {
 
 //UPDATE CURRENT TIMESLOT
 router.put("/timeslot", (req, res) => {
-    const { startDay, endDay, startTime, endTime } = req;
+    const { startDay, endDay, startTime, endTime } = req.body;
 
     db.query(`UPDATE schedule SET startDay=${db.escape(startDay)},endDay=${db.escape(endDay)},startTime=${db.escape(startTime)},endTime=${db.escape(endTime)}`, (err, result) => {
         if(err) throw err;
