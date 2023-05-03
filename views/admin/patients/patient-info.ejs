@@ -45,17 +45,17 @@
 
             <div class="form-group d-flex align-items-center gap-3">
                 <div class="form-group w-100 text-center">
-                    <label for="fname">First Name*</label>
+                    <label for="fname" class="important">First Name</label>
                     <input disabled value="<%= user.fullname?.fname %>" type="text"
                         class="form-control border border-dark border-4 text-center" id="fname" />
                 </div>
                 <div class="form-group w-100 text-center">
-                    <label for="mi">M.I.*</label>
+                    <label for="mi" class="important">M.I.</label>
                     <input disabled value="<%= user.fullname?.mi %>" type="text"
                         class="text-center form-control border border-dark border-4" id="mi" />
                 </div>
                 <div class="form-group w-100 text-center">
-                    <label for="lname">Last Name*</label>
+                    <label for="lname" class="important">Last Name</label>
                     <input disabled value="<%= user.fullname?.lname %>" type="text"
                         class="form-control border border-dark border-4 text-center" id="lname" />
                 </div>
@@ -63,12 +63,12 @@
 
             <div class="form-group d-flex align-items-center gap-3">
                 <div class="form-group w-100 text-center">
-                    <label for="birthdate">Birthdate*</label>
+                    <label for="birthdate" class="important">Birthdate</label>
                     <input disabled value="<%= user.birthdate %>" type="date"
                         class="text-center form-control border border-dark border-4" id="birthdate" name="birthdate" />
                 </div>
                 <div class="form-group w-100 text-center">
-                    <label for="age" class="control-label">Age*</label>
+                    <label for="age" class="control-label">Age</label>
                     <input disabled type="number" value="<%= user.age %>"
                         class="text-center form-control border border-dark border-4" id="age" />
                 </div>
@@ -76,7 +76,7 @@
 
             <div class="form-group d-flex align-items-center gap-3">
                 <div class="form-group w-100 text-center">
-                    <label for="gender">Gender*</label>
+                    <label for="gender" class="important">Sex</label>
                     <select disabled class="form-select border border-dark border-4 d-block text-center" id="gender">
                         <% if(user.gender && user.gender == "Male") { %>
                             <option selected>Male</option>
@@ -91,7 +91,7 @@
                     </select>
                 </div>
                 <div class="form-group w-100 text-center">
-                    <label for="contact">Contact*</label>
+                    <label for="contact" class="important">Contact</label>
                     <input disabled value="<%= user.contact %>" type="text"
                         class="text-center form-control border border-dark border-4" id="contact" name="contact" />
                 </div>
@@ -99,7 +99,7 @@
         </div>
 
         <div class="form-group w-75 mx-auto">
-            <label class="form-label" for="address">Patient's Address*</label>
+            <label class="form-label important" for="address">Patient's Address</label>
             <textarea disabled class="form-control border border-dark border-4 text-center" id="address"
                 rows="3"><%= user.address %></textarea>
         </div>
