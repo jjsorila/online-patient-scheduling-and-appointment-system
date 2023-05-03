@@ -71,7 +71,7 @@
                             class="text-center form-control border border-dark border-4" id="birthdate" name="birthdate" />
                     </div>
                     <div class="form-group w-100 text-center">
-                        <label for="age" class="control-label">Age*</label>
+                        <label for="age" class="control-label">Age</label>
                         <input disabled type="number" value="<%= user.age %>"
                             class="text-center form-control border border-dark border-4" id="age" />
                     </div>
@@ -79,7 +79,7 @@
 
                 <div class="form-group d-flex align-items-center gap-3">
                     <div class="form-group w-100 text-center">
-                        <label for="gender">Gender*</label>
+                        <label for="gender">Sex*</label>
                         <select disabled class="form-select border border-dark border-4 d-block text-center" id="gender">
                             <% if(user.gender && user.gender == "Male") { %>
                                 <option selected>Male</option>
@@ -95,7 +95,7 @@
                     </div>
                     <div class="form-group w-100 text-center">
                         <label for="contact">Contact*</label>
-                        <input disabled value="<%= user.contact %>" type="text"
+                        <input disabled value="<%= user.contact %>" type="number"
                             class="text-center form-control border border-dark border-4" id="contact" name="contact" />
                     </div>
                 </div>

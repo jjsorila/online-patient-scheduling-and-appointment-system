@@ -9,9 +9,8 @@ const express = require('express'),
     bcrypt = require("bcryptjs"),
     transporter = (email, body) => {
         return nodemailer.createTransport({
-            host: "smtp.gmail.com",
-            port: 465,
-            secure: true,
+            host: "smtp-relay.sendinblue.com",
+            port: 587,
             auth: {
                 user: process.env.EMAIL,
                 pass: process.env.PASSWORD
