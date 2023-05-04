@@ -98,8 +98,11 @@
             <div class="form-group d-flex w-100 flex-column gap-1 align-items-center">
                 <div class="form-group w-100">
                     <label class="form-label mb-0" for="temperature">Temperature</label>
-                    <input value="" type="text" class="form-control border border-dark rounded border-4 text-center"
+                    <div class="input-group border-4 border-dark rounded border">
+                        <input value="" type="number" class="form-control rounded text-center"
                         id="temperature" />
+                        <span class="input-group-text">°C</span>
+                    </div>
                 </div>
                 <div class="form-group w-100">
                     <label class="form-label mb-0" for="bp">Blood Pressure</label>
@@ -107,11 +110,17 @@
                 </div>
                 <div class="form-group w-100">
                     <label class="form-label mb-0" for="weight">Weight</label>
-                    <input value="" type="text" class="form-control border border-dark rounded border-4 text-center" id="weight" />
+                    <div class="input-group border-4 border-dark rounded border">
+                        <input value="" type="number" class="form-control text-center" id="weight" />
+                        <span class="input-group-text">kg</span>
+                    </div>
                 </div>
                 <div class="form-group w-100">
                     <label class="form-label mb-0" for="height">Height</label>
-                    <input value="" type="text" class="form-control border border-dark rounded border-4 text-center" id="height" />
+                    <div class="input-group border-dark border-4 rounded border">
+                        <input value="" type="number" class="form-control rounded text-center" id="height" />
+                        <span class="input-group-text">cm</span>
+                    </div>
                 </div>
             </div>
             <div class="form-group w-100 d-flex flex-column gap-1 justify-content-center align-items-center">

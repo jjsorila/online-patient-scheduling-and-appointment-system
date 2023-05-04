@@ -99,7 +99,23 @@ $(document).ready(function (e) {
     $("#sched").click(function (e) {
         if (!$('input[type=hidden]').val()) return showToast("❌ Please update user information")
 
-        $(".bg-shadow-dim").toggleClass("d-none")
+        $(".loading").css("display", "block")
+
+        $.ajax({
+            url: "/client/appointments/check",
+            type: "GET",
+            success: (res) => {
+                if(!res.operation) return showToast(`❌ ${res.msg}`)
+                $(".bg-shadow-dim").toggleClass("d-none")
+            },
+            error: (error) => {
+                alert("Something went wrong!")
+                console.log(error)
+            },
+            complete: () => {
+                $(".loading").css("display", "none")
+            }
+        })
     })
 
     //CLOSE APPOINTMENT FORM
@@ -183,7 +199,7 @@ $(document).ready(function (e) {
         const isValid = JSON.parse(localStorage.getItem("isValid"))
         if(typeof(isValid) == "boolean" && !isValid) return showToast("❌ Chosen TIME is UNAVAILABLE")
 
-        if (!dateSched.val() || !patient_type.val() || patient_type.val() == "Choose" || !medComplain.val()) return showToast("❌ Complete required fields")
+        if (!dateSched.val() || !patient_type.val() || patient_type.val() == "Choose" || !medComplain.val()) return showToast("❌ Complete all fields")
 
         $(".loading").css("display", "block")
 

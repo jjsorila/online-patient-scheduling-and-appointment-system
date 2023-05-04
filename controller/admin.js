@@ -5,6 +5,18 @@ const { protected, onlyAdmin } = require('../middlewares/admin');
 const db = require('../db/db')
 const dayjs = require('dayjs');
 const uuid = require("uuid");
+const nodemailer = require("nodemailer")
+const sendInBlue = require("nodemailer-sendinblue-transport")
+const transporter = (email, body) => {
+    return nodemailer.createTransport(new sendInBlue({
+        apiKey: process.env.MAIL_API
+    })).sendMail({
+        from: `"RMCC" <${process.env.EMAIL}>`,
+        to: email,
+        subject: `Rodis Maternal and Childcare Clinic`,
+        html: body
+    })
+}
 
 //================================================================================================================================
 
@@ -176,12 +188,17 @@ router.get('/list/appointments', (req, res) => {
     if (show == "week") query = "WEEK(schedule)=WEEK(CURDATE()) AND status='Pending'"
     if (show == "month") query = "MONTH(schedule)=MONTH(CURDATE()) AND status='Pending'"
 
-    db.query(`SELECT apt.apt_id AS apt_id,apt.schedule AS schedule,apt.status AS status,pa.fullname AS fullname,pa.contact AS contact,pa.address AS address FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${query} ORDER BY schedule;`, (err, result) => {
+    db.query(`SELECT pa.email AS email,apt.apt_id AS apt_id,apt.schedule AS schedule,apt.status AS status,pa.fullname AS fullname,pa.contact AS contact,pa.address AS address FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${query} ORDER BY schedule;`, (err, result) => {
         if (err) throw err;
 
         const parsed = result.map((obj) => ({
             ...obj,
-            schedule: dayjs(obj.schedule).format("MMM DD, YYYY hh:mm A"),
+            apt_id: {
+                id: obj.apt_id,
+                email: obj.email,
+                schedule: obj.schedule
+            },
+            schedule: dayjs(obj.schedule).format("MMM DD, YYYY h:mm A"),
             fullname: JSON.parse(obj.fullname)
         }))
 
@@ -191,14 +208,29 @@ router.get('/list/appointments', (req, res) => {
 
 //APPROVE/CANCEL APPOINTMENTS
 router.post('/action/appointments', (req, res) => {
-    const { action, apt_id } = req.body
+    const { action, apt_id, reason, email, schedule } = req.body
 
     db.query(`UPDATE appointments SET status=${db.escape(action)} WHERE apt_id=${db.escape(apt_id)}`,
-        (err, result) => {
-            if (err) throw err;
+    (err1) => {
+        if (err1) throw err1;
 
-            res.json({ operation: true })
-        })
+        if(action == "Cancelled"){
+            db.query(`UPDATE appointments SET reason=${db.escape(reason)} WHERE apt_id=${db.escape(apt_id)}`, (err2) => {
+                if(err2) throw err2;
+            })
+
+            transporter(email, `
+                <h3>Your appointment on ${dayjs(schedule).format("MMM DD, YYYY h:mm A")} has been cancelled</h3>
+                <h5>Reason: ${reason}</h5>
+            `).then((msg) => {
+                res.json({ operation: true })
+            })
+
+            return null
+        }
+
+        res.json({ operation: true })
+    })
 })
 
 //GET ALL PATIENTS

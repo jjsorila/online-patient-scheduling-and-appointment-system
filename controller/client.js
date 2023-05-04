@@ -139,6 +139,18 @@ router.get('/reset', getResetPasswordToken, (req, res) => {
 //         })
 // })
 
+//CHECK FOR ONGOING APPOINTMENT
+router.get(`/appointments/check`, (req, res) => {
+    const { id } = req.session.user
+
+    db.query(`SELECT * FROM appointments WHERE id=${db.escape(id)} AND (status='Approved' OR status='Pending' OR status='Follow-up')`, (err, result) => {
+        if(err) throw err;
+
+        if(result.length >= 1) return res.json({ operation: false, msg: "You have an ongoing appointment" })
+        res.json({ operation: true })
+    })
+})
+
 //LOGOUT ACCOUNT
 router.post('/logout', (req, res) => {
     try {
@@ -364,13 +376,14 @@ router.get('/appointments/list', protected, (req, res) => {
 router.get('/appointments/calendar', protected, (req, res) => {
     const { id } = req.session.user
 
-    db.query(`SELECT id,patient_type AS title,schedule AS start,status FROM appointments WHERE id=${db.escape(id)} AND NOT schedule IS NULL AND apt_type='Online';`,
+    db.query(`SELECT id,patient_type AS title,schedule AS start,status,reason FROM appointments WHERE id=${db.escape(id)} AND NOT schedule IS NULL AND apt_type='Online';`,
     (err, result) => {
         if(err) throw err;
 
         let data = result.map((obj) => ({
             ...obj,
-            title: `${dayjs(obj.start).format("h:mmA")} ${obj.title}`
+            title: `${dayjs(obj.start).format("h:mmA")} ${obj.title} - ${obj.status}`,
+            header: dayjs(obj.start).format("MMM D, YYYY")
         }))
 
         res.status(200).json(data)

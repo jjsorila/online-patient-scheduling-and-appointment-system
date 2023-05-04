@@ -107,9 +107,9 @@ $(document).ready(function (e) {
     //PRINT MEDICAL RECORD
     $("#print").click(function (e) {
         $(".patient-history").text(`${patient_history.val()}`)
-        $(".patient-weight").text(`Weight: ${weight.val()}`)
-        $(".patient-height").text(`Height: ${height.val()}`)
-        $(".patient-temp").text(`Temeprature: ${temperature.val()}`)
+        $(".patient-weight").text(`Weight: ${weight.val()} kg`)
+        $(".patient-height").text(`Height: ${height.val()} cm`)
+        $(".patient-temp").text(`Temeprature: ${temperature.val()} °C`)
         $(".patient-bp").text(`Blood Pressure: ${bp.val()}`)
 
         $(".diagnosis-title").text(diagnosis.val())

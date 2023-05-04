@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/dashboard.css"/>
     <%- include('./templates/header.ejs') %>
     <style>
         .fc-today {
@@ -17,6 +18,10 @@
 
     <div class="container border border-dark border-4 rounded p-4">
         <div id="calendar" class="text-dark"></div>
+    </div>
+
+    <div class="reason-shadow">
+        <div class="reason bg-light w-50 h-50 rounded border p-3 d-flex flex-column align-items-center gap-3"></div>
     </div>
 
     <script type="application/javascript" src="/js/dashboard.js"></script>

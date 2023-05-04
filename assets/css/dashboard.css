@@ -1,11 +1,3 @@
-table td input {
-    width: 100px;
-}
-
-table tr td {
-    width: 200px
-}
-
 .reason-shadow {
     position: fixed;
     z-index: 20;
