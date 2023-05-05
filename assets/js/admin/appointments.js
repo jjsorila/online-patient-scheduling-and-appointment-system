@@ -106,7 +106,9 @@ $(document).ready(function (e) {
             },
             data: JSON.stringify({
                 action: "Approved",
-                apt_id: current.attr("data-id")
+                apt_id: current.attr("data-id"),
+                email: current.attr("data-email"),
+                schedule: current.attr("data-sched")
             }),
             success: (res) => {
                 if (!res.operation) return showToast("❌ Something went wrong")
