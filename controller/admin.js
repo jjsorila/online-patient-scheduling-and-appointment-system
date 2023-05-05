@@ -11,7 +11,7 @@ const nodemailer = require("nodemailer")
 const sendinblue = require("nodemailer-sendinblue-transport")
 const transporter = (email, body) => {
     return nodemailer.createTransport(new sendinblue({
-        apiKey: "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"
+        apiKey: process.env.API_KEY
     })).sendMail({
         from: `"RMCC" <${process.env.EMAIL}>`,
         to: email,
