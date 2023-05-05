@@ -5,6 +5,8 @@ $(document).ready(function (e) {
     const sortSatus = $("#sort");
     const showDate = $("#show");
     const medComplain = $("#med-complain");
+    const timepicker = $("#timepicker")
+    const chosenTime = $("#chosenTime")
 
     $("#show,#sort").select2({
         minimumResultsForSearch: -1,
@@ -25,12 +27,13 @@ $(document).ready(function (e) {
     //CLEAR INPUT
     function clearInput() {
         dateSched.val("")
-        $("#dateSched-container").addClass("d-none")
+        $("#dateSched-container,#timeSched-container").addClass("d-none")
         patient_type.val("Choose")
         medComplain.val("")
         $("h5.valid").css("display", "none")
         $("h5.invalid").css("display", "none")
         localStorage.clear()
+        timepicker.val("")
     }
 
     //ONCHANGE SHOW DATE
@@ -125,66 +128,67 @@ $(document).ready(function (e) {
     })
 
     //CHECK IF TIME IS VALID
-    $("#patient_type,#date-sched").change(function (e) {
+    dateSched.change(function() {
         if(!dateSched.val()) return null
-        $.ajax({
-            url: '/admin/time_check',
-            type: 'POST',
-            headers: {
-                "Content-Type": "application/json"
-            },
-            data: JSON.stringify({
-                chosenTime: dateSched.val(),
-                patient_type: patient_type.val()
-            }),
-            success: (res) => {
-                localStorage.setItem("isValid", res)
-                if(res){
-                    $("h5.valid").css("display", "block")
-                    $("h5.invalid").css("display", "none")
-                }else {
-                    $("h5.valid").css("display", "none")
-                    $("h5.invalid").css("display", "block")
+        timepicker.val("")
+        timepicker.attr("disabled", false)
+        timepicker.select2({
+            placeholder: "Select Time",
+            minimumResultsForSearch: -1,
+            dropdownCssClass: 'text-center',
+            language: {
+                noResults: function() {
+                    return 'No Time Available';
                 }
             },
-            error: (err) => {
-                console.log(err)
-                showToast("❌ Server error")
+            ajax: {
+                url: '/admin/time/available',
+                dataType: 'json',
+                type: 'POST',
+                data: function(params) {
+                  return {
+                    search: params.search,
+                    dateSched: dateSched.val(),
+                    patient_type: patient_type.val()
+                  }
+                },
+                processResults: function(data) {
+                    return {
+                        results: data.results
+                    };
+                }
             }
         })
+        $(".bg-shadow-dim").find("span.select2-selection").addClass("border border-4 border-dark rounded text-center w-100 h-100")
+        $(".bg-shadow-dim").find(".selection,.select2-container").addClass("w-100")
     })
-
+    timepicker.on("select2:select", function(e) {
+        const { orig } = e.params.data
+        chosenTime.val(orig)
+    })
 
     //CHECK IF THE DATES ARE FULL OF APPOINTMENTS
     patient_type.change(function(e) {
-        if(!patient_type.val()) return null
-
-        $("#dateSched-container").removeClass("d-none")
+        if(!$(this).val()) return null
+        dateSched.val("")
+        timepicker.val("")
+        timepicker.attr("disabled", true)
+        $("#dateSched-container,#timeSched-container").removeClass("d-none")
         $.ajax({
             url: `/admin/schedule_count?patient_type=${patient_type.val()}`,
             type: 'GET',
-            success: ([ scheduledTime ]) => {
+            success: ({ unavailable_dates, schedule:[ scheduledTime ] }) => {
                 dateSched.flatpickr({
-                    enableTime: true,
-                    minTime: scheduledTime.startTime,
-                    maxTime: scheduledTime.endTime,
-                    minuteIncrement: 15,
-                    defaultHour: Number(scheduledTime.startTime.split(":")[0]),
-                    defaultMinute: Number(scheduledTime.startTime.split(":")[1]),
                     minDate: "today",
-                    // disable: [
-                    //     function(date) {
-                    //         return (date.getDay() === 0 || (date.getDay() == (scheduledTime.startDay-1) && date.getDay() == (scheduledTime.endDay-1)));
-                    //     },
-                    //     // ...disabledDates
-                    // ],
-                    enable: [
+                    maxDate: new Date(new Date().getFullYear(), new Date().getMonth() + 2, new Date().getDate()),
+                    disable: [
                         function(date) {
-                            return (date.getDay() >= scheduledTime.startDay && date.getDay() <= scheduledTime.endDay)
-                        }
+                            return date.getDay() < scheduledTime.startDay || date.getDay() > scheduledTime.endDay
+                        },
+                        ...unavailable_dates
                     ],
                     altInput: true,
-                    altFormat: "m/d/Y G:i K"
+                    altFormat: "m/d/Y"
                 });
             },
             error: (err) => {
@@ -196,10 +200,7 @@ $(document).ready(function (e) {
 
     //SCHEDULE APPOINTMENT
     $("#submit-sched").click(function (e) {
-        const isValid = JSON.parse(localStorage.getItem("isValid"))
-        if(typeof(isValid) == "boolean" && !isValid) return showToast("❌ Chosen TIME is UNAVAILABLE")
-
-        if (!dateSched.val() || !patient_type.val() || patient_type.val() == "Choose" || !medComplain.val()) return showToast("❌ Complete all fields")
+        if (!dateSched.val() || !timepicker.val() || !patient_type.val() || patient_type.val() == "Choose" || !medComplain.val()) return showToast("❌ Complete all fields")
 
         $(".loading").css("display", "block")
 
@@ -210,9 +211,9 @@ $(document).ready(function (e) {
                 'Content-Type': 'application/json'
             },
             data: JSON.stringify({
-                schedule: dateSched.val(),
+                schedule: `${dateSched.val()} ${chosenTime.val()}`,
                 patient_type: patient_type.val(),
-                med_complain: medComplain.val()
+                med_complain: medComplain.val(),
             }),
             success: (res) => {
                 if (!res.operation) return showToast("❌ Please update user information")

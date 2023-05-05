@@ -7,9 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="patient_id" content="<%= user.id %>"/>
     <%- include('./templates/header.ejs'); %>
-        <link rel="stylesheet" href="/css/user-appointments.css" />
-        <link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
-        <script type="application/javascript" src="//cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="/css/user-appointments.css" />
+    <link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+    <script type="application/javascript" src="//cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.7/dayjs.min.js" integrity="sha512-hcV6DX35BKgiTiWYrJgPbu3FxS6CsCjKgmrsPRpUPkXWbvPiKxvSVSdhWX0yXcPctOI2FJ4WP6N1zH+17B/sAA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 
 <body class="bg-light h-100">
@@ -58,15 +59,15 @@
 
         <!-- APPOINTMENT SCHEDULE FORM -->
         <div class="bg-shadow-dim d-flex align-items-center justify-content-center d-none">
-            <div class="form-sched bg-light w-75 position-relative d-flex gap-5 flex-column rounded">
+            <div class="form-sched bg-light w-75 position-relative d-flex gap-3 flex-column rounded">
                 <label id="close"><i class="bi bi-x-square-fill"></i></label>
                 <h5
                     class="text-center border-bottom border-dark border-3 w-100 text-dark d-block py-3 mt-2 position-relative">
                     Make an Appointment</h5>
-                <div class="w-100 d-flex flex-column gap-5 position-relative align-items-center">
-                    <h5 class="text-danger position-absolute invalid">Chosen TIME is UNAVAILABLE</h5>
-                    <h5 class="text-success position-absolute valid">Chosen TIME is AVAILABLE</h5>
-                    <div class="form-group w-75 d-flex flex-column flex-md-row gap-3">
+                <div class="w-100 d-flex flex-column gap-3 pb-4 position-relative align-items-center">
+                    <!-- <h5 class="text-danger position-absolute invalid">Chosen TIME is UNAVAILABLE</h5>
+                    <h5 class="text-success position-absolute valid">Chosen TIME is AVAILABLE</h5> -->
+                    <div class="form-group w-50 d-flex flex-column gap-3">
                         <div class="form-group text-center w-100">
                             <label for="patient_type" class="form-label">Patient Type</label>
                             <select id="patient_type" class="text-center form-select border border-dark border-4">
@@ -76,15 +77,22 @@
                             </select>
                         </div>
                         <div class="form-group text-center w-100 d-none" id="dateSched-container">
-                            <label class="form-label">Date & Time</label>
-                            <input type="text" class="text-center form-control border border-dark border-4 w-100 mx-auto mb-3" id="date-sched"/>
+                            <label class="form-label">Date</label>
+                            <input type="text" class="border border-dark border-4 text-center" id="date-sched"/>
                         </div>
+                        <div class="form-group text-center w-100 d-none" id="timeSched-container">
+                            <label class="form-label d-block">Time</label>
+                            <select disabled id="timepicker" class="form-select border border-dark border-4 text-center">
+                                <option></option>
+                            </select>
+                        </div>
+
                     </div>
                     <div class="form-group text-center w-50">
                         <label for="med-complain" class="form-label">Medical Complain</label>
                         <textarea rows="3" id="med-complain" class="form-control text-center border border-dark border-4"></textarea>
                     </div>
-                    <div class="form-group text-center my-4">
+                    <div class="form-group text-center">
                         <button id="submit-sched"
                             class="btn btn-light border border-dark border-4 rounded">SUBMIT</button>
                     </div>
@@ -92,6 +100,8 @@
             </div>
         </div>
 
+
+        <input type="hidden" id="chosenTime">
     <%- include('./templates/loading.ejs'); %>
         <%- include('./templates/toast.ejs'); %>
             <script type="application/javascript" src="/js/user-appointments.js"></script>

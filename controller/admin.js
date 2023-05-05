@@ -4,13 +4,20 @@ const router = express.Router();
 const { protected, onlyAdmin } = require('../middlewares/admin');
 const db = require('../db/db')
 const dayjs = require('dayjs');
+const isBetween = require("dayjs/plugin/isBetween");
+dayjs.extend(isBetween)
 const uuid = require("uuid");
 const nodemailer = require("nodemailer")
-const sendInBlue = require("nodemailer-sendinblue-transport")
 const transporter = (email, body) => {
-    return nodemailer.createTransport(new sendInBlue({
-        apiKey: process.env.MAIL_API
-    })).sendMail({
+    return nodemailer.createTransport({
+        host: "smtp-relay.sendinblue.com",
+        port: 587,
+        secure: false,
+        auth: {
+            user: process.env.EMAIL,
+            pass: process.env.PASSWORD
+        }
+    }).sendMail({
         from: `"RMCC" <${process.env.EMAIL}>`,
         to: email,
         subject: `Rodis Maternal and Childcare Clinic`,
@@ -531,18 +538,32 @@ router.get('/getinfostaff', (req, res) => {
     })
 })
 
-//CHECK THE CURRENT TIMESLOT SCHEDULE
+//CHECK THE CURRENT TIMESLOT SCHEDULE AND CHECK FOR UNAVAILABLE DATES
 router.get("/schedule_count", (req, res) => {
-    // const { patient_type } = req.query
-    // db.query(`SELECT COUNT(DATE(schedule)) AS schedule_count,DATE(schedule) AS schedule FROM appointments WHERE NOT schedule IS NULL AND patient_type=${db.escape(patient_type)} GROUP BY DATE(schedule) HAVING COUNT(DATE(schedule))>=6;`,
-    // (err, result) => {
-    //     if(err) throw err;
-    //     const unavailable_dates = result.map((schedule) => dayjs(schedule.schedule).format("YYYY-MM-DD"))
-    //     res.json(unavailable_dates)
-    // })
-    db.query(`SELECT * FROM schedule`, (err, result) => {
+    const { patient_type } = req.query
+    db.query(`SELECT * FROM schedule`, (err, result1) => {
         if(err) throw err;
-        res.json(result)
+
+        let startTime = dayjs(`2020-01-01 ${result1[0].startTime}`)
+        let endTime = dayjs(`2020-01-01 ${result1[0].endTime}`)
+
+        let totalAvailableTime = [];
+
+        while(startTime.isBefore(endTime)){
+            totalAvailableTime.push(startTime)
+            startTime = startTime.add(15, "m")
+        }
+
+        db.query(`SELECT COUNT(DATE(schedule)) AS schedule_count,DATE(schedule) AS schedule FROM appointments WHERE NOT schedule IS NULL AND patient_type=${db.escape(patient_type)} GROUP BY DATE(schedule) HAVING COUNT(DATE(schedule))>=${db.escape(totalAvailableTime.length)};
+    SELECT * FROM schedule;`,
+    (err, result) => {
+        if(err) throw err;
+        const unavailable_dates = result[0].map((schedule) => dayjs(schedule.schedule).format("YYYY-MM-DD"))
+        res.json({
+            unavailable_dates,
+            schedule: result[1]
+        })
+    })
     })
 })
 
@@ -568,17 +589,50 @@ router.put("/timeslot", (req, res) => {
 })
 
 //CHECK IF TIME IS AVAILABLE
-router.post("/time_check", (req, res) => {
-    const { chosenTime, patient_type } = req.body
+router.post("/time/available", (req, res) => {
+    const { dateSched, patient_type } = req.body
+
+
     db.query(`
-    SELECT * FROM appointments WHERE schedule=${db.escape(chosenTime)} AND patient_type=${db.escape(patient_type)};
-    `,
-    (err, result) => {
+        SELECT * FROM schedule;
+        SELECT * FROM appointments WHERE DATE(schedule)=DATE(${db.escape(dateSched)}) AND patient_type=${db.escape(patient_type)};
+    `,(err, result) => {
         if(err) throw err;
 
-        if(result.length >= 1) return res.json(false)
+        let startTime = dayjs(`2020-01-01 ${result[0][0].startTime}`)
+        let endTime = dayjs(`2020-01-01 ${result[0][0].endTime}`)
 
-        return res.json(true)
+        let existingSchedules = result[1].map((apt) => (dayjs(apt.schedule).format("HH:mm:ss")))
+        let availableTimes = []
+
+        while(startTime.isBefore(endTime)){
+            availableTimes.push(startTime.format("HH:mm:ss"))
+            startTime = startTime.add(15, "m")
+        }
+
+        let results = []
+
+        availableTimes.forEach((v, i) => {
+            let time = {
+                id: i,
+                text: dayjs(`2020-01-01 ${v}`).format("h:mm A"),
+                orig: v
+            }
+
+            if(existingSchedules.includes(v)){
+                return;
+            }
+
+            if(dayjs(`2020-01-01 ${v}`).isBetween(`2020-01-01 11:59:00`,`2020-01-01 13:00:00`)){
+                return;
+            }
+
+            results.push(time)
+        })
+
+        res.json({
+            results
+        })
     })
 })
 

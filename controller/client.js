@@ -325,7 +325,7 @@ router.put('/update/user/:id', (req, res) => {
 //MAKE AN APPOINTMENT
 router.post('/appointments/:id', (req, res) => {
     const { id } = req.params;
-    const { patient_type, med_complain } = req.body
+    const { patient_type, med_complain, schedule } = req.body
     const apt_id = uuid.v4();
 
     db.query(`SELECT * FROM patient_accounts WHERE id=${db.escape(id)}`,
@@ -334,7 +334,7 @@ router.post('/appointments/:id', (req, res) => {
 
             if (!result[0].fullname || !result[0].address || !result[0].birthdate) return res.json({ operation: false })
 
-            db.query(`INSERT INTO appointments(apt_id,id,schedule,apt_type,patient_type,med_complain) VALUES(${db.escape(apt_id)},${db.escape(id)},${db.escape(req.body.schedule)},'Online',${db.escape(patient_type)},${db.escape(med_complain)});`,
+            db.query(`INSERT INTO appointments(apt_id,id,schedule,apt_type,patient_type,med_complain) VALUES(${db.escape(apt_id)},${db.escape(id)},${db.escape(schedule)},'Online',${db.escape(patient_type)},${db.escape(med_complain)});`,
                 (err) => {
                     if (err) throw err;
                     res.json({ operation: true })
