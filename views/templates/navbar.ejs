@@ -8,12 +8,13 @@
   }
 </style>
 
-<nav class="my-navbar navbar navbar-expand-lg navbar-dark sticky-top border-bottom border-light border-4 rounded-bottom py-3 px-5">
+<nav
+  class="my-navbar navbar navbar-expand-lg navbar-dark sticky-top border-bottom border-light border-4 rounded-bottom py-3 px-5">
   <a href="/" class="navbar-brand">
     <div style="width: 40px; height: 40px; overflow: hidden;" class="d-inline-block">
       <img src="/favicon.ico" class="rounded-circle w-100 h-100" style="height: 100%; width: 100%;" />
     </div>
-    <a href="/" class="navbar-brand">PATIENT</a>
+    <a href="/" class="navbar-brand" id="brand"></a>
   </a>
 
   <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
@@ -32,25 +33,31 @@
             <a href="#mission" class="nav-link text-light" style="cursor: pointer;">MISSION & VISION</a>
             <a href="#services" class="nav-link text-light" style="cursor: pointer;">SERVICES</a>
             <a href="#about" class="nav-link text-light" style="cursor: pointer;">ABOUT</a>
-          <% } %>
+            <% } %>
       </li>
     </ul>
   </div>
 </nav>
 
 <script>
-  //LOGOUT ACCOUNT
-  $(".logout").click(function (e) {
-        $.ajax({
-            url: '/client/logout',
-            type: 'POST',
-            success: (res) => {
-                if (!res.operation) return alert("Server error");
-                location.replace("/login")
-            },
-            error: (err) => {
-                alert(err)
-            }
-        })
+  $(document).ready(function () {
+    //LOGOUT ACCOUNT
+    $(".logout").click(function (e) {
+      $.ajax({
+        url: '/client/logout',
+        type: 'POST',
+        success: (res) => {
+          if (!res.operation) return alert("Server error");
+          location.replace("/login")
+        },
+        error: (err) => {
+          alert(err)
+        }
+      })
     })
+
+    if(window.location.href.includes("client")){
+      $("#brand").text("PATIENT")
+    }
+  })
 </script>

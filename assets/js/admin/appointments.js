@@ -45,7 +45,7 @@ $(document).ready(function (e) {
                 render: (data) => {
                     return (`
                     <div class="form-group d-flex gap-1 justify-content-center">
-                        <input type="submit" data-id=${data.id} id='approve' data-val='Approved' class='btn btn-success' value='Approve'/>
+                        <input type="submit" data-sched=${data.schedule} data-email=${data.email} data-id=${data.id} id='approve' data-val='Approved' class='btn btn-success' value='Approve'/>
                         <input type="submit" data-sched=${data.schedule} data-email=${data.email} data-id=${data.id} id='cancel' data-val='Cancelled' class='btn btn-danger' value='Cancel'/>
                     </div>
                     `)
@@ -80,8 +80,8 @@ $(document).ready(function (e) {
                     render: (data) => {
                         return (`
                         <div class="form-group d-flex gap-1 justify-content-center">
-                            <input type="submit" data-id=${data.id} id='approve' data-val='Approved' class='btn btn-success' value='Approve'/>
-                            <input type="submit" data-sched='${data.schedule}' data-email=${data.email} data-id=${data.id} id='cancel' data-val='Cancelled' class='btn btn-danger' value='Cancel'/>
+                            <input type="submit" data-sched=${data.schedule} data-email=${data.email} data-id=${data.id} id='approve' data-val='Approved' class='btn btn-success' value='Approve'/>
+                            <input type="submit" data-sched=${data.schedule} data-email=${data.email} data-id=${data.id} id='cancel' data-val='Cancelled' class='btn btn-danger' value='Cancel'/>
                         </div>
                         `)
                     }
@@ -132,7 +132,7 @@ $(document).ready(function (e) {
                             render: (data) => {
                                 return (`
                                 <div class="form-group d-flex gap-1 justify-content-center">
-                                    <input type="submit" data-id=${data.id} id='approve' data-val='Approved' class='btn btn-success' value='Approve'/>
+                                    <input type="submit" data-sched=${data.schedule} data-email=${data.email} data-id=${data.id} id='approve' data-val='Approved' class='btn btn-success' value='Approve'/>
                                     <input type="submit" data-sched=${data.schedule} data-email=${data.email} data-id=${data.id} id='cancel' data-val='Cancelled' class='btn btn-danger' value='Cancel'/>
                                 </div>
                                 `)
@@ -211,7 +211,7 @@ $(document).ready(function (e) {
                             render: (data) => {
                                 return (`
                                 <div class="form-group d-flex gap-1 justify-content-center">
-                                    <input type="submit" data-id=${data.id} id='approve' data-val='Approved' class='btn btn-success' value='Approve'/>
+                                    <input type="submit" data-sched=${data.schedule} data-email=${data.email} data-id=${data.id} id='approve' data-val='Approved' class='btn btn-success' value='Approve'/>
                                     <input type="submit" data-sched=${data.schedule} data-email=${data.email} data-id=${data.id} id='cancel' data-val='Cancelled' class='btn btn-danger' value='Cancel'/>
                                 </div>
                                 `)
