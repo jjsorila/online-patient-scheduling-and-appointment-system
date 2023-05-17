@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
     <script type="application/javascript"
         src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.7/dayjs.min.js" integrity="sha512-hcV6DX35BKgiTiWYrJgPbu3FxS6CsCjKgmrsPRpUPkXWbvPiKxvSVSdhWX0yXcPctOI2FJ4WP6N1zH+17B/sAA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 
 <body class="bg-light text-dark">
@@ -19,14 +20,28 @@
 
             <div class="container">
                 <div class="container border border-dark border-4 rounded p-3 bg-light">
-                    <div class="form-group w-100 mb-4">
-                        <label class="form-label text-center text-dark w-100">SORT</label>
-                        <select class="form-select border border-dark border-3 rounded text-center text-dark">
-                            <option selected value="DAY">Today</option>
-                            <option value="WEEK">This Week</option>
-                            <option value="MONTH">This Month</option>
-                            <option value="YEAR">This Year</option>
-                        </select>
+                    <label class="form-label text-center text-dark w-100">SORT</label>
+                    <div class="form-group w-50 mb-2 mx-auto d-flex justify-content-center gap-3">
+                        <div class="form-check w-100 p-0 m-0">
+                            <input type="radio" class="btn-check" name="selectedSort" value="DAY" id="today" checked/>
+                            <label class="btn btn-primary w-100 d-block" for="today">TODAY</label>
+                        </div>
+                        <div class="form-check w-100 p-0 m-0">
+                            <input class="btn-check" type="radio" name="selectedSort" id="custom">
+                            <label class="btn btn-primary w-100 d-block" for="custom">DATE RANGE</label>
+                        </div>
+                    </div>
+                    <div class="form-group date-wrapper w-50 mx-auto d-flex align-items-center gap-3 pb-2 d-none">
+                        <div class="date_container d-flex flex-column flex-md-row w-100 justify-content-center gap-2 m-0">
+                            <div class="form-group text-center w-100">
+                                <label class="form-label text-dark m-0">FROM</label>
+                                <input type="date" class="text-center form-control border border-dark border-4" id="from"/>
+                            </div>
+                            <div class="form-group text-center w-100">
+                                <label class="form-label text-dark m-0">TO</label>
+                                <input type="date" class="text-center form-control border border-dark border-4" id="to"/>
+                            </div>
+                        </div>
                     </div>
                     <table class="table text-center table-striped table-hover">
                         <thead>

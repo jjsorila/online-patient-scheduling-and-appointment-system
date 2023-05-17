@@ -223,7 +223,7 @@ router.post('/action/appointments', (req, res) => {
 
             transporter(email, `
                 <h3>Your appointment on ${dayjs(schedule).format("MMM DD, YYYY h:mm A")} has been cancelled</h3>
-                <h5>Reason: ${reason}</h5>
+                <h3>Reason: ${reason}</h3>
             `).then((msg) => {
                 res.json({ operation: true })
             })
@@ -315,25 +315,15 @@ router.put("/patient/update", (req, res) => {
 
 //GET SCHEDULED PATIENT TODAY
 router.get('/schedule/list', (req, res) => {
-    const { sort } = req.query
+    const { sort, from, to } = req.query
 
-    let myquery;
+    if(sort || !from || !to){
 
-    if(!sort){
-        myquery = `
-        SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.schedule AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE DAY(apt.schedule)=DAY(CURDATE()) AND apt.apt_type='Online' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.schedule;
-        SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.date_created_walk_in AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE DAY(apt.date_created_walk_in)=DAY(CURDATE()) AND apt.apt_type='Walk-in' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.date_created_walk_in;
-        `
-    }else{
-        myquery = `
-        SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.schedule AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${sort}(apt.schedule)=${sort}(CURDATE()) AND apt.apt_type='Online' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.schedule;
-        SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.date_created_walk_in AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${sort}(apt.date_created_walk_in)=${sort}(CURDATE()) AND apt.apt_type='Walk-in' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.date_created_walk_in;
-        `
-    }
-
-    db.query(myquery,
+        db.query(`
+            SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.schedule AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE DAY(apt.schedule)=DAY(CURDATE()) AND apt.apt_type='Online' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.schedule;
+            SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.date_created_walk_in AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE DAY(apt.date_created_walk_in)=DAY(CURDATE()) AND apt.apt_type='Walk-in' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.date_created_walk_in;`,
         (err, result) => {
-            if (err) throw err;
+            if(err) throw err;
 
             const onlineScheduled = result[0].map((scheduled) => ({
                 ...scheduled,
@@ -349,6 +339,64 @@ router.get('/schedule/list', (req, res) => {
 
             res.json({ data: [...onlineScheduled, ...walkinScheduled] })
         })
+
+
+        return null;
+    }
+
+    db.query(`
+            SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.schedule AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE (DAY(apt.schedule) BETWEEN DAY(${db.escape(from)}) AND DAY(${db.escape(to)})) AND apt.apt_type='Online' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.schedule;
+            SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.date_created_walk_in AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE (DAY(apt.schedule) BETWEEN DAY(${db.escape(from)}) AND DAY(${db.escape(to)})) AND apt.apt_type='Walk-in' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.date_created_walk_in;`,
+        (err, result) => {
+            if(err) throw err;
+
+            const onlineScheduled = result[0].map((scheduled) => ({
+                ...scheduled,
+                fullname: JSON.parse(scheduled.fullname),
+                schedule: dayjs(scheduled.schedule).format("MMM DD, YYYY hh:mm A")
+            }))
+
+            const walkinScheduled = result[1].map((scheduled) => ({
+                ...scheduled,
+                fullname: JSON.parse(scheduled.fullname),
+                schedule: dayjs(scheduled.schedule).format("MMM DD, YYYY")
+            }))
+
+            res.json({ data: [...onlineScheduled, ...walkinScheduled] })
+        })
+
+    // let myquery;
+
+    // if(!sort){
+    //     myquery = `
+    //     SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.schedule AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE DAY(apt.schedule)=DAY(CURDATE()) AND apt.apt_type='Online' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.schedule;
+    //     SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.date_created_walk_in AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE DAY(apt.date_created_walk_in)=DAY(CURDATE()) AND apt.apt_type='Walk-in' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.date_created_walk_in;
+    //     `
+    // }else{
+    //     myquery = `
+    //     SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.schedule AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${sort}(apt.schedule)=${sort}(CURDATE()) AND apt.apt_type='Online' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.schedule;
+    //     SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.date_created_walk_in AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${sort}(apt.date_created_walk_in)=${sort}(CURDATE()) AND apt.apt_type='Walk-in' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.date_created_walk_in;
+    //     `
+    // }
+
+    // db.query(myquery,
+    //     (err, result) => {
+    //         if (err) throw err;
+
+    //         const onlineScheduled = result[0].map((scheduled) => ({
+    //             ...scheduled,
+    //             fullname: JSON.parse(scheduled.fullname),
+    //             schedule: dayjs(scheduled.schedule).format("MMM DD, YYYY hh:mm A")
+    //         }))
+
+    //         const walkinScheduled = result[1].map((scheduled) => ({
+    //             ...scheduled,
+    //             fullname: JSON.parse(scheduled.fullname),
+    //             schedule: dayjs(scheduled.schedule).format("MMM DD, YYYY")
+    //         }))
+
+    //         res.json({ data: [...onlineScheduled, ...walkinScheduled] })
+    //     })
 })
 
 //ADD NEW MEDICAL RECORD

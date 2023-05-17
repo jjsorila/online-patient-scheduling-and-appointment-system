@@ -3,8 +3,9 @@
 }
 
 .showcase {
-    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("/admin-bg.png") no-repeat;
-    background-size: 100% 175%;
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("/main-bg.png") no-repeat;
+    background-size: 75% 100%;
+    background-position: center;
     display: flex;
     flex-direction: column;
     justify-content: center;
