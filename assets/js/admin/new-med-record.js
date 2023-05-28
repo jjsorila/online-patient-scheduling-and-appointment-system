@@ -14,6 +14,8 @@ $(document).ready(function (e) {
     const diagnosis = $("#diagnosis");
     const description = $("#description");
     const followUp = $("#follow_up");
+    const timepicker = $("#timepicker")
+    let chosenTime = null;
     function getAge(dateString) {
         var ageInMilliseconds = new Date() - new Date(dateString);
         return Math.floor(ageInMilliseconds / 1000 / 60 / 60 / 24 / 365);
@@ -42,16 +44,17 @@ $(document).ready(function (e) {
         ordering: false
     })
 
+    //CLEAR INPUT
+    function clearInput() {
+        dateSched.val("")
+        timepicker.val("").attr("disabled", true)
+    }
+
     //OPEN RECORD
     $("#linked_checkup").on("click", "#open_record", function(e) {
         const data_id = $(this).attr("data-id")
         window.open(`/admin/patients/${patient_id}/${data_id}`)
     })
-
-    //CLEAR LOCAL STORAGE
-    $(window).on("unload", function(){
-        localStorage.clear()
-    });
 
     //DETECT CHANGES
     $("input, textarea").on("change keyup paste", function(e) {
@@ -116,23 +119,18 @@ $(document).ready(function (e) {
         $.ajax({
             url: `/admin/schedule_count?patient_type=${patient_type.val()}`,
             type: 'GET',
-            success: (disabledDates) => {
+            success: ({ unavailable_dates, schedule:[ scheduledTime ] }) => {
                 dateSched.flatpickr({
-                    enableTime: true,
-                    minTime: "14:00",
-                    maxTime: "16:30",
-                    minuteIncrement: 30,
-                    defaultHour: 14,
-                    defaultMinute: 00,
                     minDate: "today",
+                    maxDate: new Date(new Date().getFullYear(), new Date().getMonth() + 2, new Date().getDate()),
                     disable: [
                         function(date) {
-                            return (date.getDay() === 0);
+                            return date.getDay() < scheduledTime.startDay || date.getDay() > scheduledTime.endDay
                         },
-                        ...disabledDates
+                        ...unavailable_dates
                     ],
                     altInput: true,
-                    altFormat: "m/d/Y G:i K"
+                    altFormat: "m/d/Y"
                 });
             },
             error: (err) => {
@@ -143,42 +141,47 @@ $(document).ready(function (e) {
     })
 
     //CHECK IF TIME IS VALID
-    dateSched.change(function (e) {
-        if(!$(this).val()) return null
-        $.ajax({
-            url: '/admin/time_check',
-            type: 'POST',
-            headers: {
-                "Content-Type": "application/json"
-            },
-            data: JSON.stringify({
-                chosenTime: $(this).val(),
-                patient_type: patient_type.val()
-            }),
-            success: (res) => {
-                localStorage.setItem("isValid", res)
-                if(res){
-                    $("h5.valid").css("display", "block")
-                    $("h5.invalid").css("display", "none")
-                }else {
-                    $("h5.valid").css("display", "none")
-                    $("h5.invalid").css("display", "block")
+    dateSched.change(function() {
+        if(!dateSched.val()) return null
+        timepicker.val("").attr("disabled", false).select2({
+            placeholder: "Select Time",
+            minimumResultsForSearch: -1,
+            dropdownCssClass: 'text-center',
+            language: {
+                noResults: function() {
+                    return 'No Time Available';
                 }
             },
-            error: (err) => {
-                console.log(err)
-                showToast("❌ Server error")
+            ajax: {
+                url: '/admin/time/available',
+                dataType: 'json',
+                type: 'POST',
+                data: function(params) {
+                  return {
+                    search: params.search,
+                    dateSched: dateSched.val(),
+                    patient_type: patient_type.val()
+                  }
+                },
+                processResults: function(data) {
+                    return {
+                        results: data.results
+                    };
+                }
             }
         })
+        $(".follow_up_shadow").find("span.select2-selection").addClass("border border-4 border-dark rounded text-center w-100 h-100")
+        $(".follow_up_shadow").find(".selection,.select2-container").addClass("w-100")
+    })
+    timepicker.on("select2:select", function(e) {
+        const { orig } = e.params.data
+        chosenTime = orig
     })
 
-    //CLOSE FOLLOW
+    //CLOSE FOLLOW UP
     $(".follow_up_shadow").click(function(e) {
         $(this).toggleClass("d-none")
-        dateSched.val("")
-        localStorage.clear()
-        $("h5.valid").css("display", "none")
-        $("h5.invalid").css("display", "none")
+        clearInput()
     })
     $(".follow_up_form").click(function(e) {
         e.stopPropagation()
@@ -186,9 +189,7 @@ $(document).ready(function (e) {
 
     //SUBMIT FOLLOW UP
     $("#submit_follow_up").click(function(e) {
-        if(!dateSched.val() || !patient_type.val()) return showToast("❌ Complete required fields")
-        const isValid = JSON.parse(localStorage.getItem("isValid"))
-        if(typeof(isValid) == "boolean" && !isValid) return showToast("❌ Chosen TIME is UNAVAILABLE")
+        if(!dateSched.val() || !patient_type.val() || !timepicker.val()) return showToast("❌ Complete required fields")
 
         $(".loading").css("display", "block")
         $.ajax({
@@ -198,7 +199,7 @@ $(document).ready(function (e) {
                 'Content-Type': 'application/json'
             },
             data: JSON.stringify({
-                sched: dateSched.val(),
+                sched: `${dateSched.val()} ${chosenTime}`,
                 apt_id: apt_id,
                 link_to: link_to,
                 patient_id: patient_id,

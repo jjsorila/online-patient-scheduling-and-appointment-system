@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%- include('../../templates/header.ejs') %>
+    <link rel="stylesheet" href="/css/admin/scheduled.css"/>
     <link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
     <script type="application/javascript"
         src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
@@ -58,6 +59,19 @@
             </div>
         </div>
     </div>
+
+    <div class="reason-shadow">
+        <div class="reason bg-light w-50 h-50 rounded border border-dark border-3 p-3 d-flex flex-column align-items-center gap-3">
+            <h3 class="text-center my-3">REASON</h3>
+            <textarea class="form-control w-75 border border-dark border-4 text-center my-3" id="reason" rows="3"></textarea>
+            <button class="btn btn-danger text-center my-3 border border-dark border-3 rounded" id="confirm-cancel">CANCEL APPOINTMENT</button>
+        </div>
+    </div>
+
+    <input type="hidden" id="apt_id">
+    <input type="hidden" id="schedule">
+    <input type="hidden" id="email">
+
     <%- include('../../templates/loading.ejs') %>
     <%- include('../../templates/toast.ejs') %>
     <script type="application/javascript" src="/js/admin/scheduled.js"></script>

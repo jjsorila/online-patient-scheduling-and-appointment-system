@@ -60,7 +60,7 @@ $(document).ready(function (e) {
 
     //SAVE/UPDATE USER INFORMATION
     $("#save").click(function (e) {
-        if (!fname.val() || !mi.val() || !lname.val() || !contact.val() || !address.val() || !birthdate.val() || !age.val()) return showToast("❌ Complete required fields")
+        if (!fname.val() || !lname.val() || !contact.val() || !address.val() || !birthdate.val() || !age.val()) return showToast("❌ Complete required fields")
         $(".confirmation-shadow").toggleClass("d-none")
     })
     $("#yes").click(function (e) {
@@ -75,7 +75,7 @@ $(document).ready(function (e) {
             data: JSON.stringify({
                 fullname: {
                     fname: fname.val(),
-                    mi: mi.val(),
+                    mi: mi.val() || "",
                     lname: lname.val()
                 },
                 contact: contact.val(),

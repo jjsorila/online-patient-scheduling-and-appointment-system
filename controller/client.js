@@ -354,6 +354,7 @@ router.get('/appointments/list', protected, (req, res) => {
     if (sort == "Approved") status = `status='Approved'`
     if (sort == "Pending") status = `status='Pending'`
     if (sort == "Cancelled") status = `status='Cancelled'`
+    if (sort == "Follow-up") status = `status='Follow-up'`
 
     if (show == "Today") schedule = `DATE(schedule)=CURDATE()`
     if (show == "Week") schedule = `WEEK(schedule)=WEEK(CURDATE())`

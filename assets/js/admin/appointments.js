@@ -11,6 +11,14 @@ $(document).ready(function (e) {
     })
     $("span.select2").addClass("border border-4 border-dark rounded text-center w-100")
 
+    //CLEAR SELECTED
+    function clearSelected(){
+        reason.val("")
+        reasonId.val("")
+        email.val("")
+        schedule.val("")
+    }
+
     //AUTO RELOAD
     setInterval(() => {
         $("table").DataTable().ajax.reload()
@@ -30,7 +38,7 @@ $(document).ready(function (e) {
             { data: "schedule" },
             {
                 data: "fullname",
-                render: ({ fname, lname, mi }) => (`${lname}, ${fname} ${mi}.`)
+                render: ({ fname, lname, mi }) => (`${lname}, ${fname} ${mi}${mi ? "." : ""}`)
             },
             {
                 data: "address",
@@ -43,10 +51,13 @@ $(document).ready(function (e) {
             {
                 data: "apt_id",
                 render: (data) => {
+                    const { fullname } = data
+                    const parsedName = `${fullname.lname}, ${fullname.fname} ${fullname.mi}${fullname.mi ? "." : ""}`
                     return (`
-                    <div class="form-group d-flex gap-1 justify-content-center">
-                        <input type="submit" data-sched=${data.schedule} data-email=${data.email} data-id=${data.id} id='approve' data-val='Approved' class='btn btn-success' value='Approve'/>
-                        <input type="submit" data-sched=${data.schedule} data-email=${data.email} data-id=${data.id} id='cancel' data-val='Cancelled' class='btn btn-danger' value='Cancel'/>
+                    <div class="btn-group">
+                        <input type="submit" data-name='${parsedName}' data-patient='${data.patient}' data-complain='${data.complain}' data-sched=${data.schedule} data-email=${data.email} data-id=${data.id} id='view' class='btn btn-primary' value='View' />
+                        <!-- <input type="submit" data-sched=${data.schedule} data-email=${data.email} data-id=${data.id} id='approve' data-val='Approved' class='btn btn-success p-2' value='Approve'/>
+                        <input type="submit" data-sched=${data.schedule} data-email=${data.email} data-id=${data.id} id='cancel' data-val='Cancelled' class='btn btn-danger p-2' value='Disapprove'/> -->
                     </div>
                     `)
                 }
@@ -54,6 +65,34 @@ $(document).ready(function (e) {
         ],
         ordering: false,
     });
+
+    //OPEN VIEW APPOINTMENT
+    $("table").on("click", "input#view", function(e) {
+        const current = $(this)
+        reasonId.val(current.attr("data-id"))
+        schedule.val(current.attr("data-sched"))
+        email.val(current.attr("data-email"))
+        $(".view").html(`
+            <h3 class="text-center">Name: ${current.attr("data-name")}</h3>
+            <h3 class="text-center">Patient Type: ${current.attr("data-patient")}</h3>
+            <h3 class="text-center">Medical Complain</h3>
+            <textarea rows="5" disabled class="form-control text-center border border-dark border-4">${current.attr("data-complain")}</textarea>
+            <div class="form-group d-flex justify-content-center gap-3">
+                <input type="submit" class="btn btn-success border border-dark border-3" id="approve" value="Approve"/>
+                <input type="submit" class="btn btn-danger border border-dark border-3" id="cancel" value="Disapprove"/>
+            </div>
+        `)
+        $(".view-shadow").fadeToggle("fast")
+
+    })
+    //CLOSE VIEW APPOINTMENT
+    $(".view-shadow").click(function(e) {
+        $(this).fadeToggle("fast")
+        clearSelected()
+    })
+    $(".view").click(function(e) {
+        e.stopPropagation()
+    })
 
     //CHANGE APPOINTMENTS TABLE SORT
     $("select").on("change", function (e) {
@@ -65,7 +104,7 @@ $(document).ready(function (e) {
                 { data: "schedule" },
                 {
                     data: "fullname",
-                    render: ({ fname, lname, mi }) => (`${lname}, ${fname} ${mi}.`)
+                    render: ({ fname, lname, mi }) => (`${lname}, ${fname} ${mi}${mi ? "." : ""}`)
                 },
                 {
                     data: "address",
@@ -78,10 +117,11 @@ $(document).ready(function (e) {
                 {
                     data: "apt_id",
                     render: (data) => {
+                        const { fullname } = data
+                        const parsedName = `${fullname.lname}, ${fullname.fname} ${fullname.mi}${fullname.mi ? "." : ""}`
                         return (`
-                        <div class="form-group d-flex gap-1 justify-content-center">
-                            <input type="submit" data-sched=${data.schedule} data-email=${data.email} data-id=${data.id} id='approve' data-val='Approved' class='btn btn-success' value='Approve'/>
-                            <input type="submit" data-sched=${data.schedule} data-email=${data.email} data-id=${data.id} id='cancel' data-val='Cancelled' class='btn btn-danger' value='Cancel'/>
+                        <div class="btn-group">
+                            <input type="submit" data-name='${parsedName}' data-patient='${data.patient}' data-complain='${data.complain}' data-sched=${data.schedule} data-email=${data.email} data-id=${data.id} id='view' class='btn btn-primary' value='View' />
                         </div>
                         `)
                     }
@@ -93,7 +133,7 @@ $(document).ready(function (e) {
     })
 
     //APPROVE APPOINTMENT
-    $("table").on("click", "input#approve", function (e) {
+    $(".view").on("click", "input#approve", function (e) {
         const current = $(this)
 
         $(".loading").css("display", "block")
@@ -106,9 +146,9 @@ $(document).ready(function (e) {
             },
             data: JSON.stringify({
                 action: "Approved",
-                apt_id: current.attr("data-id"),
-                email: current.attr("data-email"),
-                schedule: current.attr("data-sched")
+                apt_id: reasonId.val(),
+                email: email.val(),
+                schedule: schedule.val()
             }),
             success: (res) => {
                 if (!res.operation) return showToast("❌ Something went wrong")
@@ -119,7 +159,7 @@ $(document).ready(function (e) {
                         { data: "schedule" },
                         {
                             data: "fullname",
-                            render: ({ fname, lname, mi }) => (`${lname}, ${fname} ${mi}.`)
+                            render: ({ fname, lname, mi }) => (`${lname}, ${fname} ${mi}${mi ? "." : ""}`)
                         },
                         {
                             data: "address",
@@ -132,10 +172,11 @@ $(document).ready(function (e) {
                         {
                             data: "apt_id",
                             render: (data) => {
+                                const { fullname } = data
+                                const parsedName = `${fullname.lname}, ${fullname.fname} ${fullname.mi}${fullname.mi ? "." : ""}`
                                 return (`
-                                <div class="form-group d-flex gap-1 justify-content-center">
-                                    <input type="submit" data-sched=${data.schedule} data-email=${data.email} data-id=${data.id} id='approve' data-val='Approved' class='btn btn-success' value='Approve'/>
-                                    <input type="submit" data-sched=${data.schedule} data-email=${data.email} data-id=${data.id} id='cancel' data-val='Cancelled' class='btn btn-danger' value='Cancel'/>
+                                <div class="btn-group">
+                                    <input type="submit" data-name='${parsedName}' data-patient='${data.patient}' data-complain='${data.complain}' data-sched=${data.schedule} data-email=${data.email} data-id=${data.id} id='view' class='btn btn-primary' value='View' />
                                 </div>
                                 `)
                             }
@@ -145,6 +186,8 @@ $(document).ready(function (e) {
                     destroy: true
                 });
                 showToast("✅ Success")
+                clearSelected()
+                $(".view-shadow").fadeToggle("fast")
             },
             error: (err) => {
                 console.log(err)
@@ -157,10 +200,7 @@ $(document).ready(function (e) {
     })
 
     //OPEN CANCEL REASON
-    $("table").on("click", "input#cancel", function(e) {
-        reasonId.val($(this).attr("data-id"))
-        schedule.val($(this).attr("data-sched"))
-        email.val($(this).attr("data-email"))
+    $(".view").on("click", "input#cancel", function(e) {
         $(".reason-shadow").fadeToggle("fast")
     })
     $(".reason-shadow").click(function(e) {
@@ -198,7 +238,7 @@ $(document).ready(function (e) {
                         { data: "schedule" },
                         {
                             data: "fullname",
-                            render: ({ fname, lname, mi }) => (`${lname}, ${fname} ${mi}.`)
+                            render: ({ fname, lname, mi }) => (`${lname}, ${fname} ${mi}${mi ? "." : ""}`)
                         },
                         {
                             data: "address",
@@ -211,10 +251,11 @@ $(document).ready(function (e) {
                         {
                             data: "apt_id",
                             render: (data) => {
+                                const { fullname } = data
+                                const parsedName = `${fullname.lname}, ${fullname.fname} ${fullname.mi}${fullname.mi ? "." : ""}`
                                 return (`
-                                <div class="form-group d-flex gap-1 justify-content-center">
-                                    <input type="submit" data-sched=${data.schedule} data-email=${data.email} data-id=${data.id} id='approve' data-val='Approved' class='btn btn-success' value='Approve'/>
-                                    <input type="submit" data-sched=${data.schedule} data-email=${data.email} data-id=${data.id} id='cancel' data-val='Cancelled' class='btn btn-danger' value='Cancel'/>
+                                <div class="btn-group">
+                                    <input type="submit" data-name='${parsedName}' data-patient='${data.patient}' data-complain='${data.complain}' data-sched=${data.schedule} data-email=${data.email} data-id=${data.id} id='view' class='btn btn-primary' value='View' />
                                 </div>
                                 `)
                             }
@@ -223,8 +264,8 @@ $(document).ready(function (e) {
                     ordering: false,
                     destroy: true
                 });
-                $(".reason-shadow").fadeToggle("fast")
-                reason.val("")
+                $(".reason-shadow,.view-shadow").fadeToggle("fast")
+                clearSelected()
                 showToast("✅ Success")
             },
             error: (err) => {

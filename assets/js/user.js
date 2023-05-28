@@ -131,7 +131,7 @@ $(document).ready(function (e) {
     //SAVE/UPDATE INFORMATION
     $("#save").click(function (e) {
 
-        if (!fname.val() || !mi.val() || !lname.val() || !contact.val() || !address.val() || !gender.val() || !birthdate.val() || !age.val()) return showToast("❌ Complete all user information")
+        if (!fname.val() || !lname.val() || !contact.val() || !address.val() || !gender.val() || !birthdate.val() || !age.val()) return showToast("❌ Complete all user information")
 
         $(".confirmation-shadow").toggleClass("d-none")
     })
@@ -147,7 +147,7 @@ $(document).ready(function (e) {
             data: JSON.stringify({
                 fullname: {
                     fname: fname.val(),
-                    mi: mi.val(),
+                    mi: mi.val() || "",
                     lname: lname.val()
                 },
                 contact: contact.val(),

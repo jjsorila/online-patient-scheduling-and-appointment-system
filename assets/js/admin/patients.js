@@ -68,7 +68,7 @@ $(document).ready(function (e) {
                 data: "fullname",
                 orderable: false,
                 render: ({ fname, lname, mi }) => {
-                    return `${lname}, ${fname} ${mi}.`
+                    return `${lname}, ${fname} ${mi}${mi ? "." : ""}`
                 }
             },
             {

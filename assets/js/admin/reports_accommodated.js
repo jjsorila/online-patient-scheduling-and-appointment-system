@@ -34,9 +34,7 @@ $(document).ready(function(e) {
             {
                 data: "fullname",
                 orderable: false,
-                render: ({ fname, lname, mi }) => {
-                    return `${lname}, ${fname} ${mi}.`
-                }
+                render: ({ fname, lname, mi }) => (`${lname}, ${fname} ${mi}${mi ? "." : ""}`)
             },
             {
                 data: "ailment",
@@ -87,9 +85,7 @@ $(document).ready(function(e) {
                 {
                     data: "fullname",
                     orderable: false,
-                    render: ({ fname, lname, mi }) => {
-                        return `${lname}, ${fname} ${mi}.`
-                    }
+                    render: ({ fname, lname, mi }) => (`${lname}, ${fname} ${mi}${mi ? "." : ""}`)
                 },
                 {
                     data: "ailment",
