@@ -114,30 +114,6 @@ router.get('/reset', getResetPasswordToken, (req, res) => {
 
 //==================================================================================================================================================================================================
 
-//LOGIN ACCOUNT
-// router.post('/login', (req, res) => {
-//     let { email, password } = req.body;
-
-//     db.query(`SELECT id,email,password FROM patient_accounts WHERE email=${db.escape(email)}`,
-//         (err, result) => {
-//             if (err) throw err;
-
-//             if (result.length == 0) return res.json({ operation: false })
-
-//             const user = { ...result[0] }
-
-//             //DECRYPT & COMPARE PASSWORD
-//             const isMatch = password == CryptoJS.AES.decrypt(user.password, process.env.SECRET).toString(CryptoJS.enc.Utf8);
-
-//             if (!isMatch) return res.json({ operation: false })
-
-//             req.session.user = {
-//                 id: user.id,
-//                 email: user.email
-//             };
-//             res.json({ operation: true })
-//         })
-// })
 
 //CHECK FOR ONGOING APPOINTMENT
 router.get(`/appointments/check`, (req, res) => {
@@ -191,18 +167,6 @@ router.post('/register', (req, res) => {
 
             return res.json({ operation: true })
         })
-
-        //SEND EMAIL VERIFICATION
-        // try {
-        //     const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: '365d' })
-
-        //     transporter(email, `<b>Click this <a href="http://${req.header('host')}/client/verify?token=${token}" >link</a> to verify your account.</b>`)
-        //         .then((result) => {
-        //             return res.json({ operation: true, msg: result.response })
-        //         })
-        // } catch (err) {
-        //     res.status(500).json({ msg: "Server Error" })
-        // }
     })
 })
 

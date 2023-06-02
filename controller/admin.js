@@ -47,11 +47,6 @@ router.get('/dashboard', protected, (req, res) => {
 
 })
 
-//ADMIN LOGIN PAGE
-// router.get('/login', login, (req, res) => {
-//     res.render('admin/login.ejs')
-// })
-
 //ADMIN ACCOUNT PAGE
 router.get('/accounts', protected, onlyAdmin, (req, res) => {
     res.render('admin/accounts/accounts.ejs', { admin: { ...req.session.admin } })
@@ -148,27 +143,6 @@ router.get('/staffs', protected, onlyAdmin, (req, res) => {
 
 //================================================================================================================================
 
-//LOGIN ACCOUNT
-// router.post('/login', (req, res) => {
-//     let { username, password } = req.body
-
-//     db.query(`SELECT admin_id,username,password,specialty,fullname FROM admin_accounts WHERE username=${db.escape(username)}`,
-//         (err, result) => {
-//             if (err) throw err;
-
-//             const user = { ...result[0] }
-
-//             if (password != user.password || result.length <= 0) return res.json({ operation: false })
-
-//             req.session.admin = {
-//                 id: user.admin_id,
-//                 specialty: user.specialty,
-//                 fullname: user.fullname
-//             }
-
-//             res.json({ operation: true })
-//         })
-// })
 
 //LOGOUT ACCOUNT
 router.post('/logout', (req, res) => {
@@ -355,7 +329,7 @@ router.get('/schedule/list', (req, res) => {
 
         return null;
     }
-    
+
     db.query(`
             SELECT pa.email AS email,pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.schedule AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE (DATE(apt.schedule) BETWEEN ${db.escape(from)} AND ${db.escape(to)}) AND apt.apt_type='Online' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.schedule;
             SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.date_created_walk_in AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE (DATE(apt.date_created_walk_in) BETWEEN ${db.escape(from)} AND ${db.escape(to)}) AND apt.apt_type='Walk-in' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.date_created_walk_in;`,
