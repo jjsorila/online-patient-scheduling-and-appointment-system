@@ -15,7 +15,7 @@ router.post('/', (req, res) => {
     let { username, password } = req.body;
 
     db.query(`
-        SELECT id,email,password FROM patient_accounts WHERE username=${db.escape(username)};
+        SELECT id,email,password,fullname FROM patient_accounts WHERE username=${db.escape(username)};
         SELECT admin_id,username,password,specialty,fullname FROM admin_accounts WHERE username=${db.escape(username)};
     `, (err, result) => {
         if(err) throw err;
@@ -41,12 +41,15 @@ router.post('/', (req, res) => {
         //CLIENT LOGIN
         if(user.length > 0) {
             let creds = { ...user[0] }
+            let fullname = JSON.parse(creds.fullname)
+            console.log(fullname)
 
             //DECRYPT & COMPARE PASSWORD
             const isMatch = bcrypt.compareSync(password, creds.password)
             if (!isMatch) return res.json({ operation: false })
 
             req.session.user = {
+                fname: !fullname.fname || !fullname.lname ? "USER" : `${fullname.lname}, ${fullname.fname} ${fullname.mi ? `${fullname.mi}.` : ""}`,
                 id: creds.id,
                 email: creds.email
             };

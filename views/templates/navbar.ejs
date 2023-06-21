@@ -14,7 +14,9 @@
     <div style="width: 40px; height: 40px; overflow: hidden;" class="d-inline-block">
       <img src="/favicon.ico" class="rounded-circle w-100 h-100" style="height: 100%; width: 100%;" />
     </div>
-    <a href="/" class="navbar-brand" id="brand"></a>
+    <a href="/" class="navbar-brand" id="brand">
+      <% if(user){ %><%= user.fname.toUpperCase() %><% }else{ %>RMCC<% } %>
+    </a>
   </a>
 
   <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
@@ -57,11 +59,5 @@
         }
       })
     })
-
-    if (window.location.href.includes("client")) {
-      $("#brand").text("PATIENT")
-    } else {
-      $("#brand").text("RMCC")
-    }
   })
 </script>

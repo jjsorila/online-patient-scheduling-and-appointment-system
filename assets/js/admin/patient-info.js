@@ -61,6 +61,8 @@ $(document).ready(function (e) {
     //SAVE/UPDATE USER INFORMATION
     $("#save").click(function (e) {
         if (!fname.val() || !lname.val() || !contact.val() || !address.val() || !birthdate.val() || !age.val()) return showToast("❌ Complete required fields")
+        let ageNumber = Number(age.val())
+        if(ageNumber <= 0) return showToast("❌ Invalid age")
         $(".confirmation-shadow").toggleClass("d-none")
     })
     $("#yes").click(function (e) {

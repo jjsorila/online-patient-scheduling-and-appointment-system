@@ -130,9 +130,9 @@ $(document).ready(function (e) {
 
     //SAVE/UPDATE INFORMATION
     $("#save").click(function (e) {
-
         if (!fname.val() || !lname.val() || !contact.val() || !address.val() || !gender.val() || !birthdate.val() || !age.val()) return showToast("❌ Complete all user information")
-
+        let ageNumber = Number(age.val())
+        if(ageNumber <= 0) return showToast("❌ Invalid age")
         $(".confirmation-shadow").toggleClass("d-none")
     })
     $("#yes").click(function (e) {
@@ -189,18 +189,6 @@ $(document).ready(function (e) {
         $(window).on('beforeunload', function (e) {
             return "You have unsaved changes"
         });
-        // fname.prop("disabled", !fname.prop("disabled"))
-        // mi.prop("disabled", !mi.prop("disabled"))
-        // gender.prop("disabled", !gender.prop("disabled"))
-        // lname.prop("disabled", !lname.prop("disabled"))
-        // birthdate.prop("disabled", !birthdate.prop("disabled"))
-        // age.prop("disabled", !age.prop("disabled"))
-        // contact.prop("disabled", !contact.prop("disabled"))
-        // address.prop("disabled", !address.prop("disabled"))
-        // gName.prop("disabled", !gName.prop("disabled"))
-        // gContact.prop("disabled", !gContact.prop("disabled"))
-        // gAddress.prop("disabled", !gAddress.prop("disabled"))
-        // gRelationship.prop("disabled", !gRelationship.prop("disabled"))
         $("input:not(#email):not(#username),textarea,select").prop("disabled", false)
         $("#edit").toggleClass("d-none")
         $("#save").toggleClass("d-none")

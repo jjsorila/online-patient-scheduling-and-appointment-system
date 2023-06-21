@@ -33,11 +33,6 @@ function getAge(dateString) {
 
 //==================================================================================================================================================================================================
 
-//CLIENT LOGIN PAGE
-// router.get('/login', login, (req, res) => {
-//     res.render('login.ejs')
-// })
-
 //DASHBOARD PAGE
 router.get('/dashboard', protected, (req ,res) => {
     res.render('dashboard.ejs', { user: req.session.user })
