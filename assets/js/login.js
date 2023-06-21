@@ -1,4 +1,5 @@
 $(document).ready(function (e) {
+    window.history.forward()
 
     //SHOW TOAST
     function showToast(text) {

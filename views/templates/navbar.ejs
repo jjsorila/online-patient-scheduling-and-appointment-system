@@ -41,6 +41,8 @@
 
 <script>
   $(document).ready(function () {
+    window.history.forward()
+
     //LOGOUT ACCOUNT
     $(".logout").click(function (e) {
       $.ajax({
@@ -48,7 +50,7 @@
         type: 'POST',
         success: (res) => {
           if (!res.operation) return alert("Server error");
-          location.replace("/login")
+          location.href = "/login"
         },
         error: (err) => {
           alert(err)
@@ -56,9 +58,9 @@
       })
     })
 
-    if(window.location.href.includes("client")){
+    if (window.location.href.includes("client")) {
       $("#brand").text("PATIENT")
-    }else{
+    } else {
       $("#brand").text("RMCC")
     }
   })

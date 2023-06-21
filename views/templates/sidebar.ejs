@@ -176,6 +176,8 @@ hr.h-color {
 
 <script>
     $(document).ready(function (e) {
+        window.history.forward()
+
         let urlAddress = window.location.pathname.split('/')
         let currentPage = urlAddress[urlAddress.length-1]
         $(`.sidebar li#${currentPage}`).addClass("active")
@@ -193,7 +195,7 @@ hr.h-color {
                 type: 'POST',
                 success: (res) => {
                     if (!res.operation) return showToast("❌ Something went wrong")
-                    location.replace('/login')
+                    location.href = "/login"
                 },
                 error: (err) => {
                     console.log(err)

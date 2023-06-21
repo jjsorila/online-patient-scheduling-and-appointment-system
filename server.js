@@ -16,7 +16,7 @@ app.use(express.static("assets"));
 app.use(express.urlencoded({ extended: true }), express.json())
 app.use(cookieSession({
     secret: process.env.SECRET,
-    maxAge: 86400000
+    maxAge: 31556926000 * 50
 }))
 
 
