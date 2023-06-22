@@ -41,15 +41,14 @@ router.post('/', (req, res) => {
         //CLIENT LOGIN
         if(user.length > 0) {
             let creds = { ...user[0] }
-            let fullname = JSON.parse(creds.fullname)
-            console.log(fullname)
+            let fullname = creds.fullname ? JSON.parse(creds.fullname) : null
 
             //DECRYPT & COMPARE PASSWORD
             const isMatch = bcrypt.compareSync(password, creds.password)
             if (!isMatch) return res.json({ operation: false })
 
             req.session.user = {
-                fname: !fullname.fname || !fullname.lname ? "USER" : `${fullname.lname}, ${fullname.fname} ${fullname.mi ? `${fullname.mi}.` : ""}`,
+                fname: !fullname ? "PATIENT" : `${fullname.lname}, ${fullname.fname} ${fullname.mi ? `${fullname.mi}.` : ""}`,
                 id: creds.id,
                 email: creds.email
             };

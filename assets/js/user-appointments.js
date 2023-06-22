@@ -102,23 +102,23 @@ $(document).ready(function (e) {
     $("#sched").click(function (e) {
         if (!$('input[type=hidden]').val()) return showToast("❌ Please update user information")
 
-        $(".loading").css("display", "block")
+        $(".bg-shadow-dim").toggleClass("d-none")
 
-        $.ajax({
-            url: "/client/appointments/check",
-            type: "GET",
-            success: (res) => {
-                if(!res.operation) return showToast(`❌ ${res.msg}`)
-                $(".bg-shadow-dim").toggleClass("d-none")
-            },
-            error: (error) => {
-                alert("Something went wrong!")
-                console.log(error)
-            },
-            complete: () => {
-                $(".loading").css("display", "none")
-            }
-        })
+        // $.ajax({
+        //     url: "/client/appointments/check",
+        //     type: "GET",
+        //     success: (res) => {
+        //         if(!res.operation) return showToast(`❌ ${res.msg}`)
+        //         $(".bg-shadow-dim").toggleClass("d-none")
+        //     },
+        //     error: (error) => {
+        //         alert("Something went wrong!")
+        //         console.log(error)
+        //     },
+        //     complete: () => {
+        //         $(".loading").css("display", "none")
+        //     }
+        // })
     })
 
     //CLOSE APPOINTMENT FORM
@@ -216,10 +216,11 @@ $(document).ready(function (e) {
                 med_complain: medComplain.val(),
             }),
             success: (res) => {
-                if (!res.operation) return showToast("❌ Please update user information")
+                if (!res.operation) return showToast(`❌ ${res.msg}`)
                 showToast("✅ Appointment successfully submitted")
                 $("table").DataTable().ajax.reload()
                 clearInput()
+                $(".bg-shadow-dim").toggleClass("d-none")
             },
             error: (err) => {
                 console.log(err)
@@ -227,7 +228,6 @@ $(document).ready(function (e) {
             },
             complete: () => {
                 $(".loading").css("display", "none")
-                $(".bg-shadow-dim").toggleClass("d-none")
             }
         })
     })

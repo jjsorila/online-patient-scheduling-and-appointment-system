@@ -15,6 +15,23 @@ $(document).ready(function (e) {
         return Math.floor(ageInMilliseconds / 1000 / 60 / 60 / 24 / 365);
     }
 
+    //DISABLE LETTERS IN BP INPUT
+    bp.keypress(function(e){
+        if(e.which >= 47 && e.which <= 57 || e.which == 8){
+            return null
+        }else {
+            e.preventDefault()
+        }
+    });
+
+    $("input[type=number]").keypress(function(e) {
+        if(e.which == 101 || e.which == 45){
+            e.preventDefault()
+        }else {
+            return null
+        }
+    })
+
     $("#back").click(function(e) {
         const previousPage = document.referrer.split('/')
         if(previousPage.indexOf("patients") <= -1){
@@ -37,6 +54,10 @@ $(document).ready(function (e) {
 
     //UPDATE MEDICAL RECORD
     $("#save").click(function (e) {
+        if(!temperature.val() || !bp.val() || !weight.val() || !height.val()) return showToast("❌ Complete required fields")
+        const bpVal = bp.val().split("/")
+        if(bpVal.length != 2 || !bpVal[0] || !bpVal[1]) return showToast("❌ Invalid blood pressure")
+
         $(".confirmation-shadow").toggleClass("d-none")
     })
     $("#yes").click(function (e) {

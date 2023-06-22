@@ -44,6 +44,23 @@ $(document).ready(function (e) {
         ordering: false
     })
 
+    //DISABLE LETTERS IN BP INPUT
+    bp.keypress(function(e){
+        if(e.which >= 47 && e.which <= 57 || e.which == 8){
+            return null
+        }else {
+            e.preventDefault()
+        }
+    });
+
+    $("input[type=number]").keypress(function(e) {
+        if(e.which == 101 || e.which == 45){
+            e.preventDefault()
+        }else {
+            return null
+        }
+    })
+
     //CLEAR INPUT
     function clearInput() {
         dateSched.val("")
@@ -71,6 +88,10 @@ $(document).ready(function (e) {
 
     //ADD NEW MEDICAL RECORD
     $("#save").click(function(e) {
+        if(!temperature.val() || !bp.val() || !weight.val() || !height.val()) return showToast("❌ Complete required fields")
+        const bpVal = bp.val().split("/")
+        if(bpVal.length != 2 || !bpVal[0] || !bpVal[1]) return showToast("❌ Invalid blood pressure")
+
         $(".confirmation-shadow").removeClass("d-none")
     })
     $("#yes").click(function(e) {
@@ -115,6 +136,11 @@ $(document).ready(function (e) {
 
     //OPEN FOLLOW UP
     followUp.click(function(e) {
+        if(!temperature.val() || !bp.val() || !weight.val() || !height.val()) return showToast("❌ Complete required fields")
+
+        const bpVal = bp.val().split("/")
+        if(bpVal.length != 2 || !bpVal[0] || !bpVal[1]) return showToast("❌ Invalid blood pressure")
+
         $(".follow_up_shadow").toggleClass("d-none")
         $.ajax({
             url: `/admin/schedule_count?patient_type=${patient_type.val()}`,

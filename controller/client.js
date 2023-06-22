@@ -287,11 +287,18 @@ router.post('/appointments/:id', (req, res) => {
     const { patient_type, med_complain, schedule } = req.body
     const apt_id = uuid.v4();
 
-    db.query(`SELECT * FROM patient_accounts WHERE id=${db.escape(id)}`,
+    db.query(`
+    SELECT * FROM patient_accounts WHERE id=${db.escape(id)};
+    SELECT COUNT(id) AS ongoing FROM appointments WHERE id=${db.escape(id)} AND patient_type=${db.escape(patient_type)} AND (status='Approved' OR status='Pending' OR status='Follow-up')`,
         (err, result) => {
             if (err) throw err;
 
-            if (!result[0].fullname || !result[0].address || !result[0].birthdate) return res.json({ operation: false })
+            const patient = result[0][0];
+            const { ongoing } = result[1][0];
+
+            if (ongoing >= 1) return res.json({ operation: false, msg: `You have an ongoing ${patient_type} appointment` })
+
+            if (!patient.fullname || !patient.address || !patient.birthdate) return res.json({ operation: false, msg: "Please update user information" })
 
             db.query(`INSERT INTO appointments(apt_id,id,schedule,apt_type,patient_type,med_complain) VALUES(${db.escape(apt_id)},${db.escape(id)},${db.escape(schedule)},'Online',${db.escape(patient_type)},${db.escape(med_complain)});`,
                 (err) => {

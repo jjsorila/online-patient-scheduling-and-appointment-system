@@ -32,3 +32,8 @@
     transform: translateX(-50%);
     display: none;
 }
+
+.important::after {
+    content: "*";
+    color: red;
+}
