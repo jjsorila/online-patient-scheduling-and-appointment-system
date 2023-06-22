@@ -36,3 +36,8 @@
     top: -40px;
     display: none;
 }
+
+.important::after {
+    content: "*";
+    color: red;
+}
