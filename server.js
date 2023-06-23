@@ -4,7 +4,6 @@ const app = express();
 const cookieSession = require('cookie-session');
 const db = require('./db/db');
 const dayjs = require("dayjs");
-const customParseFormat = require("dayjs/plugin/customParseFormat")
 
 //VIEW ENGINE
 app.set("view engine", "ejs");
