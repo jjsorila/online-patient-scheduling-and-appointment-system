@@ -65,6 +65,7 @@ $(document).ready(function() {
         e.stopPropagation()
     })
     $(".reason-shadow").click(function(e) {
+        clearSelected()
         $(this).fadeToggle("fast")
     })
 
