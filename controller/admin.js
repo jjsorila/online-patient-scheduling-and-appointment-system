@@ -296,76 +296,90 @@ router.put("/patient/update", (req, res) => {
 router.get('/schedule/list', (req, res) => {
     const { sort, from, to } = req.query
     const { specialty } = req.session.admin
-
     const isNotAdmin = specialty != "admin" ? `patient_type=${db.escape(specialty)} AND` : "";
+    let query;
 
-    if(sort || !from || !to){
-
-        db.query(`
-            SELECT pa.email AS email,pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.schedule AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} DATE(apt.schedule)=DATE(NOW()) AND apt.apt_type='Online' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.schedule;
-            SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.date_created_walk_in AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} DATE(apt.date_created_walk_in)=DATE(NOW()) AND apt.apt_type='Walk-in' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.date_created_walk_in;`,
-        (err, result) => {
-            if(err) throw err;
-
-            const onlineScheduled = result[0].map((scheduled) => ({
-                ...scheduled,
-                apt_id: {
-                    walkin: false,
-                    apt_id: scheduled.apt_id,
-                    schedule: dayjs(scheduled.schedule).format("MMM DD, YYYY hh:mm A"),
-                    email: scheduled.email
-                },
-                fullname: JSON.parse(scheduled.fullname),
-                schedule: dayjs(scheduled.schedule).format("MMM DD, YYYY hh:mm A")
-            }))
-
-            const walkinScheduled = result[1].map((scheduled) => ({
-                ...scheduled,
-                apt_id: {
-                    walkin: true,
-                    apt_id: scheduled.apt_id
-                },
-                fullname: JSON.parse(scheduled.fullname),
-                schedule: dayjs(scheduled.schedule).format("MMM DD, YYYY")
-            }))
-
-            res.json({ data: [...onlineScheduled, ...walkinScheduled] })
-        })
-
-
-        return null;
+    if(sort){
+        query =`
+        SELECT pa.email AS email,pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.schedule AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} DATE(apt.schedule)=DATE(NOW()) AND apt.apt_type='Online' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.schedule;
+        SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.date_created_walk_in AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} DATE(apt.date_created_walk_in)=DATE(NOW()) AND apt.apt_type='Walk-in' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.date_created_walk_in;`
+    }else{
+        query =`
+        SELECT pa.email AS email,pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.schedule AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} (DATE(apt.schedule) BETWEEN ${db.escape(from)} AND ${db.escape(to)}) AND apt.apt_type='Online' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.schedule;
+        SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.date_created_walk_in AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} (DATE(apt.date_created_walk_in) BETWEEN ${db.escape(from)} AND ${db.escape(to)}) AND apt.apt_type='Walk-in' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.date_created_walk_in;`
     }
 
-    db.query(`
-            SELECT pa.email AS email,pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.schedule AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} (DATE(apt.schedule) BETWEEN ${db.escape(from)} AND ${db.escape(to)}) AND apt.apt_type='Online' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.schedule;
-            SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.date_created_walk_in AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} (DATE(apt.date_created_walk_in) BETWEEN ${db.escape(from)} AND ${db.escape(to)}) AND apt.apt_type='Walk-in' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.date_created_walk_in;`,
-        (err, result) => {
-            if(err) throw err;
+    db.query(query, (err, result) => {
+        if(err) throw err;
 
-            const onlineScheduled = result[0].map((scheduled) => ({
-                ...scheduled,
-                apt_id: {
-                    walkin: false,
-                    apt_id: scheduled.apt_id,
-                    schedule: dayjs(scheduled.schedule).format("MMM DD, YYYY hh:mm A"),
-                    email: scheduled.email
-                },
-                fullname: JSON.parse(scheduled.fullname),
-                schedule: dayjs(scheduled.schedule).format("MMM DD, YYYY hh:mm A")
-            }))
+        const onlineScheduled = result[0].map((scheduled) => ({
+            ...scheduled,
+            apt_id: {
+                walkin: false,
+                apt_id: scheduled.apt_id,
+                mod_schedule: dayjs(scheduled.schedule).format("MMM DD, YYYY hh:mm A"),
+                email: scheduled.email
+            },
+            fullname: JSON.parse(scheduled.fullname),
+            mod_schedule: dayjs(scheduled.schedule).format("MMM DD, YYYY hh:mm A"),
+            sort_sched: dayjs(scheduled.schedule).format("YYYY-MM-DD HH:mm:ss")
+        }))
 
-            const walkinScheduled = result[1].map((scheduled) => ({
-                ...scheduled,
-                apt_id: {
-                    walkin: true,
-                    apt_id: scheduled.apt_id
-                },
-                fullname: JSON.parse(scheduled.fullname),
-                schedule: dayjs(scheduled.schedule).format("MMM DD, YYYY")
-            }))
+        const walkinScheduled = result[1].map((scheduled) => ({
+            ...scheduled,
+            apt_id: {
+                walkin: true,
+                apt_id: scheduled.apt_id
+            },
+            fullname: JSON.parse(scheduled.fullname),
+            mod_schedule: dayjs(scheduled.schedule).format("MMM DD, YYYY"),
+            sort_sched: dayjs(scheduled.schedule).format("YYYY-MM-DD HH:mm:ss")
+        }))
 
-            res.json({ data: [...onlineScheduled, ...walkinScheduled] })
+        const newScheduled = [...onlineScheduled]
+
+        onlineScheduled.reverse();
+        newScheduled.reverse();
+
+        if(walkinScheduled.length >= 1){
+            walkinScheduled.forEach((walkinV) => {
+                let [wDate] = walkinV.sort_sched.split(" ");
+
+                const indexHolder = onlineScheduled.findIndex((oV) => {
+                    let [oDate] = oV.sort_sched.split(" ");
+                    return oDate == wDate
+                })
+
+                if(indexHolder == -1){
+                    for(let i = 0;i<onlineScheduled.length;i++){
+                        if(!dayjs(onlineScheduled[i].sort_sched).isAfter(walkinV.sort_sched)){
+                            newScheduled.splice(i, 0, walkinV);
+                            break;
+                        }
+                    }
+                }else{
+                    newScheduled.splice(indexHolder, 0, walkinV);
+                }
+            })
+        }
+
+        if(newScheduled.length <= 0){
+            walkinScheduled.forEach((v) => {
+                newScheduled.push(v)
+            })
+        }else{
+            newScheduled.reverse()
+        }
+
+        const finalScheduled = newScheduled.map((v,i) => {
+            return {
+                ...v,
+                queue: i+1
+            }
         })
+
+        res.json({ data: finalScheduled })
+    })
 })
 
 //ADD NEW MEDICAL RECORD
@@ -557,11 +571,15 @@ router.get('/getinfostaff', (req, res) => {
 //CHECK THE CURRENT TIMESLOT SCHEDULE AND CHECK FOR UNAVAILABLE DATES
 router.get("/schedule_count", (req, res) => {
     const { patient_type } = req.query
-    db.query(`SELECT * FROM schedule`, (err, result1) => {
+    db.query(`
+    SELECT * FROM schedule;
+    SELECT COUNT(admin_id) AS doctorCount FROM admin_accounts WHERE specialty=${db.escape(patient_type)};
+    `, (err, result1) => {
         if(err) throw err;
 
-        let startTime = dayjs(`2020-01-01 ${result1[0].startTime}`)
-        let endTime = dayjs(`2020-01-01 ${result1[0].endTime}`)
+        let startTime = dayjs(`2020-01-01 ${result1[0][0].startTime}`)
+        let endTime = dayjs(`2020-01-01 ${result1[0][0].endTime}`)
+        let doctorCount = result1[1][0].doctorCount
 
         let totalAvailableTime = [];
 
@@ -570,7 +588,9 @@ router.get("/schedule_count", (req, res) => {
             startTime = startTime.add(15, "m")
         }
 
-        db.query(`SELECT COUNT(DATE(schedule)) AS schedule_count,DATE(schedule) AS schedule FROM appointments WHERE NOT schedule IS NULL AND patient_type=${db.escape(patient_type)} GROUP BY DATE(schedule) HAVING COUNT(DATE(schedule))>=${db.escape(totalAvailableTime.length)};
+        let maxNumberOfSchedule = totalAvailableTime.length * doctorCount
+
+        db.query(`SELECT COUNT(DATE(schedule)) AS schedule_count,DATE(schedule) AS schedule FROM appointments WHERE NOT schedule IS NULL AND patient_type=${db.escape(patient_type)} GROUP BY DATE(schedule) HAVING COUNT(DATE(schedule))>=${db.escape(maxNumberOfSchedule)};
     SELECT * FROM schedule;`,
     (err, result) => {
         if(err) throw err;
@@ -612,11 +632,13 @@ router.post("/time/available", (req, res) => {
     db.query(`
         SELECT * FROM schedule;
         SELECT * FROM appointments WHERE DATE(schedule)=DATE(${db.escape(dateSched)}) AND patient_type=${db.escape(patient_type)};
+        SELECT COUNT(admin_id) AS doctorCount FROM admin_accounts WHERE specialty=${db.escape(patient_type)};
     `,(err, result) => {
         if(err) throw err;
 
         let startTime = dayjs(`2020-01-01 ${result[0][0].startTime}`)
         let endTime = dayjs(`2020-01-01 ${result[0][0].endTime}`)
+        let doctorCount = result[2][0].doctorCount
 
         let existingSchedules = result[1].map((apt) => (dayjs(apt.schedule).format("HH:mm:ss")))
         let availableTimes = []
@@ -635,7 +657,8 @@ router.post("/time/available", (req, res) => {
                 orig: v
             }
 
-            if(existingSchedules.includes(v)){
+            let existingTime = existingSchedules.filter((eTime) => (eTime.includes(v)))
+            if(existingTime.length >= doctorCount){
                 return;
             }
 
@@ -646,9 +669,7 @@ router.post("/time/available", (req, res) => {
             results.push(time)
         })
 
-        res.json({
-            results
-        })
+        res.json({ results })
     })
 })
 

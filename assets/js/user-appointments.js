@@ -36,52 +36,8 @@ $(document).ready(function (e) {
         timepicker.val("")
     }
 
-    //ONCHANGE SHOW DATE
-    showDate.on("change", function (e) {
-        $("table").DataTable({
-            ajax: `/client/appointments/list?sort=${sortSatus.val()}&show=${showDate.val()}`,
-            lengthMenu: [[10, 25, 35, 50, -1], [10, 25, 35, 50, "All"]],
-            ordering: false,
-            columns: [
-                {
-                    data: "schedule"
-                },
-                {
-                    data: "patient_type"
-                },
-                {
-                    data: "status"
-                }
-            ],
-            destroy: true
-        })
-    })
-
-    //ONCHANGE SORT STATUS
-    sortSatus.on("change", function (e) {
-
-        $("table").DataTable({
-            ajax: `/client/appointments/list?sort=${sortSatus.val()}&show=${showDate.val()}`,
-            lengthMenu: [[10, 25, 35, 50, -1], [10, 25, 35, 50, "All"]],
-            ordering: false,
-            columns: [
-                {
-                    data: "schedule"
-                },
-                {
-                    data: "patient_type"
-                },
-                {
-                    data: "status"
-                }
-            ],
-            destroy: true
-        })
-
-    })
-
     //INITIALIZE DATATABLE APPOINTMENTS
-    $("table").DataTable({
+    const dataTables = $("table").DataTable({
         ajax: `/client/appointments/list?sort=${sortSatus.val()}&show=${showDate.val()}`,
         lengthMenu: [[10, 25, 35, 50, -1], [10, 25, 35, 50, "All"]],
         ordering: false,
@@ -94,8 +50,50 @@ $(document).ready(function (e) {
             },
             {
                 data: "status"
+            },
+            {
+                data: "apt_id",
+                render: (apt_id, type, row) => {
+                    const { status } = row
+                    console.log(apt_id)
+                    return status == "Pending" || status == "Approved" ? `<input type="submit" id="cancel" data-id="${apt_id}" value="CANCEL" class="btn btn-danger" />` : "N/A"
+                }
             }
         ]
+    })
+
+    //ONCHANGE SORT STATUS & SHOW DATE
+    $("#sort,#show").on("change", function (e) {
+        dataTables.ajax.url(`/client/appointments/list?sort=${sortSatus.val()}&show=${showDate.val()}`).load()
+    })
+
+    $("table").on("click", "#cancel", function(e) {
+        const apt_id = $(this).attr("data-id")
+
+        $(".loading").css("display", "block")
+
+        $.ajax({
+            url: `/client/appointments/cancel`,
+            type: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: JSON.stringify({
+                apt_id
+            }),
+            success: (res) => {
+                if (!res.operation) return showToast(`❌ Something went wrong`)
+                showToast(`✅ ${res.msg}`)
+                dataTables.ajax.reload()
+            },
+            error: (err) => {
+                console.log(err)
+                showToast("❌ Server error")
+            },
+            complete: () => {
+                $(".loading").css("display", "none")
+            }
+        })
     })
 
     //OPEN APPOINTMENT FORM
@@ -103,22 +101,6 @@ $(document).ready(function (e) {
         if (!$('input[type=hidden]').val()) return showToast("❌ Please update user information")
 
         $(".bg-shadow-dim").toggleClass("d-none")
-
-        // $.ajax({
-        //     url: "/client/appointments/check",
-        //     type: "GET",
-        //     success: (res) => {
-        //         if(!res.operation) return showToast(`❌ ${res.msg}`)
-        //         $(".bg-shadow-dim").toggleClass("d-none")
-        //     },
-        //     error: (error) => {
-        //         alert("Something went wrong!")
-        //         console.log(error)
-        //     },
-        //     complete: () => {
-        //         $(".loading").css("display", "none")
-        //     }
-        // })
     })
 
     //CLOSE APPOINTMENT FORM

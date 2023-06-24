@@ -18,7 +18,7 @@
 <body class="bg-light text-dark">
     <a class="btn bg-light text-dark position-fixed top-0 ms-2" style="font-size: 3vw;" href="/admin/scheduled"><i class="bi bi-box-arrow-left me-3"></i></a>
     <h1 class="text-center mb-3 mt-4">Schedule Record</h1>
-    <h1 class="text-center mb-3">#<%= apt_id.split('-')[0] %></h1>
+    <h1 class="text-center mb-3">Patient ID No. #<%= apt_id.split('-')[0].toUpperCase() %></h1>
 
     <div class="container border border-dark rounded border-5 text-dark bg-light text-center w-75 mb-5 position-relative p-4 d-flex flex-column gap-3">
         <h5 class="text-center pb-3 border-bottom border-dark border-4">Patient Information</h5>
@@ -99,7 +99,7 @@
                 <div class="form-group w-100">
                     <label class="form-label mb-0 important" for="temperature">Temperature</label>
                     <div class="input-group border-4 border-dark rounded border">
-                        <input placeholder="(e.g., 37)" value="" type="number" class="form-control rounded text-center"
+                        <input maxlength="2" placeholder="(e.g., 37)" value="" type="text" class="form-control rounded text-center"
                         id="temperature" />
                         <span class="input-group-text">°C</span>
                     </div>
@@ -111,14 +111,14 @@
                 <div class="form-group w-100">
                     <label class="form-label mb-0 important" for="weight">Weight</label>
                     <div class="input-group border-4 border-dark rounded border">
-                        <input placeholder="(e.g., 50)" value="" type="number" class="form-control text-center" id="weight" />
+                        <input maxlength="3" placeholder="(e.g., 50)" value="" type="text" class="form-control text-center" id="weight" />
                         <span class="input-group-text">kg</span>
                     </div>
                 </div>
                 <div class="form-group w-100">
                     <label class="form-label mb-0 important" for="height">Height</label>
                     <div class="input-group border-dark border-4 rounded border">
-                        <input placeholder="(e.g., 175)" value="" type="number" class="form-control rounded text-center" id="height" />
+                        <input maxlength="3" placeholder="(e.g., 175)" value="" type="text" class="form-control rounded text-center" id="height" />
                         <span class="input-group-text">cm</span>
                     </div>
                 </div>

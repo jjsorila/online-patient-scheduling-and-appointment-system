@@ -19,11 +19,6 @@ $(document).ready(function (e) {
         schedule.val("")
     }
 
-    //AUTO RELOAD
-    setInterval(() => {
-        $("table").DataTable().ajax.reload()
-    }, 5000)
-
     //SHOW TOAST
     function showToast(text) {
         $(".toast-body").text(text)

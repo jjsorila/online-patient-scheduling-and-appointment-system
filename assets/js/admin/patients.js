@@ -20,10 +20,6 @@ $(document).ready(function (e) {
     })
     $("span.select2").addClass("border border-4 border-dark rounded text-center w-100")
 
-    setInterval(() => {
-        $("table").DataTable().ajax.reload()
-    }, 5000)
-
     //CLEAR INPUT FORM
     function clearInput() {
         age.val("")

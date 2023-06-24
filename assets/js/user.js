@@ -14,6 +14,9 @@ $(document).ready(function (e) {
     const gContact = $("#g-contact")
     const gAddress = $("#g-address")
     const gRelationship = $("#g-relationship")
+    function beforeUnloadFunction() {
+        return "You have unsaved changes"
+    }
 
     //CUSTOM DROPDOWN
     gender.select2({
@@ -165,10 +168,10 @@ $(document).ready(function (e) {
             success: (res) => {
                 if (!res.operation) return showToast("❌ Something went wrong")
                 $(".confirmation-shadow").toggleClass("d-none")
-                $(window).off('beforeunload');
-                $("input:not(#email):not(#username):not([type=file]):not([type=submit]#view),textarea,select").prop("disabled", true)
-                $("#edit").toggleClass("d-none")
-                $("#save").toggleClass("d-none")
+                // $(window).off('beforeunload', beforeUnloadFunction);
+                // $("input:not(#email):not(#username):not([type=file]):not([type=submit]#view),textarea,select").prop("disabled", true)
+                // $("#edit").toggleClass("d-none")
+                // $("#save").toggleClass("d-none")
                 showToast("✅ User updated!")
             },
             error: (err) => {
@@ -185,12 +188,10 @@ $(document).ready(function (e) {
     })
 
     //ENABLE EDIT MODE
-    $("#edit").click(function (e) {
-        $(window).on('beforeunload', function (e) {
-            return "You have unsaved changes"
-        });
-        $("input:not(#email):not(#username),textarea,select").prop("disabled", false)
-        $("#edit").toggleClass("d-none")
-        $("#save").toggleClass("d-none")
-    })
+    // $("#edit").click(function (e) {
+    //     $(window).on('beforeunload', beforeUnloadFunction);
+    //     $("input:not(#email):not(#username),textarea,select").prop("disabled", false)
+    //     $("#edit").toggleClass("d-none")
+    //     $("#save").toggleClass("d-none")
+    // })
 })

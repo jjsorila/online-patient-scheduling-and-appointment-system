@@ -24,11 +24,11 @@ $(document).ready(function (e) {
         }
     });
 
-    $("input[type=number]").keypress(function(e) {
-        if(e.which == 101 || e.which == 45){
-            e.preventDefault()
-        }else {
+    $("input#weight,input#height,input#temperature").keypress(function(e) {
+        if((e.which >= 48 && e.which <= 57) || e.which == 8){
             return null
+        }else{
+            e.preventDefault()
         }
     })
 
@@ -56,7 +56,7 @@ $(document).ready(function (e) {
     $("#save").click(function (e) {
         if(!temperature.val() || !bp.val() || !weight.val() || !height.val()) return showToast("❌ Complete required fields")
         const bpVal = bp.val().split("/")
-        if(bpVal.length != 2 || !bpVal[0] || !bpVal[1]) return showToast("❌ Invalid blood pressure")
+        if(bpVal.length != 2 || !bpVal[0] || !bpVal[1] || bpVal[0].length > 3 || bpVal[1].length > 3) return showToast("❌ Invalid blood pressure")
 
         $(".confirmation-shadow").toggleClass("d-none")
     })

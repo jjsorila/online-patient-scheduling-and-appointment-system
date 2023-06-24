@@ -20,7 +20,7 @@ $(document).ready(function() {
         lengthMenu: [[10, 20, 30, 50, -1], [10, 20, 30, 50, "All"]],
         columns: [
             {
-                data: "id"
+                data: "queue"
             },
             {
                 data: "fullname",
@@ -30,7 +30,7 @@ $(document).ready(function() {
                 data: "patient_type"
             },
             {
-                data: "schedule"
+                data: "mod_schedule"
             },
             {
                 data: "apt_id",
@@ -81,7 +81,7 @@ $(document).ready(function() {
             lengthMenu: [[10, 20, 30, 50, -1], [10, 20, 30, 50, "All"]],
             columns: [
                 {
-                    data: "id"
+                    data: "queue"
                 },
                 {
                     data: "fullname",
@@ -91,7 +91,7 @@ $(document).ready(function() {
                     data: "patient_type"
                 },
                 {
-                    data: "schedule"
+                    data: "mod_schedule"
                 },
                 {
                     data: "apt_id",
@@ -122,7 +122,7 @@ $(document).ready(function() {
             lengthMenu: [[10, 20, 30, 50, -1], [10, 20, 30, 50, "All"]],
             columns: [
                 {
-                    data: "id"
+                    data: "queue"
                 },
                 {
                     data: "fullname",
@@ -132,7 +132,7 @@ $(document).ready(function() {
                     data: "patient_type"
                 },
                 {
-                    data: "schedule"
+                    data: "mod_schedule"
                 },
                 {
                     data: "apt_id",
@@ -165,7 +165,7 @@ $(document).ready(function() {
             lengthMenu: [[10, 20, 30, 50, -1], [10, 20, 30, 50, "All"]],
             columns: [
                 {
-                    data: "id"
+                    data: "queue"
                 },
                 {
                     data: "fullname",
@@ -175,7 +175,7 @@ $(document).ready(function() {
                     data: "patient_type"
                 },
                 {
-                    data: "schedule"
+                    data: "mod_schedule"
                 },
                 {
                     data: "apt_id",

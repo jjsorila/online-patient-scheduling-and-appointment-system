@@ -109,16 +109,15 @@ router.get('/reset', getResetPasswordToken, (req, res) => {
 
 //==================================================================================================================================================================================================
 
+//PATIENT CANCEL THEIR APPOINTMENT
+router.post("/appointments/cancel", (req, res) => {
+    const { apt_id } = req.body
 
-//CHECK FOR ONGOING APPOINTMENT
-router.get(`/appointments/check`, (req, res) => {
-    const { id } = req.session.user
-
-    db.query(`SELECT * FROM appointments WHERE id=${db.escape(id)} AND (status='Approved' OR status='Pending' OR status='Follow-up')`, (err, result) => {
+    db.query(`UPDATE appointments SET status='Cancelled',reason='Cancelled by patient' WHERE apt_id=${db.escape(apt_id)};`,
+    (err, result) => {
         if(err) throw err;
 
-        if(result.length >= 1) return res.json({ operation: false, msg: "You have an ongoing appointment" })
-        res.json({ operation: true })
+        return res.json({ operation: true, msg: "Successfully cancelled" })
     })
 })
 
@@ -326,7 +325,7 @@ router.get('/appointments/list', protected, (req, res) => {
     if (show == "Week") schedule = `WEEK(schedule)=WEEK(CURDATE())`
     if (show == "Month") schedule = `MONTH(schedule)=MONTH(CURDATE())`
 
-    db.query(`SELECT schedule,patient_type,status FROM appointments WHERE ${status} AND ${schedule} AND id=${db.escape(id)} ORDER BY schedule;`,
+    db.query(`SELECT apt_id,schedule,patient_type,status FROM appointments WHERE ${status} AND ${schedule} AND id=${db.escape(id)} ORDER BY schedule;`,
         (err, result) => {
             if (err) throw err;
 
