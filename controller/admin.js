@@ -641,7 +641,7 @@ router.get('/getinfostaff', (req, res) => {
     })
 })
 
-//CHECK THE CURRENT TIMESLOT SCHEDULE AND CHECK FOR UNAVAILABLE DATES
+//GET UNAVAILABLE DATES
 router.get("/schedule_count", (req, res) => {
     const { patient_type } = req.query
     db.query(`
@@ -697,7 +697,7 @@ router.put("/timeslot", (req, res) => {
     })
 })
 
-//CHECK IF TIME IS AVAILABLE
+//GET AVAILABLE TIMES
 router.post("/time/available", (req, res) => {
     const { dateSched, patient_type } = req.body
 
