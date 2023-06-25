@@ -20,27 +20,43 @@
 
             <div class="container">
                 <div class="container border border-dark border-4 rounded p-3 bg-light">
-                    <label class="form-label text-center text-dark w-100">SORT</label>
-                    <div class="form-group w-50 mb-2 mx-auto d-flex justify-content-center gap-3">
-                        <div class="form-check w-100 p-0 m-0">
-                            <input type="radio" class="btn-check" name="selectedSort" value="DAY" id="today" checked/>
-                            <label class="btn btn-primary w-100 d-block" for="today">TODAY</label>
-                        </div>
-                        <div class="form-check w-100 p-0 m-0">
-                            <input class="btn-check" type="radio" name="selectedSort" id="custom">
-                            <label class="btn btn-primary w-100 d-block" for="custom">DATE RANGE</label>
-                        </div>
-                    </div>
-                    <div class="form-group date-wrapper w-50 mx-auto d-flex align-items-center gap-3 pb-2 d-none">
-                        <div class="date_container d-flex flex-column flex-md-row w-100 justify-content-center gap-2 m-0">
-                            <div class="form-group text-center w-100">
-                                <label class="form-label text-dark m-0">FROM</label>
-                                <input type="date" class="text-center form-control border border-dark border-4" id="from"/>
+                    <div class="container p-0">
+                        <div class="form-group w-100">
+                            <label class="form-label text-center text-dark w-100">SORT DATE</label>
+                            <div class="form-group w-50 mb-2 mx-auto d-flex justify-content-center gap-3">
+                                <div class="form-check w-100 p-0 m-0">
+                                    <input type="radio" class="btn-check" name="selectedSort" value="DAY" id="today" checked/>
+                                    <label class="btn btn-primary w-100 d-block" for="today">TODAY</label>
+                                </div>
+                                <div class="form-check w-100 p-0 m-0">
+                                    <input class="btn-check" type="radio" name="selectedSort" id="custom">
+                                    <label class="btn btn-primary w-100 d-block" for="custom">DATE RANGE</label>
+                                </div>
                             </div>
-                            <div class="form-group text-center w-100">
-                                <label class="form-label text-dark m-0">TO</label>
-                                <input type="date" class="text-center form-control border border-dark border-4" id="to"/>
+                            <div class="form-group date-wrapper w-50 mx-auto d-flex align-items-center gap-3 pb-2 d-none">
+                                <div class="date_container d-flex flex-column flex-md-row w-100 justify-content-center gap-2 m-0">
+                                    <div class="form-group text-center w-100">
+                                        <label class="form-label text-dark m-0">FROM</label>
+                                        <input type="date" class="text-center form-control border border-dark border-4" id="from"/>
+                                    </div>
+                                    <div class="form-group text-center w-100">
+                                        <label class="form-label text-dark m-0">TO</label>
+                                        <input type="date" class="text-center form-control border border-dark border-4" id="to"/>
+                                    </div>
+                                </div>
                             </div>
+                        </div>
+                        <div class="form-group w-100 mb-3">
+                            <label class="form-label text-center text-dark w-100">SORT TYPE</label>
+                            <select class="form-select border border-dark border-3 rounded text-center text-dark" id="selectSort">
+                                <% if(admin.specialty != "admin") { %>
+                                    <option value="<%= admin.specialty %>"><%= admin.specialty %></option>
+                                <% }else{ %>
+                                    <option value="All">All</option>
+                                    <option value="Pedia">Pedia</option>
+                                    <option value="OB">OB</option>
+                                <% } %>
+                            </select>
                         </div>
                     </div>
                     <table class="table text-center table-striped table-hover">

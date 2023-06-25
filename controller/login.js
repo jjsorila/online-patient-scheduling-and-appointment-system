@@ -16,7 +16,7 @@ router.post('/', (req, res) => {
 
     db.query(`
         SELECT id,email,password,fullname FROM patient_accounts WHERE username=${db.escape(username)};
-        SELECT admin_id,username,password,specialty,fullname FROM admin_accounts WHERE username=${db.escape(username)};
+        SELECT admin_id,username,password,specialty,fullname,license_number FROM admin_accounts WHERE username=${db.escape(username)};
     `, (err, result) => {
         if(err) throw err;
 
@@ -32,6 +32,7 @@ router.post('/', (req, res) => {
             req.session.admin = {
                 id: creds.admin_id,
                 specialty: creds.specialty,
+                license_number: creds.license_number,
                 fullname: creds.fullname
             }
 

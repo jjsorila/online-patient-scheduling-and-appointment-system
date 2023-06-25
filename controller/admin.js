@@ -24,13 +24,20 @@ const transporter = (email, body) => {
 
 //ADMIN DASHBOARD
 router.get('/dashboard', protected, (req, res) => {
-    const { specialty } = req.session.admin
+    const { specialty, license_number } = req.session.admin
+    let whoseDoctor;
+
     const isNotAdmin = specialty != "admin" ? `patient_type=${db.escape(specialty)} AND` : "";
+    if(!license_number || license_number == "admin"){
+        whoseDoctor = ``
+    }else{
+        whoseDoctor = `doctor_license=${db.escape(license_number)} AND`
+    }
 
     db.query(`
         SELECT COUNT(id) AS total_patients FROM patient_accounts WHERE NOT fullname IS NULL;
         SELECT COUNT(admin_id) AS total_doctors FROM admin_accounts;
-        SELECT COUNT(apt_id) AS total_scheduled FROM appointments WHERE ${isNotAdmin} (status='Approved' OR status='Follow-up') AND (DATE(schedule)=DATE(NOW()) OR DATE(date_created_walk_in)=DATE(NOW()));
+        SELECT COUNT(apt_id) AS total_scheduled FROM appointments WHERE ${isNotAdmin} ${whoseDoctor} (status='Approved' OR status='Follow-up') AND (DATE(schedule)=DATE(NOW()) OR DATE(date_created_walk_in)=DATE(NOW()));
         SELECT COUNT(staff_id) AS total_staffs FROM staff_list;
         SELECT * FROM schedule;
     `, (err, result) => {
@@ -146,6 +153,46 @@ router.get('/staffs', protected, onlyAdmin, (req, res) => {
 
 //================================================================================================================================
 
+//GET AVAILABLE DOCTORS
+router.post("/doctor/available", (req, res) => {
+    const { patient_type, type, sched } = req.body
+
+    db.query(`SELECT fullname,license_number FROM admin_accounts WHERE specialty=${db.escape(patient_type)}`,
+    (err, result) => {
+        if(err) throw err;
+
+        const availableDoctors = result.map((obj,i) => ({
+            ...obj,
+            id: i,
+            text: obj.fullname.includes("Dr") || obj.fullname.includes("Dra") ? obj.fullname : `Dr. ${obj.fullname}`
+        }))
+
+        if(type=="Online"){
+            const parsedSched = dayjs(sched).format("YYYY-MM-DD HH:mm:ss")
+
+            db.query(`SELECT doctor_license,patient_type,schedule FROM appointments WHERE schedule=${db.escape(parsedSched)} AND status="Approved"`,
+            (err1, result1) => {
+                if(err1) throw err;
+
+                result1.forEach((unavailableDoctor) => {
+                    const doctorIndex = [...availableDoctors].findIndex((doc) => {
+                        return doc.license_number == unavailableDoctor.doctor_license
+                    })
+
+                    if(doctorIndex >= 0){
+                        availableDoctors.splice(doctorIndex, 1)
+                    }
+                })
+
+                res.json({ availableDoctors })
+
+            })
+
+            return null;
+        }
+        res.json({ availableDoctors })
+    })
+})
 
 //LOGOUT ACCOUNT
 router.post('/logout', (req, res) => {
@@ -189,19 +236,28 @@ router.get('/list/appointments', (req, res) => {
 
 //APPROVE/CANCEL APPOINTMENTS
 router.post('/action/appointments', (req, res) => {
-    const { action, apt_id, reason, email, schedule, sudden } = req.body
+    const { action, apt_id, reason, email, schedule, sudden, license_number } = req.body
 
-    db.query(`UPDATE appointments SET status=${db.escape(action)} WHERE apt_id=${db.escape(apt_id)}`,
-    (err1) => {
+    let query = `,doctor_license=NULL`;
+
+    if(sudden) query = ``
+
+    db.query(`
+    UPDATE appointments SET status=${db.escape(action)},doctor_license=${db.escape(license_number)} WHERE apt_id=${db.escape(apt_id)};
+    SELECT * FROM admin_accounts WHERE license_number=${db.escape(license_number)};`,
+    (err1, result) => {
         if (err1) throw err1;
 
+        const yourDoctor = result[1][0].fullname.includes("Dr") || result[1][0].fullname.includes("Dra") ? result[1][0].fullname : `Dr. ${result[1][0].fullname}`
+
         if(action == "Cancelled"){
-            db.query(`UPDATE appointments SET reason=${db.escape(reason)} WHERE apt_id=${db.escape(apt_id)}`, (err2) => {
+            db.query(`UPDATE appointments SET reason=${db.escape(reason)}${query} WHERE apt_id=${db.escape(apt_id)}`, (err2) => {
                 if(err2) throw err2;
             })
 
             transporter(email, `
                 ${sudden ? `<h3>${sudden}</h3>` : `<h3>Your appointment on ${dayjs(schedule).format("MMM DD, YYYY h:mm A")} has been cancelled</h3>`}
+                ${sudden ? `<h3>Doctor: ${yourDoctor}</h3>` : ""}
                 <h3>Reason: ${reason}</h3>
             `).then((msg) => {
                 res.json({ operation: true })
@@ -210,6 +266,7 @@ router.post('/action/appointments', (req, res) => {
         }else{
             transporter(email, `
                 <h3>Your appointment on ${dayjs(schedule).format("MMM DD, YYYY h:mm A")} has been approved</h3>
+                <h3>Doctor: ${yourDoctor}</h3>
             `).then((msg) => {
                 res.json({ operation: true })
             })
@@ -235,11 +292,11 @@ router.get('/list/patients', (req, res) => {
 
 //SCHEDULE WALK-IN PATIENT
 router.post('/schedule/walk-in', (req, res) => {
-    const { patient_type, patient_id } = req.body
+    const { patient_type, patient_id, license_number } = req.body
 
     const patientMedicalRecordDate = dayjs(dayjs(new Date().toLocaleString("en-US", { timeZone: 'Asia/Hong_Kong' }).replace(',', '')).toDate()).format("YYYY-MM-DD HH:mm:ss")
 
-    db.query(`INSERT INTO appointments(apt_id,id,status,apt_type,date_created_walk_in,patient_type) VALUES(${db.escape(uuid.v4())},${db.escape(patient_id)},'Approved','Walk-in',${db.escape(patientMedicalRecordDate)},${db.escape(patient_type)})`,
+    db.query(`INSERT INTO appointments(apt_id,id,status,apt_type,date_created_walk_in,patient_type,doctor_license) VALUES(${db.escape(uuid.v4())},${db.escape(patient_id)},'Approved','Walk-in',${db.escape(patientMedicalRecordDate)},${db.escape(patient_type)},${db.escape(license_number)})`,
         (err, result) => {
             if (err) throw err;
             res.json({ operation: true })
@@ -295,18 +352,31 @@ router.put("/patient/update", (req, res) => {
 //GET SCHEDULED PATIENT TODAY
 router.get('/schedule/list', (req, res) => {
     const { sort, from, to } = req.query
-    const { specialty } = req.session.admin
+    let { type } = req.query
+    const { specialty, license_number } = req.session.admin
     const isNotAdmin = specialty != "admin" ? `patient_type=${db.escape(specialty)} AND` : "";
-    let query;
+    let query, whoseDoctor;
+
+    if(!license_number || license_number == "admin"){
+        whoseDoctor = ` `
+    }else{
+        whoseDoctor = ` AND apt.doctor_license=${db.escape(license_number)} `
+    }
+
+    if(type == "All" || type == "admin"){
+        type = ` `
+    }else{
+        type = ` AND apt.patient_type=${db.escape(type)} `
+    }
 
     if(sort){
         query =`
-        SELECT pa.email AS email,pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.schedule AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} DATE(apt.schedule)=DATE(NOW()) AND apt.apt_type='Online' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.schedule;
-        SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.date_created_walk_in AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} DATE(apt.date_created_walk_in)=DATE(NOW()) AND apt.apt_type='Walk-in' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.date_created_walk_in;`
+        SELECT apt.doctor_license AS doctor_license,pa.email AS email,pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.schedule AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} DATE(apt.schedule)=DATE(NOW()) AND apt.apt_type='Online' AND (apt.status='Approved' OR apt.status='Follow-up')${type}${whoseDoctor}ORDER BY apt.schedule;
+        SELECT apt.doctor_license AS doctor_license,pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.date_created_walk_in AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} DATE(apt.date_created_walk_in)=DATE(NOW()) AND apt.apt_type='Walk-in' AND (apt.status='Approved' OR apt.status='Follow-up')${type}${whoseDoctor}ORDER BY apt.date_created_walk_in;`
     }else{
         query =`
-        SELECT pa.email AS email,pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.schedule AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} (DATE(apt.schedule) BETWEEN ${db.escape(from)} AND ${db.escape(to)}) AND apt.apt_type='Online' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.schedule;
-        SELECT pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.date_created_walk_in AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} (DATE(apt.date_created_walk_in) BETWEEN ${db.escape(from)} AND ${db.escape(to)}) AND apt.apt_type='Walk-in' AND (apt.status='Approved' OR apt.status='Follow-up') ORDER BY apt.date_created_walk_in;`
+        SELECT apt.doctor_license AS doctor_license,pa.email AS email,pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.schedule AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} (DATE(apt.schedule) BETWEEN ${db.escape(from)} AND ${db.escape(to)}) AND apt.apt_type='Online' AND (apt.status='Approved' OR apt.status='Follow-up')${type}${whoseDoctor}ORDER BY apt.schedule;
+        SELECT apt.doctor_license AS doctor_license,pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.date_created_walk_in AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} (DATE(apt.date_created_walk_in) BETWEEN ${db.escape(from)} AND ${db.escape(to)}) AND apt.apt_type='Walk-in' AND (apt.status='Approved' OR apt.status='Follow-up')${type}${whoseDoctor}ORDER BY apt.date_created_walk_in;`
     }
 
     db.query(query, (err, result) => {
@@ -504,14 +574,17 @@ router.post("/doctors", protected, onlyAdmin, (req, res) => {
     db.query(`
     SELECT username FROM admin_accounts WHERE username=${db.escape(username)};
     SELECT username FROM patient_accounts WHERE username=${db.escape(username)};
+    SELECT license_number FROM admin_accounts WHERE license_number=${db.escape(license_number)};
     `,
         (errMatch, checkMatch) => {
             if (errMatch) throw errMatch;
 
             const usernameAdmin = checkMatch[0];
             const usernamePatient = checkMatch[1];
+            const existingNumber = checkMatch[2];
 
-            if (usernameAdmin.length >= 1 || usernamePatient.length >= 1) return res.json({ operation: false })
+            if(existingNumber.length >= 1) return res.json({ operation: false, msg: "❌ License number already exists" })
+            if (usernameAdmin.length >= 1 || usernamePatient.length >= 1) return res.json({ operation: false, msg: "❌ Username already exists" })
 
             db.query(`INSERT INTO admin_accounts(specialty,username,password,fullname,license_number,gender) VALUES(${values})`,
             (err, result) => {
@@ -631,7 +704,7 @@ router.post("/time/available", (req, res) => {
 
     db.query(`
         SELECT * FROM schedule;
-        SELECT * FROM appointments WHERE DATE(schedule)=DATE(${db.escape(dateSched)}) AND patient_type=${db.escape(patient_type)};
+        SELECT * FROM appointments WHERE DATE(schedule)=DATE(${db.escape(dateSched)}) AND patient_type=${db.escape(patient_type)} AND (status='Approved' OR status='Follow-up' OR status='Pending');
         SELECT COUNT(admin_id) AS doctorCount FROM admin_accounts WHERE specialty=${db.escape(patient_type)};
     `,(err, result) => {
         if(err) throw err;

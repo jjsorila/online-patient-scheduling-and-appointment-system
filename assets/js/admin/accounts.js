@@ -7,15 +7,10 @@ $(document).ready(function (e) {
     const doctorId = $("#doctor-id")
     const dGender = $("#dGender")
 
-    dGender.select2({
+    $("#dGender,#dSpecialty").select2({
         minimumResultsForSearch: -1,
-        dropdownCssClass: 'text-center'
-    })
-    $("span.select2").addClass("border border-4 border-dark rounded text-center w-100")
-
-    dSpecialty.select2({
-        minimumResultsForSearch: -1,
-        dropdownCssClass: 'text-center'
+        dropdownCssClass: 'text-center',
+        placeholder: "Select option"
     })
     $("span.select2").addClass("border border-4 border-dark rounded text-center w-100")
 
@@ -25,6 +20,8 @@ $(document).ready(function (e) {
         dLicense.val("")
         dUsername.val("")
         dPassword.val("")
+        dSpecialty.val("").trigger("change")
+        dGender.val("").trigger("change")
     }
 
     //INITIALIZE LIST OF DOCTORS TABLE
@@ -115,7 +112,7 @@ $(document).ready(function (e) {
 
     //ADD DOCTOR ACCOUNT
     $("#add").click(function (e) {
-        if (!dName.val() || !dLicense.val() || !dSpecialty.val() || dSpecialty.val() == "Choose" || !dUsername.val() || !dPassword.val()) return showToast("❌ Complete all fields")
+        if (!dName.val() || !dLicense.val() || !dSpecialty.val() || !dGender.val() || !dUsername.val() || !dPassword.val()) return showToast("❌ Complete all fields")
 
         $(".loading").css("display", "block")
 
@@ -134,7 +131,7 @@ $(document).ready(function (e) {
                 gender: dGender.val()
             }),
             success: (res) => {
-                if (!res.operation) return showToast("❌ Username already exist")
+                if (!res.operation) return showToast(res.msg)
                 $("table").DataTable().ajax.reload()
                 $(".bg-shadow").toggleClass("d-none")
                 showToast("✅ Added successfully")

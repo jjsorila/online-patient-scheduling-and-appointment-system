@@ -288,7 +288,7 @@ router.post('/appointments/:id', (req, res) => {
 
     db.query(`
     SELECT * FROM patient_accounts WHERE id=${db.escape(id)};
-    SELECT COUNT(id) AS ongoing FROM appointments WHERE id=${db.escape(id)} AND patient_type=${db.escape(patient_type)} AND (status='Approved' OR status='Pending' OR status='Follow-up')`,
+    SELECT COUNT(id) AS ongoing FROM appointments WHERE id=${db.escape(id)} AND patient_type=${db.escape(patient_type)} AND apt_type='Online' AND (status='Approved' OR status='Pending' OR status='Follow-up')`,
         (err, result) => {
             if (err) throw err;
 

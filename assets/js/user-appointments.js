@@ -112,7 +112,7 @@ $(document).ready(function (e) {
     //CHECK IF TIME IS VALID
     dateSched.change(function() {
         if(!dateSched.val()) return null
-        timepicker.val("")
+        timepicker.empty()
         timepicker.attr("disabled", false)
         timepicker.select2({
             placeholder: "Select Time",
@@ -153,7 +153,7 @@ $(document).ready(function (e) {
     patient_type.change(function(e) {
         if(!$(this).val()) return null
         dateSched.val("")
-        timepicker.val("")
+        timepicker.empty()
         timepicker.attr("disabled", true)
         $("#dateSched-container,#timeSched-container").removeClass("d-none")
         $.ajax({

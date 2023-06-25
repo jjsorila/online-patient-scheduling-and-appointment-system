@@ -12,13 +12,63 @@ $(document).ready(function (e) {
         gAddress = $("#g-address"),
         gRelationship = $("#g-relationship"),
         patient_type = $("#patient_type"),
-        hiddenPatientId = $("#hidden-patient-id");
+        hiddenPatientId = $("#hidden-patient-id"),
+        doctorList = $("#doctorList"),
+        license_number_holder = null;
 
-    patient_type.select2({
+    $("#gender,#patient_type").select2({
         minimumResultsForSearch: -1,
-        dropdownCssClass: 'text-center'
+        dropdownCssClass: 'text-center',
+        placeholder: "Select option"
+    })
+    doctorList.select2({
+        minimumResultsForSearch: -1,
+        dropdownCssClass: 'text-center',
+        placeholder: "Select a Doctor",
+        language: {
+            noResults: function() {
+                return 'No Doctor Available';
+            }
+        }
     })
     $("span.select2").addClass("border border-4 border-dark rounded text-center w-100")
+
+    patient_type.change(function(e) {
+        license_number_holder = null
+        doctorList.empty()
+
+        if(!$(this).val()) return null;
+
+        doctorList.select2({
+            placeholder: "Select a Doctor",
+            minimumResultsForSearch: -1,
+            dropdownCssClass: 'text-center',
+            language: {
+                noResults: function() {
+                    return 'No Doctor Available';
+                }
+            },
+            ajax: {
+                url: '/admin/doctor/available',
+                dataType: 'json',
+                type: 'POST',
+                data: function(params) {
+                  return {
+                    patient_type: patient_type.val()
+                  }
+                },
+                processResults: function(data) {
+                    return {
+                        results: data.availableDoctors
+                    };
+                }
+            }
+        })
+    })
+    doctorList.on("select2:select", function(e) {
+        const { license_number } = e.params.data
+        license_number_holder = license_number
+    })
 
     //CLEAR INPUT FORM
     function clearInput() {
@@ -27,14 +77,16 @@ $(document).ready(function (e) {
         lname.val("")
         fname.val("")
         birthday.val("")
-        gender.val("")
+        gender.val("").trigger("change")
         contact.val("")
         address.val("")
         gName.val("")
         gContact.val("")
         gAddress.val("")
         gRelationship.val("")
-        patient_type.val("Choose")
+        patient_type.val("").trigger("change")
+        doctorList.empty(),
+        license_number_holder = null
         hiddenPatientId.val("")
     }
 
@@ -113,7 +165,7 @@ $(document).ready(function (e) {
         e.stopPropagation()
     })
     $("#schedule").click(function (e) {
-        if (!patient_type.val() || patient_type.val() == "Choose") return showToast("❌ Choose patient type")
+        if (!patient_type.val() || !license_number_holder) return showToast("❌ Complete all fields")
 
         $(".loading").css("display", "block")
         $.ajax({
@@ -124,7 +176,8 @@ $(document).ready(function (e) {
             },
             data: JSON.stringify({
                 patient_id: hiddenPatientId.val(),
-                patient_type: patient_type.val()
+                patient_type: patient_type.val(),
+                license_number: license_number_holder
             }),
             success: (res) => {
                 showToast("✅ Scheduled successfully")
@@ -158,7 +211,8 @@ $(document).ready(function (e) {
 
     //ADD PATIENT
     $("#submit").click(function (e) {
-        if (!fname.val() || !mi.val() || !lname.val() || !birthday.val() || !age.val() || !gender.val() || !contact.val() || !address.val()) return showToast("❌ Complete required fields")
+        if (!fname.val() || !mi.val() || !lname.val() || !birthday.val() || !age.val() || !gender.val() || !contact.val() || !address.val()) return showToast("❌ Complete all fields")
+        if (Number(age.val()) <= 0) return showToast("❌ Invalid age")
 
         $(".loading").css("display", "block")
 
