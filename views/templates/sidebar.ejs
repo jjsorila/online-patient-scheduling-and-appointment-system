@@ -194,7 +194,7 @@ hr.h-color {
                 type: 'POST',
                 success: (res) => {
                     if (!res.operation) return showToast("❌ Something went wrong")
-                    location.href = "/login"
+                    location.reload(true)
                 },
                 error: (err) => {
                     console.log(err)
