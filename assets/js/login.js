@@ -59,7 +59,7 @@ $(document).ready(function (e) {
             }),
             success: (res) => {
                 if (!res.operation) return showToast("❌ Invalid Credentials")
-                location.href = `/${res.goTo}/dashboard`
+                location.reload(true)
             },
             error: (err) => {
                 console.log(err)
