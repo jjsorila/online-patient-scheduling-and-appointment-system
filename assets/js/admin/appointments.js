@@ -59,12 +59,12 @@ $(document).ready(function (e) {
             },
             {
                 data: "apt_id",
-                render: (data) => {
+                render: (data, type, row) => {
                     const { fullname } = data
                     const parsedName = `${fullname.lname}, ${fullname.fname} ${fullname.mi}${fullname.mi ? "." : ""}`
                     return (`
                     <div class="btn-group">
-                        <input type="submit" data-name='${parsedName}' data-patient='${data.patient}' data-complain='${data.complain}' data-sched=${data.schedule} data-email=${data.email} data-id=${data.id} id='view' class='btn btn-primary' value='View' />
+                        <input type="submit" data-name='${parsedName}' data-patient='${data.patient}' data-complain='${data.complain}' data-sched="${row.schedule}" data-email=${data.email} data-id=${data.id} id='view' class='btn btn-primary' value='View' />
                     </div>
                     `)
                 }
@@ -208,38 +208,7 @@ $(document).ready(function (e) {
             }),
             success: (res) => {
                 if (!res.operation) return showToast("❌ Something went wrong")
-                $('table').DataTable({
-                    ajax: `/admin/list/appointments?show=${selectedSort.val()}`,
-                    lengthMenu: [[10, 20, 30, 50, -1], [10, 20, 30, 50, "All"]],
-                    columns: [
-                        { data: "schedule" },
-                        {
-                            data: "fullname",
-                            render: ({ fname, lname, mi }) => (`${lname}, ${fname} ${mi}${mi ? "." : ""}`)
-                        },
-                        {
-                            data: "address",
-                            render: (addr) => (`${addr.slice(0, 7)}...`)
-                        },
-                        {
-                            data: "contact"
-                        },
-                        {
-                            data: "apt_id",
-                            render: (data) => {
-                                const { fullname } = data
-                                const parsedName = `${fullname.lname}, ${fullname.fname} ${fullname.mi}${fullname.mi ? "." : ""}`
-                                return (`
-                                <div class="btn-group">
-                                    <input type="submit" data-name='${parsedName}' data-patient='${data.patient}' data-complain='${data.complain}' data-sched=${data.schedule} data-email=${data.email} data-id=${data.id} id='view' class='btn btn-primary' value='View' />
-                                </div>
-                                `)
-                            }
-                        }
-                    ],
-                    ordering: false,
-                    destroy: true
-                });
+                myDataTable.ajax.reload()
                 $(".reason-shadow,.view-shadow").fadeToggle("fast")
                 clearSelected()
                 showToast("✅ Success")

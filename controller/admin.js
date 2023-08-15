@@ -247,8 +247,11 @@ router.post('/action/appointments', (req, res) => {
     SELECT * FROM admin_accounts WHERE license_number=${db.escape(license_number)};`,
     (err1, result) => {
         if (err1) throw err1;
-
-        const yourDoctor = result[1][0].fullname.includes("Dr") || result[1][0].fullname.includes("Dra") ? result[1][0].fullname : `Dr. ${result[1][0].fullname}`
+        
+        let yourDoctor = "";
+        if(result[1].length >= 1){
+            yourDoctor = result[1][0].fullname.includes("Dr") || result[1][0].fullname.includes("Dra") ? result[1][0].fullname : `Dr. ${result[1][0].fullname}`
+        }
 
         if(action == "Cancelled"){
             db.query(`UPDATE appointments SET reason=${db.escape(reason)}${query} WHERE apt_id=${db.escape(apt_id)}`, (err2) => {
