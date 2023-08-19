@@ -190,10 +190,11 @@ hr.h-color {
 
         $("#logout").click(function (e) {
             $.ajax({
-                url: '/admin/logout',
+                url: '/login/logout',
                 type: 'POST',
                 success: (res) => {
                     if (!res.operation) return showToast("❌ Something went wrong")
+                    sessionStorage.clear()
                     location.reload(true)
                 },
                 error: (err) => {

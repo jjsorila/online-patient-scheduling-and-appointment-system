@@ -59,6 +59,7 @@ $(document).ready(function (e) {
             }),
             success: (res) => {
                 if (!res.operation) return showToast("❌ Invalid Credentials")
+                sessionStorage.setItem("session", "true")
                 location.reload(true)
             },
             error: (err) => {

@@ -47,10 +47,11 @@
     //LOGOUT ACCOUNT
     $(".logout").click(function (e) {
       $.ajax({
-        url: '/client/logout',
+        url: '/login/logout',
         type: 'POST',
         success: (res) => {
           if (!res.operation) return alert("Server error");
+          sessionStorage.clear()
           location.reload(true)
         },
         error: (err) => {

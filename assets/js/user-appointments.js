@@ -55,7 +55,6 @@ $(document).ready(function (e) {
                 data: "apt_id",
                 render: (apt_id, type, row) => {
                     const { status } = row
-                    console.log(apt_id)
                     return status == "Pending" || status == "Approved" ? `<input type="submit" id="cancel" data-id="${apt_id}" value="CANCEL" class="btn btn-danger" />` : "N/A"
                 }
             }
@@ -164,6 +163,12 @@ $(document).ready(function (e) {
                     minDate: "today",
                     maxDate: new Date(new Date().getFullYear(), new Date().getMonth() + 2, new Date().getDate()),
                     disable: [
+                        function(date) {
+                            const today = new Date();
+                            return date.getFullYear() === today.getFullYear() &&
+                                date.getMonth() === today.getMonth() &&
+                                date.getDate() === today.getDate();
+                        },
                         function(date) {
                             return date.getDay() < scheduledTime.startDay || date.getDay() > scheduledTime.endDay
                         },

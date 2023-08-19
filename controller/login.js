@@ -61,5 +61,15 @@ router.post('/', (req, res) => {
     })
 })
 
+router.post("/logout", (req, res) => {
+    try {
+        req.session = null
+        res.json({ operation: true })
+    } catch (error) {
+        console.log(error)
+        res.json({ operation: false })
+    }
+})
+
 //EXPORT
 module.exports = router;
