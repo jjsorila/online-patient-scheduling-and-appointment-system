@@ -64,7 +64,7 @@ $(document).ready(function (e) {
                     const parsedName = `${fullname.lname}, ${fullname.fname} ${fullname.mi}${fullname.mi ? "." : ""}`
                     return (`
                     <div class="btn-group">
-                        <input type="submit" data-name='${parsedName}' data-patient='${data.patient}' data-complain='${data.complain}' data-sched="${row.schedule}" data-email=${data.email} data-id=${data.id} id='view' class='btn btn-primary' value='View' />
+                        <input type="submit" data-name='${parsedName}' data-patient='${data.patient}' data-complain='${data.complain}' data-sched="${row.schedule}" data-email=${data.email} data-id=${data.id} id='view' class='btn btn-primary' value='VIEW' />
                     </div>
                     `)
                 }
@@ -111,7 +111,7 @@ $(document).ready(function (e) {
         })
         $("span.select2").addClass("border border-4 border-dark rounded text-center w-100")
 
-        $(".view h4.data-sched").html(`Schedule: ${moment(current.attr("data-sched")).format("MMM DD, YYYY hh:mm A")}`)
+        $(".view h4.data-sched").html(`Schedule: ${current.attr("data-sched")}`)
         $(".view h4.data-name").html(`Name: ${current.attr("data-name")}`)
         $(".view h4.data-patient").html(`Patient Type: ${current.attr("data-patient")}`)
         $(".view textarea.data-complain").val(current.attr("data-complain"))

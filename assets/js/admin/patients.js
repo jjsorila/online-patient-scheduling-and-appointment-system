@@ -14,12 +14,20 @@ $(document).ready(function (e) {
         patient_type = $("#patient_type"),
         hiddenPatientId = $("#hidden-patient-id"),
         doctorList = $("#doctorList"),
-        license_number_holder = null;
+        timeSched = $("#timeSched"),
+        dateSched = $("#dateSched"),
+        license_number_holder = null,
+        selectedTimeHolder = null;
 
-    $("#gender,#patient_type").select2({
+    $("#gender").select2({
         minimumResultsForSearch: -1,
         dropdownCssClass: 'text-center',
         placeholder: "Select option"
+    })
+    patient_type.select2({
+        minimumResultsForSearch: -1,
+        dropdownCssClass: 'text-center',
+        placeholder: "Select Patient Type"
     })
     doctorList.select2({
         minimumResultsForSearch: -1,
@@ -31,11 +39,26 @@ $(document).ready(function (e) {
             }
         }
     })
+    timeSched.select2({
+        minimumResultsForSearch: -1,
+        dropdownCssClass: 'text-center',
+        placeholder: "Select Time",
+        language: {
+            noResults: function() {
+                return 'No Time Available';
+            }
+        }
+    })
     $("span.select2").addClass("border border-4 border-dark rounded text-center w-100")
 
     patient_type.change(function(e) {
         license_number_holder = null
+        dateSched.val("")
         doctorList.empty()
+        timeSched.empty()
+        selectedTimeHolder = null
+        dateSched.flatpickr().destroy()
+        dateSched.attr("disabled", true)
 
         if(!$(this).val()) return null;
 
@@ -65,9 +88,83 @@ $(document).ready(function (e) {
             }
         })
     })
+
+    //GET AVAILABLE DATES WALK-IN PATIENT
     doctorList.on("select2:select", function(e) {
         const { license_number } = e.params.data
         license_number_holder = license_number
+        timeSched.empty()
+        selectedTimeHolder = null
+        dateSched.val("")
+        dateSched.flatpickr().destroy()
+        dateSched.attr("disabled", false)
+        $.ajax({
+            url: `/admin/schedule/walk-in/dates`,
+            type: 'POST',
+            headers: {
+                'Content-Type': "application/json"
+            },
+            data: JSON.stringify({
+                doctor_license: license_number
+            }),
+            success: ({ unavailable_dates, schedule }) => {
+                dateSched.flatpickr({
+                    minDate: "today",
+                    disable: [
+                        function(date) {
+                            return date.getDay() < schedule.startDay || date.getDay() > schedule.endDay
+                        },
+                        ...unavailable_dates
+                    ],
+                    altInput: true,
+                    altFormat: "m/d/Y"
+                });
+            },
+            error: (err) => {
+                console.log(err)
+                showToast("❌ Server error")
+            }
+        })
+    })
+
+    //GET AVAILABLE TIME WALK-IN PATIENT
+    dateSched.change(function(e) {
+        const current = $(this)
+        timeSched.empty()
+        selectedTimeHolder = null
+
+        if(!license_number_holder || !current.val()) return null;
+
+        timeSched.select2({
+            placeholder: "Select Time",
+            minimumResultsForSearch: -1,
+            dropdownCssClass: 'text-center',
+            language: {
+                noResults: function() {
+                    return 'No Time Available';
+                }
+            },
+            ajax: {
+                url: '/admin/schedule/walk-in/time',
+                dataType: 'json',
+                type: 'POST',
+                data: function(params) {
+                  return {
+                    doctor_license: license_number_holder,
+                    dateSched: current.val()
+                  }
+                },
+                processResults: function({ totalTimes }) {
+                    return {
+                        results: totalTimes
+                    };
+                }
+            }
+        })
+    })
+    timeSched.on("select2:select", function(e) {
+        const { orig } = e.params.data
+        selectedTimeHolder = orig
     })
 
     //CLEAR INPUT FORM
@@ -85,8 +182,11 @@ $(document).ready(function (e) {
         gAddress.val("")
         gRelationship.val("")
         patient_type.val("").trigger("change")
-        doctorList.empty(),
+        doctorList.empty()
+        timeSched.empty()
+        dateSched.val("")
         license_number_holder = null
+        selectedTimeHolder = null
         hiddenPatientId.val("")
     }
 
@@ -165,7 +265,7 @@ $(document).ready(function (e) {
         e.stopPropagation()
     })
     $("#schedule").click(function (e) {
-        if (!patient_type.val() || !license_number_holder) return showToast("❌ Complete all fields")
+        if (!patient_type.val() || !license_number_holder || !dateSched.val() || !selectedTimeHolder) return showToast("❌ Complete all fields")
 
         $(".loading").css("display", "block")
         $.ajax({
@@ -177,7 +277,8 @@ $(document).ready(function (e) {
             data: JSON.stringify({
                 patient_id: hiddenPatientId.val(),
                 patient_type: patient_type.val(),
-                license_number: license_number_holder
+                license_number: license_number_holder,
+                sched: `${dateSched.val()} ${selectedTimeHolder}`
             }),
             success: (res) => {
                 showToast("✅ Scheduled successfully")

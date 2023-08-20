@@ -161,14 +161,8 @@ $(document).ready(function (e) {
             success: ({ unavailable_dates, schedule:[ scheduledTime ] }) => {
                 dateSched.flatpickr({
                     minDate: "today",
-                    maxDate: new Date(new Date().getFullYear(), new Date().getMonth() + 2, new Date().getDate()),
+                    //maxDate: new Date(new Date().getFullYear(), new Date().getMonth() + 2, new Date().getDate()),
                     disable: [
-                        function(date) {
-                            const today = new Date();
-                            return date.getFullYear() === today.getFullYear() &&
-                                date.getMonth() === today.getMonth() &&
-                                date.getDate() === today.getDate();
-                        },
                         function(date) {
                             return date.getDay() < scheduledTime.startDay || date.getDay() > scheduledTime.endDay
                         },

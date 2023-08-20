@@ -194,17 +194,6 @@ router.post("/doctor/available", (req, res) => {
     })
 })
 
-//LOGOUT ACCOUNT
-router.post('/logout', (req, res) => {
-    try {
-        req.session = null
-        res.json({ operation: true })
-    } catch (error) {
-        console.log(error)
-        res.json({ operation: false })
-    }
-})
-
 //GET ALL APPOINTMENTS
 router.get('/list/appointments', (req, res) => {
     let { show } = req.query
@@ -247,7 +236,7 @@ router.post('/action/appointments', (req, res) => {
     SELECT * FROM admin_accounts WHERE license_number=${db.escape(license_number)};`,
     (err1, result) => {
         if (err1) throw err1;
-        
+
         let yourDoctor = "";
         if(result[1].length >= 1){
             yourDoctor = result[1][0].fullname.includes("Dr") || result[1][0].fullname.includes("Dra") ? result[1][0].fullname : `Dr. ${result[1][0].fullname}`
@@ -295,15 +284,130 @@ router.get('/list/patients', (req, res) => {
 
 //SCHEDULE WALK-IN PATIENT
 router.post('/schedule/walk-in', (req, res) => {
-    const { patient_type, patient_id, license_number } = req.body
+    const { patient_type, patient_id, license_number, sched } = req.body
 
-    const patientMedicalRecordDate = dayjs(dayjs(new Date().toLocaleString("en-US", { timeZone: 'Asia/Hong_Kong' }).replace(',', '')).toDate()).format("YYYY-MM-DD HH:mm:ss")
+    //const patientMedicalRecordDate = dayjs(dayjs(new Date().toLocaleString("en-US", { timeZone: 'Asia/Hong_Kong' }).replace(',', '')).toDate()).format("YYYY-MM-DD HH:mm:ss")
 
-    db.query(`INSERT INTO appointments(apt_id,id,status,apt_type,date_created_walk_in,patient_type,doctor_license) VALUES(${db.escape(uuid.v4())},${db.escape(patient_id)},'Approved','Walk-in',${db.escape(patientMedicalRecordDate)},${db.escape(patient_type)},${db.escape(license_number)})`,
+    db.query(`INSERT INTO appointments(apt_id,id,status,apt_type,schedule,patient_type,doctor_license) VALUES(${db.escape(uuid.v4())},${db.escape(patient_id)},'Approved','Walk-in',${db.escape(sched)},${db.escape(patient_type)},${db.escape(license_number)})`,
         (err, result) => {
             if (err) throw err;
             res.json({ operation: true })
         })
+})
+
+//GET AVAILABLE DATES WALK-IN PATIENT
+router.post("/schedule/walk-in/dates", (req, res) => {
+    const { doctor_license } = req.body
+
+    db.query(`
+        SELECT * FROM schedule;
+    `,(err, result) => {
+        if(err) throw err;
+
+        let endTime = dayjs(`2020-01-01 ${result[0].endTime}`)
+
+        let totalAvailableTime = [];
+
+        let morningStart = dayjs(`2020-01-01 ${result[0].startTime}`)
+        let afternoonStart = dayjs(`2020-01-01 13:00:00`)
+
+        //MORNING
+        while(morningStart.isBefore(`2020-01-01 11:59:00`)){
+            totalAvailableTime.push({
+                text: morningStart.format("h:mm A"),
+                orig: morningStart.format("HH:mm:ss")
+            })
+
+            morningStart = morningStart.add(45, "m")
+        }
+
+        //AFTERNOON
+        while(afternoonStart.isBefore(endTime)){
+            totalAvailableTime.push({
+                text: afternoonStart.format("h:mm A"),
+                orig: afternoonStart.format("HH:mm:ss")
+            })
+            afternoonStart = afternoonStart.add(45, "m")
+        }
+
+        let maxNumberOfSchedule = totalAvailableTime.length
+
+        db.query(`SELECT DATE(IF(schedule IS NULL, date_created_walk_in, schedule)) AS schedule_date, COUNT(IF(schedule IS NULL, date_created_walk_in, schedule)) AS schedule_count FROM appointments WHERE doctor_license=${db.escape(doctor_license)} GROUP BY DATE(schedule) HAVING COUNT(DATE(IF(schedule IS NULL, date_created_walk_in, schedule))) >= ${db.escape(maxNumberOfSchedule)};`,
+        (err1, result1) => {
+            if(err1) throw err1
+            res.json({
+                unavailable_dates: result1.map((sched) => (dayjs(sched.schedule_date).format("YYYY-MM-DD"))),
+                schedule: result[0]
+            })
+        })
+
+
+    })
+})
+
+//GET AVAILABLE TIME WALK-IN PATIENT
+router.post("/schedule/walk-in/time", (req, res) => {
+    const { doctor_license, dateSched } = req.body
+
+    db.query(`
+        SELECT * FROM schedule;
+    `,(err, result) => {
+        if(err) throw err;
+
+        let endTime = dayjs(`2020-01-01 ${result[0].endTime}`)
+        let totalAvailableTime = [];
+        let morningStart = dayjs(`2020-01-01 ${result[0].startTime}`)
+        let afternoonStart = dayjs(`2020-01-01 13:00:00`)
+        let idCount = 0
+
+        //MORNING
+        while(morningStart.isBefore(`2020-01-01 11:59:00`)){
+            totalAvailableTime.push({
+                id: idCount,
+                text: morningStart.format("h:mm A"),
+                orig: morningStart.format("HH:mm:ss")
+            })
+            morningStart = morningStart.add(45, "m")
+            idCount++
+        }
+
+        //AFTERNOON
+        while(afternoonStart.isBefore(endTime)){
+            totalAvailableTime.push({
+                id: idCount,
+                text: afternoonStart.format("h:mm A"),
+                orig: afternoonStart.format("HH:mm:ss")
+            })
+            afternoonStart = afternoonStart.add(45, "m")
+            idCount++
+        }
+
+        const curr_Time = dayjs(new Date()).format("YYYY-MM-DD HH:mm:ss")
+        const selected_Date = dayjs(dateSched).format("YYYY-MM-DD HH:mm:ss")
+
+        db.query(`SELECT IF(schedule IS NULL, date_created_walk_in, schedule) AS schedule FROM appointments WHERE (status='Approved' OR status='Pending' OR status='Follow-up') AND DATE(IF(schedule IS NULL, date_created_walk_in, schedule))=${db.escape(dateSched)} AND doctor_license=${db.escape(doctor_license)}`,
+        (err1, result1) => {
+            if(err1) throw err1;
+
+            const existingSchedules = result1.map((sched) => (dayjs(sched.schedule).format("HH:mm:ss")))
+
+            totalAvailableTime.forEach((v, i) => {
+                if(dayjs(curr_Time).isSame(selected_Date, "day")){
+                    v.disabled = dayjs(`2020-01-01 ${dayjs(curr_Time).format("HH:mm:ss")}`).isAfter(`2020-01-01 ${v.orig}`)
+                }
+
+                let isItExisting = existingSchedules.filter((sched) => (sched.includes(v.orig)))
+                if(isItExisting.length >= 1){
+                    v.disabled = true
+                }
+            })
+
+            res.json({
+                totalTimes: totalAvailableTime
+            })
+        })
+
+    })
 })
 
 //ADD NEW PATIENT
@@ -373,85 +477,99 @@ router.get('/schedule/list', (req, res) => {
     }
 
     if(sort){
-        query =`
-        SELECT apt.doctor_license AS doctor_license,pa.email AS email,pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.schedule AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} DATE(apt.schedule)=DATE(NOW()) AND apt.apt_type='Online' AND (apt.status='Approved' OR apt.status='Follow-up')${type}${whoseDoctor}ORDER BY apt.schedule;
-        SELECT apt.doctor_license AS doctor_license,pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.date_created_walk_in AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} DATE(apt.date_created_walk_in)=DATE(NOW()) AND apt.apt_type='Walk-in' AND (apt.status='Approved' OR apt.status='Follow-up')${type}${whoseDoctor}ORDER BY apt.date_created_walk_in;`
+        // query =`
+        // SELECT apt.doctor_license AS doctor_license,pa.email AS email,pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.schedule AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} DATE(apt.schedule)=DATE(NOW()) AND apt.apt_type='Online' AND (apt.status='Approved' OR apt.status='Follow-up')${type}${whoseDoctor}ORDER BY apt.schedule;
+        // SELECT apt.doctor_license AS doctor_license,pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.date_created_walk_in AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} DATE(apt.date_created_walk_in)=DATE(NOW()) AND apt.apt_type='Walk-in' AND (apt.status='Approved' OR apt.status='Follow-up')${type}${whoseDoctor}ORDER BY apt.date_created_walk_in;`
+        query = `SELECT apt.doctor_license AS doctor_license,pa.email AS email,pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,IF(apt.schedule IS NULL, apt.date_created_walk_in, apt.schedule) AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} DATE(IF(apt.schedule IS NULL, apt.date_created_walk_in, apt.schedule))=DATE(NOW()) AND (apt.status='Approved' OR apt.status='Follow-up')${type}${whoseDoctor}ORDER BY IF(apt.schedule IS NULL, apt.date_created_walk_in, apt.schedule);`
     }else{
-        query =`
-        SELECT apt.doctor_license AS doctor_license,pa.email AS email,pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.schedule AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} (DATE(apt.schedule) BETWEEN ${db.escape(from)} AND ${db.escape(to)}) AND apt.apt_type='Online' AND (apt.status='Approved' OR apt.status='Follow-up')${type}${whoseDoctor}ORDER BY apt.schedule;
-        SELECT apt.doctor_license AS doctor_license,pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.date_created_walk_in AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} (DATE(apt.date_created_walk_in) BETWEEN ${db.escape(from)} AND ${db.escape(to)}) AND apt.apt_type='Walk-in' AND (apt.status='Approved' OR apt.status='Follow-up')${type}${whoseDoctor}ORDER BY apt.date_created_walk_in;`
+        // query =`
+        // SELECT apt.doctor_license AS doctor_license,pa.email AS email,pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.schedule AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} (DATE(apt.schedule) BETWEEN ${db.escape(from)} AND ${db.escape(to)}) AND apt.apt_type='Online' AND (apt.status='Approved' OR apt.status='Follow-up')${type}${whoseDoctor}ORDER BY apt.schedule;
+        // SELECT apt.doctor_license AS doctor_license,pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.date_created_walk_in AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} (DATE(apt.date_created_walk_in) BETWEEN ${db.escape(from)} AND ${db.escape(to)}) AND apt.apt_type='Walk-in' AND (apt.status='Approved' OR apt.status='Follow-up')${type}${whoseDoctor}ORDER BY apt.date_created_walk_in;`
+        query = `SELECT apt.doctor_license AS doctor_license,pa.email AS email,pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,IF(apt.schedule IS NULL, apt.date_created_walk_in, apt.schedule) AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} (DATE(IF(apt.schedule IS NULL, apt.date_created_walk_in, apt.schedule)) BETWEEN ${db.escape(from)} AND ${db.escape(to)}) AND (apt.status='Approved' OR apt.status='Follow-up')${type}${whoseDoctor}ORDER BY IF(apt.schedule IS NULL, apt.date_created_walk_in, apt.schedule);`
     }
 
     db.query(query, (err, result) => {
         if(err) throw err;
+        // const onlineScheduled = result[0].map((scheduled) => ({
+        //     ...scheduled,
+        //     apt_id: {
+        //         walkin: false,
+        //         apt_id: scheduled.apt_id,
+        //         mod_schedule: dayjs(scheduled.schedule).format("MMM DD, YYYY hh:mm A"),
+        //         email: scheduled.email
+        //     },
+        //     fullname: JSON.parse(scheduled.fullname),
+        //     mod_schedule: dayjs(scheduled.schedule).format("MMM DD, YYYY hh:mm A"),
+        //     sort_sched: dayjs(scheduled.schedule).format("YYYY-MM-DD HH:mm:ss")
+        // }))
 
-        const onlineScheduled = result[0].map((scheduled) => ({
+        // const walkinScheduled = result[1].map((scheduled) => ({
+        //     ...scheduled,
+        //     apt_id: {
+        //         walkin: true,
+        //         apt_id: scheduled.apt_id
+        //     },
+        //     fullname: JSON.parse(scheduled.fullname),
+        //     mod_schedule: dayjs(scheduled.schedule).format("MMM DD, YYYY"),
+        //     sort_sched: dayjs(scheduled.schedule).format("YYYY-MM-DD HH:mm:ss")
+        // }))
+
+        // const newScheduled = [...onlineScheduled]
+
+        // onlineScheduled.reverse();
+        // newScheduled.reverse();
+
+        // if(walkinScheduled.length >= 1){
+        //     walkinScheduled.forEach((walkinV) => {
+        //         let [wDate] = walkinV.sort_sched.split(" ");
+
+        //         const indexHolder = onlineScheduled.findIndex((oV) => {
+        //             let [oDate] = oV.sort_sched.split(" ");
+        //             return oDate == wDate
+        //         })
+
+        //         if(indexHolder == -1){
+        //             for(let i = 0;i<onlineScheduled.length;i++){
+        //                 if(!dayjs(onlineScheduled[i].sort_sched).isAfter(walkinV.sort_sched)){
+        //                     newScheduled.splice(i, 0, walkinV);
+        //                     break;
+        //                 }
+        //             }
+        //         }else{
+        //             newScheduled.splice(indexHolder, 0, walkinV);
+        //         }
+        //     })
+        // }
+
+        // if(newScheduled.length <= 0){
+        //     walkinScheduled.forEach((v) => {
+        //         newScheduled.push(v)
+        //     })
+        // }else{
+        //     newScheduled.reverse()
+        // }
+
+        // const finalScheduled = newScheduled.map((v,i) => {
+        //     return {
+        //         ...v,
+        //         queue: i+1
+        //     }
+        // })
+
+        // res.json({ data: finalScheduled })
+
+        res.json({ data: result.map((scheduled, i) => ({
             ...scheduled,
+            queue: i+1,
             apt_id: {
-                walkin: false,
+                walkin: scheduled.apt_type != "Online",
                 apt_id: scheduled.apt_id,
                 mod_schedule: dayjs(scheduled.schedule).format("MMM DD, YYYY hh:mm A"),
                 email: scheduled.email
             },
             fullname: JSON.parse(scheduled.fullname),
             mod_schedule: dayjs(scheduled.schedule).format("MMM DD, YYYY hh:mm A"),
-            sort_sched: dayjs(scheduled.schedule).format("YYYY-MM-DD HH:mm:ss")
-        }))
-
-        const walkinScheduled = result[1].map((scheduled) => ({
-            ...scheduled,
-            apt_id: {
-                walkin: true,
-                apt_id: scheduled.apt_id
-            },
-            fullname: JSON.parse(scheduled.fullname),
-            mod_schedule: dayjs(scheduled.schedule).format("MMM DD, YYYY"),
-            sort_sched: dayjs(scheduled.schedule).format("YYYY-MM-DD HH:mm:ss")
-        }))
-
-        const newScheduled = [...onlineScheduled]
-
-        onlineScheduled.reverse();
-        newScheduled.reverse();
-
-        if(walkinScheduled.length >= 1){
-            walkinScheduled.forEach((walkinV) => {
-                let [wDate] = walkinV.sort_sched.split(" ");
-
-                const indexHolder = onlineScheduled.findIndex((oV) => {
-                    let [oDate] = oV.sort_sched.split(" ");
-                    return oDate == wDate
-                })
-
-                if(indexHolder == -1){
-                    for(let i = 0;i<onlineScheduled.length;i++){
-                        if(!dayjs(onlineScheduled[i].sort_sched).isAfter(walkinV.sort_sched)){
-                            newScheduled.splice(i, 0, walkinV);
-                            break;
-                        }
-                    }
-                }else{
-                    newScheduled.splice(indexHolder, 0, walkinV);
-                }
-            })
-        }
-
-        if(newScheduled.length <= 0){
-            walkinScheduled.forEach((v) => {
-                newScheduled.push(v)
-            })
-        }else{
-            newScheduled.reverse()
-        }
-
-        const finalScheduled = newScheduled.map((v,i) => {
-            return {
-                ...v,
-                queue: i+1
-            }
-        })
-
-        res.json({ data: finalScheduled })
+        })) })
     })
 })
 
@@ -493,11 +611,12 @@ router.post('/follow-up', (req, res) => {
         link_to,
         apt_id,
         sched,
+        doctor_license
     } = req.body
 
     db.query(`
         UPDATE appointments SET status='Done' WHERE apt_id=${db.escape(apt_id)};
-        INSERT INTO appointments(apt_id,id,link_to,schedule,status,apt_type,patient_type,med_complain) VALUES(${db.escape(follow_up_id)},${db.escape(patient_id)},${db.escape(link_to || apt_id)},${db.escape(sched)},'Follow-up','Online',${db.escape(patient_type)},${db.escape(med_complain)});
+        INSERT INTO appointments(doctor_license,apt_id,id,link_to,schedule,status,apt_type,patient_type,med_complain) VALUES(${db.escape(doctor_license)},${db.escape(follow_up_id)},${db.escape(patient_id)},${db.escape(link_to || apt_id)},${db.escape(sched)},'Follow-up','Online',${db.escape(patient_type)},${db.escape(med_complain)});
     `,(err, result) => {
         if(err) throw err;
         res.json({ operation: true })
@@ -653,15 +772,36 @@ router.get("/schedule_count", (req, res) => {
     `, (err, result1) => {
         if(err) throw err;
 
-        let startTime = dayjs(`2020-01-01 ${result1[0][0].startTime}`)
         let endTime = dayjs(`2020-01-01 ${result1[0][0].endTime}`)
         let doctorCount = result1[1][0].doctorCount
 
         let totalAvailableTime = [];
 
-        while(startTime.isBefore(endTime)){
-            totalAvailableTime.push(startTime)
-            startTime = startTime.add(15, "m")
+        let morningStart = dayjs(`2020-01-01 ${result1[0][0].startTime}`)
+        let afternoonStart = dayjs(`2020-01-01 13:00:00`)
+        let idCount = 0
+
+        //MORNING
+        while(morningStart.isBefore(`2020-01-01 11:59:00`)){
+            totalAvailableTime.push({
+                id: idCount,
+                text: morningStart.format("h:mm A"),
+                orig: morningStart.format("HH:mm:ss")
+            })
+
+            morningStart = morningStart.add(45, "m")
+            idCount++
+        }
+
+        //AFTERNOON
+        while(afternoonStart.isBefore(endTime)){
+            totalAvailableTime.push({
+                id: idCount,
+                text: afternoonStart.format("h:mm A"),
+                orig: afternoonStart.format("HH:mm:ss")
+            })
+            afternoonStart = afternoonStart.add(45, "m")
+            idCount++
         }
 
         let maxNumberOfSchedule = totalAvailableTime.length * doctorCount
@@ -712,40 +852,53 @@ router.post("/time/available", (req, res) => {
     `,(err, result) => {
         if(err) throw err;
 
-        let startTime = dayjs(`2020-01-01 ${result[0][0].startTime}`)
         let endTime = dayjs(`2020-01-01 ${result[0][0].endTime}`)
         let doctorCount = result[2][0].doctorCount
 
         let existingSchedules = result[1].map((apt) => (dayjs(apt.schedule).format("HH:mm:ss")))
         let availableTimes = []
 
-        while(startTime.isBefore(endTime)){
-            availableTimes.push(startTime.format("HH:mm:ss"))
-            startTime = startTime.add(15, "m")
+        let morningStart = dayjs(`2020-01-01 ${result[0][0].startTime}`)
+        let afternoonStart = dayjs(`2020-01-01 13:00:00`)
+        let idCount = 0
+
+        //MORNING
+        while(morningStart.isBefore(`2020-01-01 11:59:00`)){
+            availableTimes.push({
+                id: idCount,
+                text: morningStart.format("h:mm A"),
+                orig: morningStart.format("HH:mm:ss")
+            })
+
+            morningStart = morningStart.add(45, "m")
+            idCount++
         }
 
-        let results = []
+        //AFTERNOON
+        while(afternoonStart.isBefore(endTime)){
+            availableTimes.push({
+                id: idCount,
+                text: afternoonStart.format("h:mm A"),
+                orig: afternoonStart.format("HH:mm:ss")
+            })
+            afternoonStart = afternoonStart.add(45, "m")
+            idCount++
+        }
+
+        const curr_Time = dayjs(new Date()).format("YYYY-MM-DD HH:mm:ss")
+        const selected_Date = dayjs(dateSched).format("YYYY-MM-DD HH:mm:ss")
 
         availableTimes.forEach((v, i) => {
-            let time = {
-                id: i,
-                text: dayjs(`2020-01-01 ${v}`).format("h:mm A"),
-                orig: v
+            if(dayjs(curr_Time).isSame(selected_Date, "day")){
+                v.disabled = dayjs(`2020-01-01 ${dayjs(curr_Time).format("HH:mm:ss")}`).isAfter(`2020-01-01 ${v.orig}`)
             }
-
-            let existingTime = existingSchedules.filter((eTime) => (eTime.includes(v)))
+            let existingTime = existingSchedules.filter((eTime) => (eTime.includes(v.orig)))
             if(existingTime.length >= doctorCount){
-                return;
+                v.disabled = true
             }
-
-            if(dayjs(`2020-01-01 ${v}`).isBetween(`2020-01-01 11:59:00`,`2020-01-01 13:00:00`)){
-                return;
-            }
-
-            results.push(time)
         })
 
-        res.json({ results })
+        res.json({ results: availableTimes })
     })
 })
 
