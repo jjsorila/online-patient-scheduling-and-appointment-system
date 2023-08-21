@@ -32,7 +32,7 @@ $(document).ready(function (e) {
             })
 
             el.tooltip({
-                title: event.status,
+                title: event.tooltipTitle,
                 placement: "left",
                 trigger: "hover",
                 container: "body"

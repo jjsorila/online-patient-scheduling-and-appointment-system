@@ -26,11 +26,6 @@ const express = require('express'),
     form = require('formidable')({ keepExtensions: true }),
     fs = require('fs');
 
-function getAge(dateString) {
-    var ageInMilliseconds = new Date() - new Date(dateString);
-    return Math.floor(ageInMilliseconds / 1000 / 60 / 60 / 24 / 365);
-}
-
 //==================================================================================================================================================================================================
 
 //DASHBOARD PAGE
@@ -52,8 +47,7 @@ router.get('/user', protected, (req, res) => {
                     ...result[0],
                     fullname: JSON.parse(result[0].fullname),
                     guardian: JSON.parse(result[0].guardian),
-                    birthdate: dayjs(result[0].birthdate).format("YYYY-MM-DD"),
-                    age: result[0].birthdate ? getAge(result[0].birthdate) : null
+                    birthdate: dayjs(result[0].birthdate).format("YYYY-MM-DD")
                 }
             })
         })
@@ -337,7 +331,8 @@ router.get('/appointments/calendar', protected, (req, res) => {
 
         let data = result.map((obj) => ({
             ...obj,
-            title: `${dayjs(obj.start).format("h:mmA")} ${obj.title} - ${obj.status}`,
+            tooltipTitle: obj.title,
+            title: `${dayjs(obj.start).format("h:mmA")} - ${obj.status}`,
             header: dayjs(obj.start).format("MMM D, YYYY")
         }))
 

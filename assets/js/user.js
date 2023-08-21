@@ -14,9 +14,7 @@ $(document).ready(function (e) {
     const gContact = $("#g-contact")
     const gAddress = $("#g-address")
     const gRelationship = $("#g-relationship")
-    function beforeUnloadFunction() {
-        return "You have unsaved changes"
-    }
+    let invalidBirthdate = false;
 
     //CUSTOM DROPDOWN
     gender.select2({
@@ -33,9 +31,29 @@ $(document).ready(function (e) {
         reader.onerror = error => reject(error);
     });
 
-    function getAge(dateString) {
-        var ageInMilliseconds = new Date() - new Date(dateString);
-        return Math.floor(ageInMilliseconds / 1000 / 60 / 60 / 24 / 365);
+    //AUTO CALCULATE AGE
+    function calculateAge(birthdate) {
+        const birthYear = birthdate.getFullYear();
+        const birthMonth = birthdate.getMonth();
+        const currentDate = new Date();
+
+        const currentYear = currentDate.getFullYear();
+        const currentMonth = currentDate.getMonth();
+
+        if (birthdate > currentDate) {
+            showToast("❌ Invalid Birthdate")
+            return null;
+        }
+
+        let ageYears = currentYear - birthYear;
+        let ageMonths = currentMonth - birthMonth;
+
+        if (ageMonths < 0) {
+            ageYears--;
+            ageMonths += 12;
+        }
+
+        return { years: ageYears, months: ageMonths };
     }
 
     //UPLOAD NEW PICTURE
@@ -111,7 +129,13 @@ $(document).ready(function (e) {
 
     //CALCULATE AGE
     birthdate.on("change", function (e) {
-        age.val(getAge(birthdate.val()))
+        const newAge = calculateAge(new Date($(this).val()))
+        if(!newAge){
+            invalidBirthdate = true
+            return null
+        }
+        age.val(`${newAge.years} Year/s ${newAge.months} Month/s`)
+        invalidBirthdate = false
     })
 
     //DETECT INPUT UNSAVED CHANGES
@@ -134,8 +158,7 @@ $(document).ready(function (e) {
     //SAVE/UPDATE INFORMATION
     $("#save").click(function (e) {
         if (!fname.val() || !lname.val() || !contact.val() || !address.val() || !gender.val() || !birthdate.val() || !age.val()) return showToast("❌ Complete all user information")
-        let ageNumber = Number(age.val())
-        if(ageNumber <= 0) return showToast("❌ Invalid age")
+        if (invalidBirthdate) return showToast("❌ Invalid Birthdate")
         $(".confirmation-shadow").toggleClass("d-none")
     })
     $("#yes").click(function (e) {
@@ -168,10 +191,6 @@ $(document).ready(function (e) {
             success: (res) => {
                 if (!res.operation) return showToast("❌ Something went wrong")
                 $(".confirmation-shadow").toggleClass("d-none")
-                // $(window).off('beforeunload', beforeUnloadFunction);
-                // $("input:not(#email):not(#username):not([type=file]):not([type=submit]#view),textarea,select").prop("disabled", true)
-                // $("#edit").toggleClass("d-none")
-                // $("#save").toggleClass("d-none")
                 showToast("✅ User updated!")
             },
             error: (err) => {
@@ -186,12 +205,4 @@ $(document).ready(function (e) {
     $("#no").click(function (e) {
         $(".confirmation-shadow").toggleClass("d-none")
     })
-
-    //ENABLE EDIT MODE
-    // $("#edit").click(function (e) {
-    //     $(window).on('beforeunload', beforeUnloadFunction);
-    //     $("input:not(#email):not(#username),textarea,select").prop("disabled", false)
-    //     $("#edit").toggleClass("d-none")
-    //     $("#save").toggleClass("d-none")
-    // })
 })

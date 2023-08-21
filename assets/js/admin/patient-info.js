@@ -13,9 +13,31 @@ $(document).ready(function (e) {
     const gRelationship = $("#g-relationship")
     const age = $("#age")
     const patient_history = $("#patient_history")
-    function getAge(dateString) {
-        var ageInMilliseconds = new Date() - new Date(dateString);
-        return Math.floor(ageInMilliseconds / 1000 / 60 / 60 / 24 / 365);
+    let invalidBirthdate = false;
+
+    //AUTO CALCULATE AGE
+    function calculateAge(birthdate) {
+        const birthYear = birthdate.getFullYear();
+        const birthMonth = birthdate.getMonth();
+        const currentDate = new Date();
+
+        const currentYear = currentDate.getFullYear();
+        const currentMonth = currentDate.getMonth();
+
+        if (birthdate > currentDate) {
+            showToast("❌ Invalid Birthdate")
+            return null;
+        }
+
+        let ageYears = currentYear - birthYear;
+        let ageMonths = currentMonth - birthMonth;
+
+        if (ageMonths < 0) {
+            ageYears--;
+            ageMonths += 12;
+        }
+
+        return { years: ageYears, months: ageMonths };
     }
 
     gender.select2({
@@ -33,7 +55,13 @@ $(document).ready(function (e) {
 
     //AUTO CALCULATE AGE
     birthdate.on("change", function (e) {
-        age.val(getAge(birthdate.val()))
+        const newAge = calculateAge(new Date($(this).val()))
+        if(!newAge){
+            invalidBirthdate = true
+            return null
+        }
+        age.val(`${newAge.years} Year/s ${newAge.months} Month/s`)
+        invalidBirthdate = false
     })
 
     //INITIALIZE DATA TABLE
@@ -61,8 +89,7 @@ $(document).ready(function (e) {
     //SAVE/UPDATE USER INFORMATION
     $("#save").click(function (e) {
         if (!fname.val() || !lname.val() || !contact.val() || !address.val() || !birthdate.val() || !age.val()) return showToast("❌ Complete required fields")
-        let ageNumber = Number(age.val())
-        if(ageNumber <= 0) return showToast("❌ Invalid age")
+        if (invalidBirthdate) return showToast("❌ Invalid birthdate")
         $(".confirmation-shadow").toggleClass("d-none")
     })
     $("#yes").click(function (e) {
@@ -120,7 +147,7 @@ $(document).ready(function (e) {
 
     //ENABLE EDIT MODE
     $("#edit").click(function (e) {
-        $("input:not(#email):not(#username),textarea,select").prop("disabled", false)
+        $("input:not(#email):not(#username):not(#age),textarea,select").prop("disabled", false)
         $("#edit").toggleClass("d-none")
         $("#save").toggleClass("d-none")
         $(window).on('beforeunload', function (e) {

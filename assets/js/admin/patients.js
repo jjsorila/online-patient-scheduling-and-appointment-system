@@ -18,6 +18,7 @@ $(document).ready(function (e) {
         dateSched = $("#dateSched"),
         license_number_holder = null,
         selectedTimeHolder = null;
+    let invalidBirthdate = false;
 
     $("#gender").select2({
         minimumResultsForSearch: -1,
@@ -191,13 +192,38 @@ $(document).ready(function (e) {
     }
 
     //AUTO CALCULATE AGE
-    function getAge(dateString) {
-        var ageInMilliseconds = new Date() - new Date(dateString);
-        return Math.floor(ageInMilliseconds / 1000 / 60 / 60 / 24 / 365); // convert to years
+    function calculateAge(birthdate) {
+        const birthYear = birthdate.getFullYear();
+        const birthMonth = birthdate.getMonth();
+        const currentDate = new Date();
+
+        const currentYear = currentDate.getFullYear();
+        const currentMonth = currentDate.getMonth();
+
+        if (birthdate > currentDate) {
+            showToast("❌ Invalid Birthdate")
+            return null;
+        }
+
+        let ageYears = currentYear - birthYear;
+        let ageMonths = currentMonth - birthMonth;
+
+        if (ageMonths < 0) {
+            ageYears--;
+            ageMonths += 12;
+        }
+
+        return { years: ageYears, months: ageMonths };
     }
 
     birthday.on("change", function (e) {
-        age.val(getAge(birthday.val()))
+        const newAge = calculateAge(new Date($(this).val()))
+        if(!newAge){
+            invalidBirthdate = true
+            return null
+        }
+        age.val(`${newAge.years} Year/s ${newAge.months} Month/s`)
+        invalidBirthdate = false
     })
 
     //SHOW TOAST
@@ -313,7 +339,7 @@ $(document).ready(function (e) {
     //ADD PATIENT
     $("#submit").click(function (e) {
         if (!fname.val() || !mi.val() || !lname.val() || !birthday.val() || !age.val() || !gender.val() || !contact.val() || !address.val()) return showToast("❌ Complete all fields")
-        if (Number(age.val()) <= 0) return showToast("❌ Invalid age")
+        if (invalidBirthdate) return showToast("❌ Invalid birthdate")
 
         $(".loading").css("display", "block")
 
