@@ -338,7 +338,7 @@ $(document).ready(function (e) {
 
     //ADD PATIENT
     $("#submit").click(function (e) {
-        if (!fname.val() || !mi.val() || !lname.val() || !birthday.val() || !age.val() || !gender.val() || !contact.val() || !address.val()) return showToast("❌ Complete all fields")
+        if (!fname.val() || !lname.val() || !birthday.val() || !age.val() || !gender.val() || !contact.val() || !address.val()) return showToast("❌ Complete all fields")
         if (invalidBirthdate) return showToast("❌ Invalid birthdate")
 
         $(".loading").css("display", "block")

@@ -382,7 +382,7 @@ router.post("/schedule/walk-in/time", (req, res) => {
             idCount++
         }
 
-        const curr_Time = dayjs(new Date()).format("YYYY-MM-DD HH:mm:ss")
+        const curr_Time = dayjs(new Date().toLocaleString("en-US", { timeZone: 'Asia/Hong_Kong' })).format("YYYY-MM-DD HH:mm:ss")
         const selected_Date = dayjs(dateSched).format("YYYY-MM-DD HH:mm:ss")
 
         db.query(`SELECT IF(schedule IS NULL, date_created_walk_in, schedule) AS schedule FROM appointments WHERE (status='Approved' OR status='Pending' OR status='Follow-up') AND DATE(IF(schedule IS NULL, date_created_walk_in, schedule))=${db.escape(dateSched)} AND doctor_license=${db.escape(doctor_license)}`,
@@ -480,12 +480,12 @@ router.get('/schedule/list', (req, res) => {
         // query =`
         // SELECT apt.doctor_license AS doctor_license,pa.email AS email,pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.schedule AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} DATE(apt.schedule)=DATE(NOW()) AND apt.apt_type='Online' AND (apt.status='Approved' OR apt.status='Follow-up')${type}${whoseDoctor}ORDER BY apt.schedule;
         // SELECT apt.doctor_license AS doctor_license,pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.date_created_walk_in AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} DATE(apt.date_created_walk_in)=DATE(NOW()) AND apt.apt_type='Walk-in' AND (apt.status='Approved' OR apt.status='Follow-up')${type}${whoseDoctor}ORDER BY apt.date_created_walk_in;`
-        query = `SELECT apt.doctor_license AS doctor_license,pa.email AS email,pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,IF(apt.schedule IS NULL, apt.date_created_walk_in, apt.schedule) AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} DATE(IF(apt.schedule IS NULL, apt.date_created_walk_in, apt.schedule))=DATE(NOW()) AND (apt.status='Approved' OR apt.status='Follow-up')${type}${whoseDoctor}ORDER BY IF(apt.schedule IS NULL, apt.date_created_walk_in, apt.schedule);`
+        query = `SELECT aa.fullname AS doctor_name,apt.doctor_license AS doctor_license,pa.email AS email,pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,IF(apt.schedule IS NULL, apt.date_created_walk_in, apt.schedule) AS schedule FROM ((appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id) INNER JOIN admin_accounts AS aa ON apt.doctor_license=aa.license_number) WHERE ${isNotAdmin} DATE(IF(apt.schedule IS NULL, apt.date_created_walk_in, apt.schedule))=DATE(NOW()) AND (apt.status='Approved' OR apt.status='Follow-up')${type}${whoseDoctor}ORDER BY IF(apt.schedule IS NULL, apt.date_created_walk_in, apt.schedule);`
     }else{
         // query =`
         // SELECT apt.doctor_license AS doctor_license,pa.email AS email,pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.schedule AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} (DATE(apt.schedule) BETWEEN ${db.escape(from)} AND ${db.escape(to)}) AND apt.apt_type='Online' AND (apt.status='Approved' OR apt.status='Follow-up')${type}${whoseDoctor}ORDER BY apt.schedule;
         // SELECT apt.doctor_license AS doctor_license,pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,apt.date_created_walk_in AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} (DATE(apt.date_created_walk_in) BETWEEN ${db.escape(from)} AND ${db.escape(to)}) AND apt.apt_type='Walk-in' AND (apt.status='Approved' OR apt.status='Follow-up')${type}${whoseDoctor}ORDER BY apt.date_created_walk_in;`
-        query = `SELECT apt.doctor_license AS doctor_license,pa.email AS email,pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,IF(apt.schedule IS NULL, apt.date_created_walk_in, apt.schedule) AS schedule FROM appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id WHERE ${isNotAdmin} (DATE(IF(apt.schedule IS NULL, apt.date_created_walk_in, apt.schedule)) BETWEEN ${db.escape(from)} AND ${db.escape(to)}) AND (apt.status='Approved' OR apt.status='Follow-up')${type}${whoseDoctor}ORDER BY IF(apt.schedule IS NULL, apt.date_created_walk_in, apt.schedule);`
+        query = `SELECT aa.fullname AS doctor_name,apt.doctor_license AS doctor_license,pa.email AS email,pa.fullname AS fullname,pa.id AS id,apt.apt_id AS apt_id,apt.apt_type AS apt_type,apt.patient_type AS patient_type,IF(apt.schedule IS NULL, apt.date_created_walk_in, apt.schedule) AS schedule FROM ((appointments AS apt INNER JOIN patient_accounts AS pa ON apt.id=pa.id) INNER JOIN admin_accounts AS aa ON apt.doctor_license=aa.license_number) WHERE ${isNotAdmin} (DATE(IF(apt.schedule IS NULL, apt.date_created_walk_in, apt.schedule)) BETWEEN ${db.escape(from)} AND ${db.escape(to)}) AND (apt.status='Approved' OR apt.status='Follow-up')${type}${whoseDoctor}ORDER BY IF(apt.schedule IS NULL, apt.date_created_walk_in, apt.schedule);`
     }
 
     db.query(query, (err, result) => {
@@ -557,7 +557,6 @@ router.get('/schedule/list', (req, res) => {
         // })
 
         // res.json({ data: finalScheduled })
-
         res.json({ data: result.map((scheduled, i) => ({
             ...scheduled,
             queue: i+1,
@@ -885,7 +884,7 @@ router.post("/time/available", (req, res) => {
             idCount++
         }
 
-        const curr_Time = dayjs(new Date()).format("YYYY-MM-DD HH:mm:ss")
+        const curr_Time = dayjs(new Date().toLocaleString("en-US", { timeZone: 'Asia/Hong_Kong' })).format("YYYY-MM-DD HH:mm:ss")
         const selected_Date = dayjs(dateSched).format("YYYY-MM-DD HH:mm:ss")
 
         availableTimes.forEach((v, i) => {

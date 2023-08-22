@@ -24,14 +24,14 @@ $(document).ready(function() {
         lengthMenu: [[10, 20, 30, 50, -1], [10, 20, 30, 50, "All"]],
         columns: [
             {
-                data: "queue"
-            },
-            {
                 data: "fullname",
                 render: ({ fname, lname, mi }) => (`${lname}, ${fname} ${mi}${mi ? "." : ""}`)
             },
             {
                 data: "patient_type"
+            },
+            {
+                data: "doctor_name"
             },
             {
                 data: "mod_schedule"
